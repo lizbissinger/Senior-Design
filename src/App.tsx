@@ -1,7 +1,7 @@
-import Message from './Message';
+import GetAPI from './Message';
 
 function App() {
-  return <div><Message /></div>;
+  return <div><GetAPI /></div>;
 }
 
 export default App;
