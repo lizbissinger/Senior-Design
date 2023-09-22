@@ -1,6 +1,5 @@
 import DashBoardForm from './DashBoardForm';
 import GetAPI from './Message';
-import './App.css';
 
 function App() {
   return (
