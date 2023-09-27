@@ -29,6 +29,8 @@
   
   .form button {
     padding: 10px 20px;
+    margin-block-end: auto;
+    margin-right: 7px;
     background-color: #7392e9;
     color: #fff;
     border: none;
@@ -48,8 +50,9 @@
   }
   
   .load-details-table {
-    border-collapse: collapse;
     width: 100%;
+    white-space: nowrap;
+    table-layout: fixed;
   }
   
   .load-details-table th,
@@ -67,8 +70,8 @@
   .load-details-table tr:nth-child(even) {
     background-color: #f9f9f9;
   }
-
-.status-cell {
+  
+  .status-cell {
     text-align: center;
     font-weight: bold;
     color: rgb(0, 0, 0);
@@ -89,4 +92,69 @@
     background-color: yellow;
     color: yellow;
   }
+  
+  .add-button {
+    text-align: right;
+    margin-top: 10px;
+  }
+  
+  .add-button button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+
+@media screen and (max-width: 768px) {
+   
+
+    .overview-container {
+        font-family: Arial, sans-serif;
+        margin: auto;
+    }
+
+    h2 {
+      font-size: 18px;
+    }
+  
+    h3 {
+      font-size: 14px;
+    }
+  
+    .form input {
+      padding: 4px;
+      margin-right: 3px;
+      margin-bottom: 6px;
+    }
+  
+    .form button {
+      padding: 6px 10px;
+    }
+  
+    .load-details-table th,
+    .load-details-table td {
+      padding: 2px;
+      white-space: normal;
+    }
+  
+   
+    .load-details-table th {
+      font-size: 14px;
+    }
+  
+   
+    .status-cell {
+      font-size: 12px;
+      padding: 2px;
+    }
+  
+   
+    .add-button button {
+      font-size: 14px;
+      padding: 4px 8px;
+    }
+  }
+  
   
