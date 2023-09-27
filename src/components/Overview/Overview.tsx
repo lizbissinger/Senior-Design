@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import './Overview.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenAlt, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
-import DriverDropdown from './DriverDropdown';
-import DriverForm from './DriverForm';
+import DriverDropdown from '../DriverDropdown/DriverDropdown';
+import DriverForm from '../DriverForm/DriverForm';
 
 interface LoadDetail {
   loadNumber: string;

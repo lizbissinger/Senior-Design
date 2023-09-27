@@ -1,5 +1,5 @@
 import React from 'react';
-import Overview from '../components/Overview';
+import Overview from '../components/Overview/Overview';
 
 export default {
   title: 'Components/Overview',
