@@ -1,37 +1,38 @@
 @font-face {
     font-family: "myFont";
     src: url("incompleetaregular-webfont.woff2");
-  }
+}
 
 h1 {
     font-family: "myFont";
-    justify-content: center;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem !important;
+    text-align: center;
+    margin-top: 0.5rem 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .dashboard {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-  }
-  
-  .top-bar {
+    min-height: 100vh;
+}
+
+.top-bar {
     display: flex;
     justify-content: space-between;
     background-color: #7392e9;
     padding: 10px;
-  }
-  
-  .tabs {
+}
+
+.tabs {
     display: flex;
     flex-direction: row;
     background-color: #7392e9;
     padding: 10px;
-    margin-right: 1150px;
-  }
-  
-  .tab {
+   
+    flex-grow: 1;
+}
+
+.tab {
     color: rgb(0, 0, 0);
     text-decoration: none;
     padding: 10px 20px;
@@ -39,25 +40,24 @@ h1 {
     border-right: 2px solid #000000;
     border-radius: 10px;
     transition: background-color 0.5s ease;
-  }
-  
-  .tab:hover {
+}
+
+.tab:hover {
     background-color: #ffffff;
-  }
-  
-  .content {
+}
+
+.content {
     flex: 1;
     padding: 20px;
-  }
-  
-  .login-info {
+}
+
+.login-info {
     color: white;
     display: flex;
     font-family: "myFont";
     align-items: center;
-  }
-  
-  .login-info p {
+}
+
+.login-info p {
     margin-right: 10px;
-  }
-  
+}

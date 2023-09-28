@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import Overview from './Overview';
-import TrucksManagement from './TrucksManagement';
-import UserInfo from './UserInfo'; 
+import Overview from './Overview/Overview';
+import TrucksManagement from './TrucksManagement/TrucksManagement';
+import UserInfo from './UserInfo/UserInfo'; 
 import './Dashboard.css'; 
 
 const Dashboard: React.FC = () => {

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './Overview.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPenAlt, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import DriverDropdown from '../DriverDropdown/DriverDropdown';
+import DriverForm from '../DriverForm/DriverForm';
 
 interface LoadDetail {
   loadNumber: string;
@@ -49,7 +51,19 @@ const Overview: React.FC = () => {
     comments: '',
   });
 
+  const [drivers, setDrivers] = useState<string[]>([]);
+
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const handleDriverSelect = (selectedDriver: string) => {
+    setNewLoad({ ...newLoad, driverObject: selectedDriver });
+  };
+
+  const handleAddDriver = (driver: string) => {
+    setDrivers([...drivers, driver]);
+    setNewLoad({ ...newLoad, driverObject: driver });
+  };
 
   const addLoadDetail = () => {
     setLoadDetails([...loadDetails, newLoad]);
@@ -74,6 +88,11 @@ const Overview: React.FC = () => {
       },
       comments: '',
     });
+    setShowForm(false);
+  };
+
+  const toggleFormVisibility = () => {
+    setShowForm(!showForm); // Toggle the form visibility
   };
 
   const handleEditClick = (index: number) => {
@@ -98,88 +117,99 @@ const Overview: React.FC = () => {
     setLoadDetails(updatedLoadDetails);
   };
 
-  const showScroll = loadDetails.length > 5; 
-
   return (
     <div className="overview-container">
       <h2>Overview</h2>
 
       <div>
-        <div className="form">
-          {/* Input fields for adding new load details */}
-          <input
-            type="text"
-            placeholder="Load #"
-            value={newLoad.loadNumber}
-            onChange={(e) => setNewLoad({ ...newLoad, loadNumber: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Truck #"
-            value={newLoad.truckObject}
-            onChange={(e) => setNewLoad({ ...newLoad, truckObject: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Trailer #"
-            value={newLoad.trailerObject}
-            onChange={(e) => setNewLoad({ ...newLoad, trailerObject: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Driver Name"
-            value={newLoad.driverObject}
-            onChange={(e) => setNewLoad({ ...newLoad, driverObject: e.target.value })}
-          />
-          <input
-            type="time"
-            placeholder="Pick-Up Time"
-            value={newLoad.pickupTime}
-            onChange={(e) => setNewLoad({ ...newLoad, pickupTime: e.target.value })}
-          />
-          <input
-            type="time"
-            placeholder="Delivery Time"
-            value={newLoad.deliveryTime}
-            onChange={(e) => setNewLoad({ ...newLoad, deliveryTime: e.target.value })}
-          />
-          <input
-            type="file"
-            placeholder="Documents"
-            value={newLoad.documents}
-            onChange={(e) => setNewLoad({ ...newLoad, documents: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Price"
-            value={newLoad.price}
-            onChange={(e) => setNewLoad({ ...newLoad, price: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Detention"
-            value={newLoad.detention}
-            onChange={(e) => setNewLoad({ ...newLoad, detention: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Miles"
-            value={newLoad.allMiles}
-            onChange={(e) => setNewLoad({ ...newLoad, allMiles: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Fuel"
-            value={newLoad.gallons}
-            onChange={(e) => setNewLoad({ ...newLoad, gallons: e.target.value })}
-          />
-          {/* Add similar input fields for the other columns */}
-          <button onClick={addLoadDetail}>Add</button>
-        </div>
+        {!showForm ? (
+          <div className="add-button">
+          <button onClick={toggleFormVisibility}>
+            <FontAwesomeIcon icon={faPlus} /> {/* Use the plus icon */}
+          </button>
+          </div>
+        ) : (
+            <div>
+                <div className="form">
+                {/* Input fields for adding new load details */}
+                <input
+                    type="text"
+                    placeholder="Load #"
+                    value={newLoad.loadNumber}
+                    onChange={(e) => setNewLoad({ ...newLoad, loadNumber: e.target.value })}
+                />
+                <input
+                    type="text"
+                    placeholder="Truck #"
+                    value={newLoad.truckObject}
+                    onChange={(e) => setNewLoad({ ...newLoad, truckObject: e.target.value })}
+                />
+                <input
+                    type="text"
+                    placeholder="Trailer #"
+                    value={newLoad.trailerObject}
+                    onChange={(e) => setNewLoad({ ...newLoad, trailerObject: e.target.value })}
+                />
+                <div>
+                    {/* Use the DriverDropdown component to select a driver */}
+                    <DriverDropdown driverList={drivers} selectedDriver={newLoad.driverObject} onSelectDriver={handleDriverSelect} />
+                </div>
+
+                <div>
+                    {/* Use the DriverForm component to add new drivers */}
+                    <DriverForm onAddDriver={handleAddDriver} />
+                </div>
+                <input
+                    type="time"
+                    placeholder="Pick-Up Time"
+                    value={newLoad.pickupTime}
+                    onChange={(e) => setNewLoad({ ...newLoad, pickupTime: e.target.value })}
+                />
+                <input
+                    type="time"
+                    placeholder="Delivery Time"
+                    value={newLoad.deliveryTime}
+                    onChange={(e) => setNewLoad({ ...newLoad, deliveryTime: e.target.value })}
+                />
+                <input
+                    type="file"
+                    placeholder="Documents"
+                    value={newLoad.documents}
+                    onChange={(e) => setNewLoad({ ...newLoad, documents: e.target.value })}
+                />
+                <input
+                    type="text"
+                    placeholder="Price"
+                    value={newLoad.price}
+                    onChange={(e) => setNewLoad({ ...newLoad, price: e.target.value })}
+                />
+                <input
+                    type="text"
+                    placeholder="Detention"
+                    value={newLoad.detention}
+                    onChange={(e) => setNewLoad({ ...newLoad, detention: e.target.value })}
+                />
+                <input
+                    type="text"
+                    placeholder="Miles"
+                    value={newLoad.allMiles}
+                    onChange={(e) => setNewLoad({ ...newLoad, allMiles: e.target.value })}
+                />
+                <input
+                    type="text"
+                    placeholder="Fuel"
+                    value={newLoad.gallons}
+                    onChange={(e) => setNewLoad({ ...newLoad, gallons: e.target.value })}
+                />
+                {/* Add similar input fields for the other columns */}
+                <button onClick={addLoadDetail}>Add</button>
+                </div>
+            </div>
+        )}
       </div>
 
       <div>
-        <p>Load Details</p>
+        <p></p>
         <div className='table-container'>
         <table className="load-details-table">
           {/* The table headers */}
@@ -211,17 +241,18 @@ const Overview: React.FC = () => {
                 <td>
                   {editableIndex === index ? (
                     <input
-                      type="text"
-                      value={load.loadNumber}
-                      onChange={(e) => {
-                        const updatedLoad = { ...load };
-                        updatedLoad.loadNumber = e.target.value;
-                        setLoadDetails((prevLoadDetails) => {
-                          const updatedDetails = [...prevLoadDetails];
-                          updatedDetails[index] = updatedLoad;
-                          return updatedDetails;
-                        });
-                      }}
+                        className='load-details-table'
+                        type="text"
+                        value={load.loadNumber}
+                        onChange={(e) => {
+                            const updatedLoad = { ...load };
+                            updatedLoad.loadNumber = e.target.value;
+                            setLoadDetails((prevLoadDetails) => {
+                            const updatedDetails = [...prevLoadDetails];
+                            updatedDetails[index] = updatedLoad;
+                            return updatedDetails;
+                            });
+                        }}
                     />
                   ) : (
                     load.loadNumber
@@ -230,6 +261,7 @@ const Overview: React.FC = () => {
                 <td>
                     {editableIndex === index ? (
                     <input
+                        className='load-details-table'
                         type="text"
                         value={load.truckObject}
                         onChange={(e) => {
@@ -249,6 +281,7 @@ const Overview: React.FC = () => {
                 <td>
                     {editableIndex === index ? (
                     <input
+                        className='load-details-table'
                         type="text"
                         value={load.trailerObject}
                         onChange={(e) => {
@@ -268,6 +301,7 @@ const Overview: React.FC = () => {
                 <td>
                     {editableIndex === index ? (
                     <input
+                        className='load-details-table'
                         type="text"
                         value={load.driverObject}
                         onChange={(e) => {
@@ -287,6 +321,7 @@ const Overview: React.FC = () => {
                 <td>
                     {editableIndex === index ? (
                     <input
+                        className='load-details-table'
                         type="text"
                         value={load.pickupTime}
                         onChange={(e) => {
@@ -306,6 +341,7 @@ const Overview: React.FC = () => {
                 <td>
                     {editableIndex === index ? (
                     <input
+                        className='load-details-table'
                         type="text"
                         value={load.deliveryTime}
                         onChange={(e) => {
@@ -325,6 +361,7 @@ const Overview: React.FC = () => {
                 <td>
                     {editableIndex === index ? (
                     <input
+                        className='load-details-table'
                         type="text"
                         value={load.documents}
                         onChange={(e) => {
@@ -343,45 +380,48 @@ const Overview: React.FC = () => {
                 </td>
                 <td>
                     {editableIndex === index ? (
-                    <input
+                        <input
+                        className='load-details-table'
                         type="text"
                         value={load.price}
                         onChange={(e) => {
-                        const updatedLoad = { ...load };
-                        updatedLoad.price = e.target.value;
-                        setLoadDetails((prevLoadDetails) => {
+                            const updatedLoad = { ...load };
+                            updatedLoad.price = e.target.value;
+                            setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
                             return updatedDetails;
-                        });
+                            });
                         }}
-                    />
+                        />
                     ) : (
-                    load.price
+                        `$${parseFloat(load.price).toFixed(2)}`
                     )}
                 </td>
                 <td>
                     {editableIndex === index ? (
-                    <input
+                        <input
+                        className='load-details-table'
                         type="text"
                         value={load.detention}
                         onChange={(e) => {
-                        const updatedLoad = { ...load };
-                        updatedLoad.detention = e.target.value;
-                        setLoadDetails((prevLoadDetails) => {
+                            const updatedLoad = { ...load };
+                            updatedLoad.detention = e.target.value;
+                            setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
                             return updatedDetails;
-                        });
+                            });
                         }}
-                    />
+                        />
                     ) : (
-                    load.detention
+                        `$${parseFloat(load.detention).toFixed(2)}`
                     )}
                 </td>
                 <td>
                     {editableIndex === index ? (
                     <input
+                        className='load-details-table'
                         type="text"
                         value={load.allMiles}
                         onChange={(e) => {
@@ -401,6 +441,7 @@ const Overview: React.FC = () => {
                 <td>
                     {editableIndex === index ? (
                     <input
+                        className='load-details-table'
                         type="text"
                         value={load.gallons}
                         onChange={(e) => {
@@ -420,6 +461,7 @@ const Overview: React.FC = () => {
                 <td className={`status-cell ${load.status.toLowerCase()}`}>
                 {editableIndex === index ? (
                     <select
+                    className='load-details-table'
                     value={load.status}
                     onChange={(e) => {
                         const updatedLoad = { ...load };
