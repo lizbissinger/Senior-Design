@@ -2,13 +2,31 @@
 
 ## Design D0: High-Level System Overview
 
-User -> Load Management: Request
-Load Management -> Real-time Communication: Communicate
-Real-time Communication -> Document Management: Send data
-Document Management -> Invoicing & Payroll: Process documents
-Invoicing & Payroll -> Analytics & Reports: Generate reports
-Analytics & Reports -> User Interface: Display reports
-User Interface -> Data Security: Access data
++--------------+       +-----------------+       +-----------------------+
+|     Users    | ----> | Load Management | ----> | Real-time Communication |
+| (Carriers,   |       |                 |       |                       |
+|  Drivers,    |       |                 |       |                       |
+|  Brokers)   |       |                 |       |                       |
++--------------+       +-----------------+       +-----------------------+
+     |  |                   |  |                        |  |
++--------------+       +-----------------+       +-----------------------+
+|     Load     |       |   Document      |       |  Invoicing & Payroll  |
+|  Management  |       |  Management     |       |                       |
+|              |       |                 |       |                       |
++--------------+       +-----------------+       +-----------------------+
+     |  |                   |  |                        |  |
++--------------+       +-----------------+       +-----------------------+
+|  Real-time  |       |   Invoicing &   |       |  Analytics & Reports  |
+| Communication|       |    Payroll      |       |                       |
+|              |       |                 |       |                       |
++--------------+       +-----------------+       +-----------------------+
+     |  |                   |  |
++--------------+       +-----------------+
+|  Document   |       | User Interface |
+| Management  |       |                 |
+|              |       |                 |
++--------------+       +-----------------+
+
 
 
 ## Design D1: Elaborated System Modules
