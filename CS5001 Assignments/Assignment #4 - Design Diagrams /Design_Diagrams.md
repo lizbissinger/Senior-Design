@@ -1,17 +1,11 @@
 # Design Diagrams
 
-## Design D0: High-Level System Overview
+
 
 ```dot
-digraph G {
-  Users -> "Load Management" -> "Real-time Communication";
-  "Load Management" -> "Document Management";
-  "Document Management" -> "Invoicing & Payroll";
-  "Invoicing & Payroll" -> "Analytics & Reports";
-  "Analytics & Reports" -> "User Interface";
-  "User Interface" -> "Data Security";
-}
+## Design D0: High-Level System Overview
 
++--------------+ +-----------------+ +-----------------------+ | Users | ----> | Load Management | ----> | Real-time Communication | | (Carriers, | | | | | | Drivers, | | | | | | Brokers) | | | | | +--------------+ +-----------------+ +-----------------------+ | | | | | | +--------------+ +-----------------+ +-----------------------+ | Load | | Document | | Invoicing & Payroll | | Management | | Management | | | | | | | | | +--------------+ +-----------------+ +-----------------------+ | | | | | | +--------------+ +-----------------+ +-----------------------+ | Real-time | | Invoicing & | | Analytics & Reports | | Communication| | Payroll | | | | | | | | | +--------------+ +-----------------+ +-----------------------+ | | | | +--------------+ +-----------------+ | Document | | User Interface | | Management | | | | | | | +--------------+ +-----------------+
 
 
 ## Design D1: Elaborated System Modules
