@@ -2,45 +2,14 @@
 
 ## Design D0: High-Level System Overview
 
-+-------------------+
-|    Users        |
-| (Carriers,      |
-|  Drivers,       |
-|  Brokers)       |
-+-------------------+
-       |   |
-+-------------------+
-|    Load           |
-|   Management   |
-+-------------------+
-   |        |      |
-+-------------------+
-|   Real-time       |
-| Communication  |
-+-------------------+
-   |        |
-+-------------------+
-|  Document      |
-| Management   |
-+-------------------+
-   |        |
-+-------------------+
-|   Invoicing &  |
-|    Payroll      |
-+-------------------+
-   |        |
-+-------------------+
-| Analytics &     |
-|  Reports         |
-+-------------------+
-   |        |
-+-------------------+
-| User Interface |
-+-------------------+
-   |        |
-+-------------------+
-|  Data Security  |
-+-------------------+
+User -> Load Management: Request
+Load Management -> Real-time Communication: Communicate
+Real-time Communication -> Document Management: Send data
+Document Management -> Invoicing & Payroll: Process documents
+Invoicing & Payroll -> Analytics & Reports: Generate reports
+Analytics & Reports -> User Interface: Display reports
+User Interface -> Data Security: Access data
+
 
 ## Design D1: Elaborated System Modules
 
