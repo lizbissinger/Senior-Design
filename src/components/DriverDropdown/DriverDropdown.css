@@ -1,0 +1,41 @@
+.select-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 7px;
+    margin-bottom: 10px;
+  }
+  
+  .select-container select {
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+  }
+  
+ 
+  .select-container::after {
+    content: "\25BC";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #555;
+  }
+  
+ 
+  .select-container select:focus,
+  .select-container select:hover {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+ 
+  .select-container select option {
+    background-color: white;
+    color: #333;
+  }
+  
