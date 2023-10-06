@@ -17,7 +17,7 @@ jobs:
       - run: echo "this is the build job"
   test: 
     docker:
-      -image: cimg/mongo:4.4-ram
+      - image: cimg/mongo:4.4-ram
     steps:
       - checkout
       - run: echo "this is the test job"
