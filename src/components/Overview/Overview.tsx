@@ -237,18 +237,18 @@ const Overview: React.FC = () => {
           {/* The table headers */}
           <thead>
             <tr>
-            <th onClick={() => requestSort('loadNumber')}> Load # {renderSortArrow('loadNumber')}</th>
+            <th onClick={() => requestSort('loadNumber')}> Load # {sortConfig.key === "loadNumber" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Truck #</th>
               <th>Trailer #</th>
               <th>Driver Name</th>
               <th>Pick-up Time</th>
               <th>Delivery Time</th>
               <th>Documents</th>
-              <th>Price</th>
+              <th onClick={() => requestSort('price')}> Price {sortConfig.key === "price" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Detention</th>
               <th>All miles</th>
-              <th>Gallons</th>
-              <th>Status</th>
+              <th onClick={() => requestSort('gallons')}> Gallons {sortConfig.key === "gallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th onClick={() => requestSort('status')}> Status {sortConfig.key === "status" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               {/* <th>Broker info</th>
               <th>Name</th>
               <th>Phone number</th>
