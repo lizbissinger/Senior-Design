@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
 import Overview from './Overview/Overview';
-import TrucksManagement from './TrucksManagement/TrucksManagement';
+import FleetManagement from './FleetManagement/FleetManagement';
 import UserInfo from './UserInfo/UserInfo'; 
 import './Dashboard.css'; 
 
@@ -14,9 +14,16 @@ const Dashboard: React.FC = () => {
           <Link to="/dashboard/overview" className="tab">
             Overview
           </Link>
-          <Link to="/dashboard/trucks" className="tab">
-            Trucks Management
+          <Link to="/dashboard/fleet" className="tab">
+            Fleet Management
           </Link>
+          <Link to="/dashboard/reports" className="tab">
+            Reports
+          </Link>
+          <Link to="/dashboard/finance" className="tab">
+            Finance
+          </Link>
+          
           {/* Add more tabs for other features */}
         </div>
         <UserInfo username="Jatt Singh" /> {/* Pass the user's name */}
@@ -24,7 +31,9 @@ const Dashboard: React.FC = () => {
       <div className="content">
         <Routes>
           <Route path="overview" element={<Overview />} />
-          <Route path="trucks" element={<TrucksManagement />} />
+          <Route path="fleet" element={<FleetManagement />} />
+          <Route path="reports" /* add element here */ />
+          <Route path="finance" /* add element here */ />
           {/* Add more routes for other tabs */}
         </Routes>
       </div>
