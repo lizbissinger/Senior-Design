@@ -22,9 +22,26 @@
   .form input {
     padding: 8px;
     margin-right: 7px;
-    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  .form .invalid {
+    padding: 8px;
+    margin-right: 7px;
+    border: 1px solid #ff0000;
+    border-radius: 4px;
+  }
+
+  .form .error {
+    margin-right: 7px;
+    text-align: left;
+    font-size: small;
+    color: red;
+  }
+
+  .form .field {
+    margin-bottom: 10px;
   }
   
   .form button {
