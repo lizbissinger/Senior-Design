@@ -1,32 +1,13 @@
 import React, { useState } from 'react';
 import './Overview.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenAlt, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPenAlt, faTrash, faPlus, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import DriverDropdown from '../DriverDropdown/DriverDropdown';
 import DriverForm from '../DriverForm/DriverForm';
+import InvoiceGenerator from '../Invoice/InvoiceGenerator';
 import _ from 'lodash'; //Sorting Library
 
-interface LoadDetail {
-  loadNumber: string;
-  truckObject: string;
-  trailerObject: string;
-  driverObject: string;
-  pickupTime: string;
-  deliveryTime: string;
-  documents: string;
-  price: string;
-  detention: string;
-  allMiles: string;
-  gallons: string;
-  status: string;
-  brokerInfo: {
-    name: string;
-    phoneNumber: string;
-    email: string;
-    company: string;
-  };
-  comments: string;
-}
+import { LoadDetail } from '../types';
 
 const Overview: React.FC = () => {
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
@@ -101,7 +82,7 @@ const Overview: React.FC = () => {
   };
 
   const toggleFormVisibility = () => {
-    setShowForm(!showForm); // Toggle the form visibility
+    setShowForm(!showForm); 
   };
 
   const handleEditClick = (index: number) => {
@@ -153,13 +134,18 @@ const Overview: React.FC = () => {
         ) : (
             <div>
                 <div className="form">
-                {/* Input fields for adding new load details */}
                 <input
                     type="text"
                     placeholder="Load #"
                     value={newLoad.loadNumber}
                     onChange={(e) => setNewLoad({ ...newLoad, loadNumber: e.target.value })}
                 />
+                {/* <input
+                    type="text"
+                    placeholder="Broker Name"
+                    value={newLoad.brokerInfo}
+                    onChange={(e) => setNewLoad({ ...newLoad, loadNumber: e.target.value })}
+                /> */}
                 <input
                     type="text"
                     placeholder="Truck #"
@@ -173,12 +159,10 @@ const Overview: React.FC = () => {
                     onChange={(e) => setNewLoad({ ...newLoad, trailerObject: e.target.value })}
                 />
                 <div>
-                    {/* Use the DriverDropdown component to select a driver */}
                     <DriverDropdown driverList={drivers} selectedDriver={newLoad.driverObject} onSelectDriver={handleDriverSelect} />
                 </div>
 
                 <div>
-                    {/* Use the DriverForm component to add new drivers */}
                     <DriverForm onAddDriver={handleAddDriver} />
                 </div>
                 <input
@@ -510,25 +494,26 @@ const Overview: React.FC = () => {
                 </td>
                 <td>
                 {editableIndex === index ? (
-                    <div>
+                  <div>
                     <button onClick={() => handleSaveClick(index)}>
-                        <FontAwesomeIcon icon={faPenAlt} /> {/* Save icon */}
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Save icon */}
                     </button>
                     <button onClick={() => handleDeleteClick(index)}>
-                        <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
                     </button>
-                    </div>
+                  </div>
                 ) : (
-                    <div>
+                  <div>
                     <button onClick={() => handleEditClick(index)}>
-                        <FontAwesomeIcon icon={faPenAlt} /> {/* Edit icon */}
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit icon */}
                     </button>
                     <button onClick={() => handleDeleteClick(index)}>
-                        <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
                     </button>
-                    </div>
+                  </div>
                 )}
-                </td>
+                <InvoiceGenerator loadDetails={[loadDetails[index]]} />
+              </td>
               </tr>
             ))}
           </tbody>
