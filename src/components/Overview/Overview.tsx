@@ -1,32 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './Overview.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenAlt, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPenAlt, faTrash, faPlus, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import DriverDropdown from '../DriverDropdown/DriverDropdown';
 import DriverForm from '../DriverForm/DriverForm';
+import InvoiceGenerator from '../Invoice/InvoiceGenerator';
 import _ from 'lodash'; //Sorting Library
 
-interface LoadDetail {
-  loadNumber: string;
-  truckObject: string;
-  trailerObject: string;
-  driverObject: string;
-  pickupTime: string;
-  deliveryTime: string;
-  documents: string;
-  price: string;
-  detention: string;
-  allMiles: string;
-  gallons: string;
-  status: string;
-  brokerInfo: {
-    name: string;
-    phoneNumber: string;
-    email: string;
-    company: string;
-  };
-  comments: string;
-}
+import { LoadDetail } from '../types';
 
 const Overview: React.FC = () => {
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
@@ -104,7 +85,7 @@ const Overview: React.FC = () => {
   };
 
   const toggleFormVisibility = () => {
-    setShowForm(!showForm); // Toggle the form visibility
+    setShowForm(!showForm); 
   };
 
   const handleEditClick = (index: number) => {
@@ -665,25 +646,26 @@ const Overview: React.FC = () => {
                 </td>
                 <td>
                 {editableIndex === index ? (
-                    <div>
+                  <div>
                     <button onClick={() => handleSaveClick(index)}>
-                        <FontAwesomeIcon icon={faPenAlt} /> {/* Save icon */}
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Save icon */}
                     </button>
                     <button onClick={() => handleDeleteClick(index)}>
-                        <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
                     </button>
-                    </div>
+                  </div>
                 ) : (
-                    <div>
+                  <div>
                     <button onClick={() => handleEditClick(index)}>
-                        <FontAwesomeIcon icon={faPenAlt} /> {/* Edit icon */}
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit icon */}
                     </button>
                     <button onClick={() => handleDeleteClick(index)}>
-                        <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
                     </button>
-                    </div>
+                  </div>
                 )}
-                </td>
+                <InvoiceGenerator loadDetails={[loadDetails[index]]} />
+              </td>
               </tr>
             ))}
           </tbody>
