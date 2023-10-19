@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenAlt, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import DriverDropdown from '../DriverDropdown/DriverDropdown';
 import DriverForm from '../DriverForm/DriverForm';
+import _ from 'lodash'; //Sorting Library
 
 interface LoadDetail {
   loadNumber: string;
@@ -50,6 +51,14 @@ const Overview: React.FC = () => {
     },
     comments: '',
   });
+
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "", // Initialize with an empty key
+    direction: "asc", // Set the initial direction to "asc"
+  });
+  
+
+  const sortedData = _.orderBy(loadDetails, [sortConfig.key], [sortConfig.direction]);
 
   const [drivers, setDrivers] = useState<string[]>([]);
 
@@ -116,7 +125,20 @@ const Overview: React.FC = () => {
     updatedLoadDetails.splice(index, 1);
     setLoadDetails(updatedLoadDetails);
   };
+  const renderSortArrow = (column : string) => {
+    if (sortConfig.key === column) {
+      return sortConfig.direction === 'asc' ? '▲' : '▼';
+    }
+    return null;
+  };
+  const requestSort  = (key: string) => {
+    let direction:"asc" | "desc" = "asc";
 
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
   return (
     <div className="overview-container">
       <h2>Overview</h2>
@@ -215,18 +237,18 @@ const Overview: React.FC = () => {
           {/* The table headers */}
           <thead>
             <tr>
-              <th>Load #</th>
+            <th onClick={() => requestSort('loadNumber')}> Load # {sortConfig.key === "loadNumber" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Truck #</th>
               <th>Trailer #</th>
               <th>Driver Name</th>
               <th>Pick-up Time</th>
               <th>Delivery Time</th>
               <th>Documents</th>
-              <th>Price</th>
+              <th onClick={() => requestSort('price')}> Price {sortConfig.key === "price" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Detention</th>
               <th>All miles</th>
-              <th>Gallons</th>
-              <th>Status</th>
+              <th onClick={() => requestSort('gallons')}> Gallons {sortConfig.key === "gallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th onClick={() => requestSort('status')}> Status {sortConfig.key === "status" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               {/* <th>Broker info</th>
               <th>Name</th>
               <th>Phone number</th>
@@ -236,7 +258,7 @@ const Overview: React.FC = () => {
           </thead>
           {/* The table body */}
           <tbody>
-            {loadDetails.map((load, index) => (
+            {sortedData.map((load, index) => (
               <tr key={index}>
                 <td>
                   {editableIndex === index ? (
