@@ -1,15 +1,16 @@
-import React from 'react';
-import Dashboard from '../components/Dashboard';
+import React from "react";
+import Dashboard from "../components/Dashboard";
+import { JSX } from "react/jsx-runtime";
 
 export default {
-  title: 'Components/Dashboard',
+  title: "Components/Dashboard",
   component: Dashboard,
 };
 
-const Template = (args) => <Dashboard {...args} />;
+const Template = (args: JSX.IntrinsicAttributes) => <Dashboard {...args} />;
 
 export const DefaultView = Template.bind({});
-DefaultView.args = {
+DefaultView.arguments = {
   loadDetails: [
     // Example:
     // {
