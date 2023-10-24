@@ -14,7 +14,6 @@ const App: React.FC = () => {
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/overview" element={<Overview />} />
           <Route path="/trucks" element={<TrucksManagement />} />
-          
         </Routes>
       </Router>
     </div>

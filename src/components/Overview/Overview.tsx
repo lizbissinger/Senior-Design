@@ -5,11 +5,15 @@ import { faPenAlt, faTrash, faPlus, faFilePdf } from '@fortawesome/free-solid-sv
 import DriverDropdown from '../DriverDropdown/DriverDropdown';
 import DriverForm from '../DriverForm/DriverForm';
 import InvoiceGenerator from '../Invoice/InvoiceGenerator';
+import GetAllLoads from '../../routes/loadDetails';
 import _ from 'lodash'; //Sorting Library
 
 import { LoadDetail } from '../types';
 
+
 const Overview: React.FC = () => {
+  const [test, setTest] = useState<any>();
+
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
     loadNumber: '',
@@ -38,6 +42,7 @@ const Overview: React.FC = () => {
     direction: "asc", // Set the initial direction to "asc"
   });
   
+  const [fetchingActive, setFetchingActive] = useState(false);
 
   const sortedData = _.orderBy(loadDetails, [sortConfig.key], [sortConfig.direction]);
 
@@ -209,6 +214,34 @@ const Overview: React.FC = () => {
     setSubmitting(true);
   }
 
+  const fetchData = async () => {
+    if (!fetchingActive) {
+      const testData = GetAllLoads();
+      console.log(testData);
+      setFetchingActive(true);
+    }
+  }
+
+  useEffect(() => {
+    fetch('http://localhost:3000/loadDetails', {
+      method: "GET"
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        let loadsArr: LoadDetail[] = [];
+        if (data) {
+          if (Array.isArray(data)) {
+            data.forEach((element) => {
+              let load: LoadDetail = JSON.parse(JSON.stringify(element));
+              loadsArr.push(load);
+            });
+          }
+          setLoadDetails(loadsArr);
+        }
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   useEffect(() => {
     let errorsArr : string[] = [];
     Object.entries(errors).map(([key, value]) => {
@@ -227,6 +260,8 @@ const Overview: React.FC = () => {
   return (
     <div className="overview-container">
       <h2>Overview</h2>
+
+      <button onClick={fetchData}>Load data</button>
 
       <div>
         {!showForm ? (
@@ -373,18 +408,18 @@ const Overview: React.FC = () => {
           {/* The table headers */}
           <thead>
             <tr>
-            <th onClick={() => requestSort('loadNumber')}> Load # {sortConfig.key === "loadNumber" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('loadNumber')}> Load # {sortConfig.key === "loadNumber" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Truck #</th>
               <th>Trailer #</th>
               <th>Driver Name</th>
               <th>Pick-up Time</th>
               <th>Delivery Time</th>
               <th>Documents</th>
-              <th onClick={() => requestSort('price')}> Price {sortConfig.key === "price" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('price')}> Price {sortConfig.key === "price" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Detention</th>
               <th>All miles</th>
-              <th onClick={() => requestSort('gallons')}> Gallons {sortConfig.key === "gallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
-              <th onClick={() => requestSort('status')}> Status {sortConfig.key === "status" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('gallons')}> Gallons {sortConfig.key === "gallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('status')}> Status {sortConfig.key === "status" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               {/* <th>Broker info</th>
               <th>Name</th>
               <th>Phone number</th>
@@ -573,7 +608,7 @@ const Overview: React.FC = () => {
                         }}
                         />
                     ) : (
-                        load.detention.length > 0 ? `$${parseFloat(load.detention).toFixed(2)}` : `-`
+                        `$${parseFloat(load.detention).toFixed(2)}`
                     )}
                 </td>
                 <td>
