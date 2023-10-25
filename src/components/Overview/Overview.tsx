@@ -12,8 +12,6 @@ import { LoadDetail } from '../types';
 
 
 const Overview: React.FC = () => {
-  const [test, setTest] = useState<any>();
-
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
     loadNumber: '',
@@ -24,9 +22,9 @@ const Overview: React.FC = () => {
     deliveryTime: '',
     documents: '',
     price: '',
-    detention: '',
+    detentionPrice: '',
     allMiles: '',
-    gallons: '',
+    fuelGallons: '',
     status: '',
     brokerInfo: {
       name: '',
@@ -36,6 +34,25 @@ const Overview: React.FC = () => {
     },
     comments: '',
   });
+
+  const fetchAllLoads = async () => {
+    let allLoads: any = null;
+    allLoads = await GetAllLoads();
+    if (allLoads) {
+      let loadsArr: LoadDetail[] = [];
+      if (Array.isArray(allLoads)) {
+        allLoads.forEach((element) => {
+          let load: LoadDetail = JSON.parse(JSON.stringify(element));
+          loadsArr.push(load);
+        });
+      }
+      setLoadDetails(loadsArr);
+    }
+  }
+
+  useEffect(() => {
+    fetchAllLoads();
+  }, []);
 
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
     key: "", // Initialize with an empty key
@@ -74,9 +91,9 @@ const Overview: React.FC = () => {
       deliveryTime: '',
       documents: '',
       price: '',
-      detention: '',
+      detentionPrice: '',
       allMiles: '',
-      gallons: '',
+      fuelGallons: '',
       status: '',
       brokerInfo: {
         name: '',
@@ -140,9 +157,9 @@ const Overview: React.FC = () => {
       deliveryTime: '',
       documents: '',
       price: '',
-      detention: '',
+      detentionPrice: '',
       allMiles: '',
-      gallons: '',
+      fuelGallons: '',
     };
 
     Object.entries(errorsObj).map(([key, value]) => {
@@ -178,9 +195,9 @@ const Overview: React.FC = () => {
       errorsObj.price = "Price must be an amount";
     }
 
-    if (inputValues.detention.length > 0) {
-      if (isNaN(parseInt(inputValues.detention))) {
-        errorsObj.detention = "Detention must be an amount";
+    if (inputValues.detentionPrice.length > 0) {
+      if (isNaN(parseInt(inputValues.detentionPrice))) {
+        errorsObj.detentionPrice = "Detention must be an amount";
       }
     }
 
@@ -223,26 +240,6 @@ const Overview: React.FC = () => {
   }
 
   useEffect(() => {
-    fetch('http://localhost:3000/loadDetails', {
-      method: "GET"
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        let loadsArr: LoadDetail[] = [];
-        if (data) {
-          if (Array.isArray(data)) {
-            data.forEach((element) => {
-              let load: LoadDetail = JSON.parse(JSON.stringify(element));
-              loadsArr.push(load);
-            });
-          }
-          setLoadDetails(loadsArr);
-        }
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
-  useEffect(() => {
     let errorsArr : string[] = [];
     Object.entries(errors).map(([key, value]) => {
       if (typeof value === "string") {
@@ -260,8 +257,6 @@ const Overview: React.FC = () => {
   return (
     <div className="overview-container">
       <h2>Overview</h2>
-
-      <button onClick={fetchData}>Load data</button>
 
       <div>
         {!showForm ? (
@@ -365,14 +360,14 @@ const Overview: React.FC = () => {
                 </div>
                 <div className="field">
                   <input
-                      id="detention"
+                      id="detentionPrice"
                       type="text"
                       placeholder="Detention"
-                      value={newLoad.detention}
-                      onChange={(e) => setNewLoad({ ...newLoad, detention: e.target.value })}
+                      value={newLoad.detentionPrice}
+                      onChange={(e) => setNewLoad({ ...newLoad, detentionPrice: e.target.value })}
                   />
                   <br />
-                  <div className="error">{errors.detention}</div>
+                  <div className="error">{errors.detentionPrice}</div>
                 </div>
                 <div className="field">
                   <input
@@ -387,11 +382,11 @@ const Overview: React.FC = () => {
                 </div>
                 <div className="field">
                   <input
-                      id="gallons"
+                      id="fuelGallons"
                       type="text"
                       placeholder="Fuel"
-                      value={newLoad.gallons}
-                      onChange={(e) => setNewLoad({ ...newLoad, gallons: e.target.value })}
+                      value={newLoad.fuelGallons}
+                      onChange={(e) => setNewLoad({ ...newLoad, fuelGallons: e.target.value })}
                   />
                 </div>
                 {/* Add similar input fields for the other columns */}
@@ -418,7 +413,7 @@ const Overview: React.FC = () => {
               <th className="sort" onClick={() => requestSort('price')}> Price {sortConfig.key === "price" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Detention</th>
               <th>All miles</th>
-              <th className="sort" onClick={() => requestSort('gallons')}> Gallons {sortConfig.key === "gallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('fuelGallons')}> Gallons {sortConfig.key === "fuelGallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th className="sort" onClick={() => requestSort('status')}> Status {sortConfig.key === "status" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               {/* <th>Broker info</th>
               <th>Name</th>
@@ -596,10 +591,10 @@ const Overview: React.FC = () => {
                         <input
                         className='load-details-table'
                         type="text"
-                        value={load.detention}
+                        value={load.detentionPrice}
                         onChange={(e) => {
                             const updatedLoad = { ...load };
-                            updatedLoad.detention = e.target.value;
+                            updatedLoad.detentionPrice = e.target.value;
                             setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
@@ -608,7 +603,7 @@ const Overview: React.FC = () => {
                         }}
                         />
                     ) : (
-                        `$${parseFloat(load.detention).toFixed(2)}`
+                        load.detentionPrice || parseInt(load.detentionPrice) >= 0 ? `$${parseFloat(load.detentionPrice).toFixed(2)}` : `-`
                     )}
                 </td>
                 <td>
@@ -636,10 +631,10 @@ const Overview: React.FC = () => {
                     <input
                         className='load-details-table'
                         type="text"
-                        value={load.gallons}
+                        value={load.fuelGallons}
                         onChange={(e) => {
                         const updatedLoad = { ...load };
-                        updatedLoad.gallons = e.target.value;
+                        updatedLoad.fuelGallons = e.target.value;
                         setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
@@ -648,7 +643,7 @@ const Overview: React.FC = () => {
                         }}
                     />
                     ) : (
-                    load.gallons
+                    load.fuelGallons
                     )}
                 </td>
                 <td className={`status-cell ${load.status.toLowerCase()}`}>
