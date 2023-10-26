@@ -1,12 +1,19 @@
 import React from 'react';
 
-const TrucksManagement: React.FC = () => {
+const FleetManagement: React.FC = () => {
   return (
     <div>
-      <h2>Trucks Management</h2>
+      <h2>Fleet Management</h2>
       {/* Add content for the Trucks Management tab */}
     </div>
   );
 };
 
-export default TrucksManagement;
+export default FleetManagement;
+
+
+
+
+
+
+
