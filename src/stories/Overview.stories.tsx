@@ -1,15 +1,16 @@
-import React from 'react';
-import Overview from '../components/Overview/Overview';
+import React from "react";
+import Overview from "../components/Overview/Overview";
+import { JSX } from "react/jsx-runtime";
 
 export default {
-  title: 'Components/Overview',
+  title: "Components/Overview",
   component: Overview,
 };
 
-const Template = (args) => <Overview {...args} />;
+const Template = (args: JSX.IntrinsicAttributes) => <Overview {...args} />;
 
 export const DefaultView = Template.bind({});
-DefaultView.args = {
+DefaultView.arguments = {
   loadDetails: [
     // Example:
     // {
@@ -21,12 +22,12 @@ DefaultView.args = {
 };
 
 export const EmptyView = Template.bind({});
-EmptyView.args = {
+EmptyView.arguments = {
   loadDetails: [],
 };
 
 export const EditMode = Template.bind({});
-EditMode.args = {
+EditMode.arguments = {
   loadDetails: [
     // Example:
     // {
@@ -39,7 +40,7 @@ EditMode.args = {
 };
 
 export const CustomData = Template.bind({});
-CustomData.args = {
+CustomData.arguments = {
   loadDetails: [
     // Example:
     // {

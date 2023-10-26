@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
 interface LoadDetailCardProps {
   loadNumber: string;
-  truck: Truck;
-  trailer: Trailer;
+  truck: any;
+  trailer: any;
 }
 
 const LoadDetailCard: React.FC<LoadDetailCardProps> = ({

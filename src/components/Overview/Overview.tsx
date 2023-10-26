@@ -1,31 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Overview.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenAlt, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPenAlt, faTrash, faPlus, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import DriverDropdown from '../DriverDropdown/DriverDropdown';
 import DriverForm from '../DriverForm/DriverForm';
+import InvoiceGenerator from '../Invoice/InvoiceGenerator';
+import _ from 'lodash'; //Sorting Library
 
-interface LoadDetail {
-  loadNumber: string;
-  truckObject: string;
-  trailerObject: string;
-  driverObject: string;
-  pickupTime: string;
-  deliveryTime: string;
-  documents: string;
-  price: string;
-  detention: string;
-  allMiles: string;
-  gallons: string;
-  status: string;
-  brokerInfo: {
-    name: string;
-    phoneNumber: string;
-    email: string;
-    company: string;
-  };
-  comments: string;
-}
+import { LoadDetail } from '../types';
 
 const Overview: React.FC = () => {
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
@@ -51,10 +33,21 @@ const Overview: React.FC = () => {
     comments: '',
   });
 
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "", // Initialize with an empty key
+    direction: "asc", // Set the initial direction to "asc"
+  });
+  
+
+  const sortedData = _.orderBy(loadDetails, [sortConfig.key], [sortConfig.direction]);
+
   const [drivers, setDrivers] = useState<string[]>([]);
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+
+  const [errors, setErrors] = useState<any>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const handleDriverSelect = (selectedDriver: string) => {
     setNewLoad({ ...newLoad, driverObject: selectedDriver });
@@ -92,7 +85,7 @@ const Overview: React.FC = () => {
   };
 
   const toggleFormVisibility = () => {
-    setShowForm(!showForm); // Toggle the form visibility
+    setShowForm(!showForm); 
   };
 
   const handleEditClick = (index: number) => {
@@ -116,6 +109,120 @@ const Overview: React.FC = () => {
     updatedLoadDetails.splice(index, 1);
     setLoadDetails(updatedLoadDetails);
   };
+  
+  const renderSortArrow = (column : string) => {
+    if (sortConfig.key === column) {
+      return sortConfig.direction === 'asc' ? '▲' : '▼';
+    }
+    return null;
+  };
+
+  const requestSort  = (key: string) => {
+    let direction:"asc" | "desc" = "asc";
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const validateValues = (inputValues: LoadDetail) => {
+    let errorsObj : any = {
+      loadNumber: '',
+      truckObject: '',
+      trailerObject: '',
+      driverObject: '',
+      pickupTime: '',
+      deliveryTime: '',
+      documents: '',
+      price: '',
+      detention: '',
+      allMiles: '',
+      gallons: '',
+    };
+
+    Object.entries(errorsObj).map(([key, value]) => {
+      const inputField = document.getElementById(key);
+      if (inputField) {
+        inputField.classList.remove("invalid");
+      }
+    });
+
+    if (inputValues.loadNumber.length == 0) {
+      errorsObj.loadNumber = "Load # is required";
+    }
+
+    if (inputValues.truckObject.length == 0) {
+      errorsObj.truckObject = "Truck # is required";
+    }
+
+    if (inputValues.trailerObject.length == 0) {
+      errorsObj.trailerObject = "Trailer # is required";
+    }
+
+    if (inputValues.pickupTime.length == 0) {
+      errorsObj.pickupTime = "Pick-up time is required";
+    }
+
+    if (inputValues.deliveryTime.length == 0) {
+      errorsObj.deliveryTime = "Delivery time is required";
+    }
+
+    if (inputValues.price.length == 0) {
+      errorsObj.price = "Price is required";
+    } else if (isNaN(parseInt(inputValues.price))) {
+      errorsObj.price = "Price must be an amount";
+    }
+
+    if (inputValues.detention.length > 0) {
+      if (isNaN(parseInt(inputValues.detention))) {
+        errorsObj.detention = "Detention must be an amount";
+      }
+    }
+
+    if (inputValues.allMiles.length == 0) {
+      errorsObj.allMiles = "Miles are required";
+    } else if (isNaN(parseInt(inputValues.allMiles))) {
+      errorsObj.allMiles = "Miles must be a number";
+    }
+    
+    if (inputValues.driverObject.length == 0) {
+      errorsObj.driverObject = "Please select a driver";
+    }
+
+    Object.entries(errorsObj).map(([key, value]) => {
+      if (typeof value === "string") {
+        if (value.length > 0) {
+          const inputField = document.getElementById(key);
+          if (inputField) {
+            inputField.classList.add("invalid");
+          }
+        }
+      }
+    });
+    
+    return errorsObj;
+  };
+
+  const handleNewLoadSubmit = (event: any) => {
+    event.preventDefault();
+    setErrors(validateValues(newLoad));
+    setSubmitting(true);
+  }
+
+  useEffect(() => {
+    let errorsArr : string[] = [];
+    Object.entries(errors).map(([key, value]) => {
+      if (typeof value === "string") {
+        if (value.length > 0) {
+          errorsArr.push(key);
+        }
+      }
+    });
+    if (Object.keys(errorsArr).length === 0 && submitting) {
+      addLoadDetail();
+    }
+    setSubmitting(false);
+  }, [errors]);
 
   return (
     <div className="overview-container">
@@ -130,79 +237,130 @@ const Overview: React.FC = () => {
           </div>
         ) : (
             <div>
-                <div className="form">
+              <div className="form">
                 {/* Input fields for adding new load details */}
-                <input
-                    type="text"
-                    placeholder="Load #"
-                    value={newLoad.loadNumber}
-                    onChange={(e) => setNewLoad({ ...newLoad, loadNumber: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Truck #"
-                    value={newLoad.truckObject}
-                    onChange={(e) => setNewLoad({ ...newLoad, truckObject: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Trailer #"
-                    value={newLoad.trailerObject}
-                    onChange={(e) => setNewLoad({ ...newLoad, trailerObject: e.target.value })}
-                />
+                <div className="field">
+                  <input
+                      id="loadNumber"
+                      type="text"
+                      placeholder="Load #"
+                      value={newLoad.loadNumber}
+                      onChange={(e) => setNewLoad({ ...newLoad, loadNumber: e.target.value })}
+                  />
+                  <br />
+                  <div className="error">{errors.loadNumber}</div>
+                </div>
+                <div className="field">
+                  <input
+                      id="truckObject"
+                      type="text"
+                      placeholder="Truck #"
+                      value={newLoad.truckObject}
+                      onChange={(e) => setNewLoad({ ...newLoad, truckObject: e.target.value })}
+                  />
+                  <br />
+                  <div className="error">{errors.truckObject}</div>
+                </div>
+                <div className="field">
+                  <input
+                      id="trailerObject"
+                      type="text"
+                      placeholder="Trailer #"
+                      value={newLoad.trailerObject}
+                      onChange={(e) => setNewLoad({ ...newLoad, trailerObject: e.target.value })}
+                  />
+                  <br />
+                  <div className="error">{errors.trailerObject}</div>
+                </div>
                 <div>
                     {/* Use the DriverDropdown component to select a driver */}
-                    <DriverDropdown driverList={drivers} selectedDriver={newLoad.driverObject} onSelectDriver={handleDriverSelect} />
+                    <DriverDropdown
+                      driverList={drivers} 
+                      selectedDriver={newLoad.driverObject} 
+                      onSelectDriver={handleDriverSelect} 
+                    />
+                    <div className="error">{errors.driverObject}</div>
                 </div>
 
-                <div>
+                <div className="field">
                     {/* Use the DriverForm component to add new drivers */}
                     <DriverForm onAddDriver={handleAddDriver} />
                 </div>
-                <input
-                    type="time"
-                    placeholder="Pick-Up Time"
-                    value={newLoad.pickupTime}
-                    onChange={(e) => setNewLoad({ ...newLoad, pickupTime: e.target.value })}
-                />
-                <input
-                    type="time"
-                    placeholder="Delivery Time"
-                    value={newLoad.deliveryTime}
-                    onChange={(e) => setNewLoad({ ...newLoad, deliveryTime: e.target.value })}
-                />
-                <input
-                    type="file"
-                    placeholder="Documents"
-                    value={newLoad.documents}
-                    onChange={(e) => setNewLoad({ ...newLoad, documents: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Price"
-                    value={newLoad.price}
-                    onChange={(e) => setNewLoad({ ...newLoad, price: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Detention"
-                    value={newLoad.detention}
-                    onChange={(e) => setNewLoad({ ...newLoad, detention: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Miles"
-                    value={newLoad.allMiles}
-                    onChange={(e) => setNewLoad({ ...newLoad, allMiles: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Fuel"
-                    value={newLoad.gallons}
-                    onChange={(e) => setNewLoad({ ...newLoad, gallons: e.target.value })}
-                />
+                <div className="field">
+                  <input
+                      id="pickupTime"
+                      type="time"
+                      placeholder="Pick-Up Time"
+                      value={newLoad.pickupTime}
+                      onChange={(e) => setNewLoad({ ...newLoad, pickupTime: e.target.value })}
+                  />
+                  <br />
+                  <div className="error">{errors.pickupTime}</div>
+                </div>
+                <div className="field">
+                  <input
+                      id="deliveryTime"
+                      type="time"
+                      placeholder="Delivery Time"
+                      value={newLoad.deliveryTime}
+                      onChange={(e) => setNewLoad({ ...newLoad, deliveryTime: e.target.value })}
+                  />
+                  <br />
+                  <div className="error">{errors.deliveryTime}</div>
+                </div>
+                <div className="field">
+                  <input
+                      id="documents"
+                      type="file"
+                      placeholder="Documents"
+                      value={newLoad.documents}
+                      onChange={(e) => setNewLoad({ ...newLoad, documents: e.target.value })}
+                  />
+                </div>
+                <div className="field">
+                  <input
+                      id="price"
+                      type="text"
+                      placeholder="Price"
+                      value={newLoad.price}
+                      onChange={(e) => setNewLoad({ ...newLoad, price: e.target.value })}
+                  />
+                  <br />
+                  <div className="error">{errors.price}</div>
+                </div>
+                <div className="field">
+                  <input
+                      id="detention"
+                      type="text"
+                      placeholder="Detention"
+                      value={newLoad.detention}
+                      onChange={(e) => setNewLoad({ ...newLoad, detention: e.target.value })}
+                  />
+                  <br />
+                  <div className="error">{errors.detention}</div>
+                </div>
+                <div className="field">
+                  <input
+                      id="allMiles"
+                      type="text"
+                      placeholder="Miles"
+                      value={newLoad.allMiles}
+                      onChange={(e) => setNewLoad({ ...newLoad, allMiles: e.target.value })}
+                  />
+                  <br />
+                  <div className="error">{errors.allMiles}</div>
+                </div>
+                <div className="field">
+                  <input
+                      id="gallons"
+                      type="text"
+                      placeholder="Fuel"
+                      value={newLoad.gallons}
+                      onChange={(e) => setNewLoad({ ...newLoad, gallons: e.target.value })}
+                  />
+                </div>
                 {/* Add similar input fields for the other columns */}
-                <button onClick={addLoadDetail}>Add</button>
+                <button onClick={handleNewLoadSubmit}>Add</button>
                 </div>
             </div>
         )}
@@ -215,18 +373,18 @@ const Overview: React.FC = () => {
           {/* The table headers */}
           <thead>
             <tr>
-              <th>Load #</th>
+            <th onClick={() => requestSort('loadNumber')}> Load # {sortConfig.key === "loadNumber" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Truck #</th>
               <th>Trailer #</th>
               <th>Driver Name</th>
               <th>Pick-up Time</th>
               <th>Delivery Time</th>
               <th>Documents</th>
-              <th>Price</th>
+              <th onClick={() => requestSort('price')}> Price {sortConfig.key === "price" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Detention</th>
               <th>All miles</th>
-              <th>Gallons</th>
-              <th>Status</th>
+              <th onClick={() => requestSort('gallons')}> Gallons {sortConfig.key === "gallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th onClick={() => requestSort('status')}> Status {sortConfig.key === "status" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               {/* <th>Broker info</th>
               <th>Name</th>
               <th>Phone number</th>
@@ -236,7 +394,7 @@ const Overview: React.FC = () => {
           </thead>
           {/* The table body */}
           <tbody>
-            {loadDetails.map((load, index) => (
+            {sortedData.map((load, index) => (
               <tr key={index}>
                 <td>
                   {editableIndex === index ? (
@@ -415,7 +573,7 @@ const Overview: React.FC = () => {
                         }}
                         />
                     ) : (
-                        `$${parseFloat(load.detention).toFixed(2)}`
+                        load.detention.length > 0 ? `$${parseFloat(load.detention).toFixed(2)}` : `-`
                     )}
                 </td>
                 <td>
@@ -488,25 +646,26 @@ const Overview: React.FC = () => {
                 </td>
                 <td>
                 {editableIndex === index ? (
-                    <div>
+                  <div>
                     <button onClick={() => handleSaveClick(index)}>
-                        <FontAwesomeIcon icon={faPenAlt} /> {/* Save icon */}
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Save icon */}
                     </button>
                     <button onClick={() => handleDeleteClick(index)}>
-                        <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
                     </button>
-                    </div>
+                  </div>
                 ) : (
-                    <div>
+                  <div>
                     <button onClick={() => handleEditClick(index)}>
-                        <FontAwesomeIcon icon={faPenAlt} /> {/* Edit icon */}
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit icon */}
                     </button>
                     <button onClick={() => handleDeleteClick(index)}>
-                        <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
                     </button>
-                    </div>
+                  </div>
                 )}
-                </td>
+                <InvoiceGenerator loadDetails={[loadDetails[index]]} />
+              </td>
               </tr>
             ))}
           </tbody>
