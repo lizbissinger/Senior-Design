@@ -5,15 +5,17 @@ import { faPenAlt, faTrash, faPlus, faFilePdf } from '@fortawesome/free-solid-sv
 import DriverDropdown from '../DriverDropdown/DriverDropdown';
 import DriverForm from '../DriverForm/DriverForm';
 import InvoiceGenerator from '../Invoice/InvoiceGenerator';
-import GetAllLoads from '../../routes/loadDetails';
+import GetAllLoads, { CreateNewLoad, DeleteLoad, UpdateLoad } from '../../routes/loadDetails';
 import _ from 'lodash'; //Sorting Library
 
 import { LoadDetail } from '../types';
+import { load } from 'mime';
 
 
 const Overview: React.FC = () => {
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
+    _id: '',
     loadNumber: '',
     truckObject: '',
     trailerObject: '',
@@ -71,6 +73,8 @@ const Overview: React.FC = () => {
   const [errors, setErrors] = useState<any>({});
   const [submitting, setSubmitting] = useState(false);
 
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+
   const handleDriverSelect = (selectedDriver: string) => {
     setNewLoad({ ...newLoad, driverObject: selectedDriver });
   };
@@ -80,9 +84,13 @@ const Overview: React.FC = () => {
     setNewLoad({ ...newLoad, driverObject: driver });
   };
 
-  const addLoadDetail = () => {
-    setLoadDetails([...loadDetails, newLoad]);
+  const addLoadDetail = async () => {
+    const returnedLoad = await CreateNewLoad(newLoad);
+    if (returnedLoad) {
+      setLoadDetails([...loadDetails, returnedLoad]);
+    }
     setNewLoad({
+      _id: '',
       loadNumber: '',
       truckObject: '',
       trailerObject: '',
@@ -106,6 +114,14 @@ const Overview: React.FC = () => {
     setShowForm(false);
   };
 
+  const deleteLoad = async (id: string) => {
+    await DeleteLoad(id);
+  }
+
+  const updateLoad = async (load: LoadDetail) => {
+    await UpdateLoad(load);
+  }
+
   const toggleFormVisibility = () => {
     setShowForm(!showForm); 
   };
@@ -116,17 +132,15 @@ const Overview: React.FC = () => {
   };
 
   const handleSaveClick = (index: number) => {
-    
+    updateLoad(loadDetails[index]);
     const updatedLoadDetails = [...loadDetails];
     updatedLoadDetails[index] = loadDetails[index];
     setLoadDetails(updatedLoadDetails);
-
-    
     setEditableIndex(null);
   };
 
   const handleDeleteClick = (index: number) => {
-    
+    deleteLoad(loadDetails[index]._id);
     const updatedLoadDetails = [...loadDetails];
     updatedLoadDetails.splice(index, 1);
     setLoadDetails(updatedLoadDetails);
@@ -603,7 +617,7 @@ const Overview: React.FC = () => {
                         }}
                         />
                     ) : (
-                        load.detentionPrice || parseInt(load.detentionPrice) >= 0 ? `$${parseFloat(load.detentionPrice).toFixed(2)}` : `-`
+                        load.detentionPrice || parseInt(load.detentionPrice) >= 0 ? `$${parseFloat(load.detentionPrice).toFixed(2)}` : ``
                     )}
                 </td>
                 <td>

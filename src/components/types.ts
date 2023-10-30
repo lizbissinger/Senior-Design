@@ -1,4 +1,5 @@
 export type LoadDetail = {
+      _id: string,
       loadNumber: string;
       truckObject: string;
       trailerObject: string;
