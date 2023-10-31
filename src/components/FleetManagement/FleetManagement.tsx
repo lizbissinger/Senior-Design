@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import './fleetManagement.css'; 
+import './fleetManagement.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const FleetManagement: React.FC = () => {
   const [trucks, setTrucks] = useState<any[]>([]);
@@ -61,7 +63,12 @@ const FleetManagement: React.FC = () => {
       </div>
       <div className="tables-container">
         <div className="table">
-          <h3>Trucks</h3>
+          <h3>
+            Trucks
+            <button onClick={addTruck} className="add-button">
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+          </h3>
           <table>
             <thead>
               <tr>
@@ -120,16 +127,22 @@ const FleetManagement: React.FC = () => {
                     />
                   </td>
                   <td>
-                    <button onClick={() => deleteTruck(index)}>Delete</button>
+                    <button onClick={() => deleteTruck(index)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button onClick={addTruck}>Add Truck</button>
         </div>
         <div className="table">
-          <h3>Drivers</h3>
+          <h3>
+            Drivers
+            <button onClick={addDriver} className="add-button">
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+          </h3>
           <table>
             <thead>
               <tr>
@@ -180,13 +193,14 @@ const FleetManagement: React.FC = () => {
                     />
                   </td>
                   <td>
-                    <button onClick={() => deleteDriver(index)}>Delete</button>
+                    <button onClick={() => deleteDriver(index)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button onClick={addDriver}>Add Driver</button>
         </div>
       </div>
     </div>

@@ -58,7 +58,16 @@ table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-/* Add styles for the status cells, add-button, etc. if needed */
+/* Styles for the status cells, add-button, etc. */
+.status-cell {
+  font-size: 14px; /* Adjust size if needed */
+  padding: 4px; /* Adjust size if needed */
+}
+
+.add-button {
+  font-size: 14px;
+  padding: 4px; /* Adjust size if needed */
+}
 
 @media screen and (max-width: 768px) {
   .fleet-management-container {
@@ -93,7 +102,7 @@ table tr:nth-child(even) {
     padding: 2px;
   }
 
-  .add-button button {
+  .add-button {
     font-size: 14px;
     padding: 4px 8px;
   }
