@@ -12,6 +12,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path="/dashboard/*" element={<Dashboard />} />
+          <Route index element={<Dashboard />} />
           <Route path="/overview" element={<Overview />} />
           <Route path="/fleet" element={<FleetManagement />} />
 
