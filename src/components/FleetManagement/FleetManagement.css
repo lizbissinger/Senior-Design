@@ -60,6 +60,30 @@ table tr:nth-child(even) {
 
 /* Add styles for the status cells, add-button, etc. if needed */
 
+.add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button button {
+  font-size: 18px;
+  padding: 12px 24px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+}
+
+.add-button button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 @media screen and (max-width: 768px) {
   .fleet-management-container {
     font-family: Arial, sans-serif;
@@ -94,7 +118,7 @@ table tr:nth-child(even) {
   }
 
   .add-button button {
-    font-size: 14px;
-    padding: 4px 8px;
+    font-size: 16px;
+    padding: 10px 20px;
   }
 }
