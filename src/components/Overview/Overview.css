@@ -12,6 +12,12 @@
     font-size: 18px;
     margin-bottom: 10px;
   }
+
+  .closeButton {
+    margin-left: 98%;
+    cursor: pointer;
+    user-select: none;
+  }
   
   .form {
     display: flex;

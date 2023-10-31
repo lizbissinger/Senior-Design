@@ -73,8 +73,6 @@ const Overview: React.FC = () => {
   const [errors, setErrors] = useState<any>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
-
   const handleDriverSelect = (selectedDriver: string) => {
     setNewLoad({ ...newLoad, driverObject: selectedDriver });
   };
@@ -271,7 +269,7 @@ const Overview: React.FC = () => {
   return (
     <div className="overview-container">
       <h2>Overview</h2>
-
+      {showForm ? <p className="closeButton" onClick={() => setShowForm(false)}>X</p> : null}
       <div>
         {!showForm ? (
           <div className="add-button">
