@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Overview from './components/Overview/Overview';
-import TrucksManagement from './components/TrucksManagement/TrucksManagement';
+import FleetManagement from './components/FleetManagement/FleetManagement';
 import LoadDetails from './components/LoadDetails/LoadDetails'; 
 
 const App: React.FC = () => {
@@ -13,7 +13,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/overview" element={<Overview />} />
-          <Route path="/trucks" element={<TrucksManagement />} />
+          <Route path="/fleet" element={<FleetManagement />} />
+
         </Routes>
       </Router>
     </div>
