@@ -1,3 +1,4 @@
+
 @font-face {
     font-family: "myFont";
     src: url("incompleetaregular-webfont.woff2");
@@ -40,6 +41,12 @@ h1 {
     border-right: 2px solid #000000;
     border-radius: 10px;
     transition: background-color 0.5s ease;
+}
+
+@media (max-width: 768px){
+    .top-bar{
+        flex-direction: column;
+    }
 }
 
 .tab:hover {

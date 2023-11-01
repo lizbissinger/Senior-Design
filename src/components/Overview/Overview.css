@@ -64,24 +64,31 @@
     overflow-y: auto;
     border: 1px solid #ccc;
     border-radius: 8px;
+    white-space: nowrap;
+    word-wrap: normal;
   }
   
+@media screen and (max-width: 1500px){
   .load-details-table {
-    width: 100%;
     white-space: nowrap;
-    table-layout: fixed;
+    width: 100%;
+    overflow-x: auto;
+    word-wrap: normal;
   }
   
   .load-details-table th,
   .load-details-table td {
+    white-space: nowrap;
     padding: 12px;
-    text-align: left;
+    word-wrap: normal;
+    border-inline: 12px solid transparent; 
   }
   
   .load-details-table th {
     background-color: #f2f2f2;
-    font-weight: bold;
-    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    word-wrap: normal;
   }
   
   .load-details-table tr:nth-child(even) {
@@ -90,11 +97,11 @@
   
   .status-cell {
     text-align: center;
-    font-weight: bold;
     color: rgb(0, 0, 0);
-    padding: 5px;
+    font-size: 12px;
+    padding: 5px 8px;
   }
-  
+}
   .status-cell.green {
     background-color: green;
     color: green;
