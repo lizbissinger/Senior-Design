@@ -11,7 +11,7 @@ const App: React.FC = () => {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
           <Route index element={<Dashboard />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/overview" element={<Overview />} />
