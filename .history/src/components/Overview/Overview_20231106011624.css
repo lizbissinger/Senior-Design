@@ -150,24 +150,10 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
   
   .status-box:hover {
     background-color: #f0f0f0;
-  }
-  
-  .status-title {
-    /* Remove the white background color */
-    
-    padding: 5px;
-  }
-  
-  .status-number {
-    font-size: 20px; /* Adjust the font size as needed */
-    margin-top: 5px; /* Adjust the margin as needed */
   }
   
   .in-progress {
@@ -181,7 +167,6 @@
   .to-do {
     background-color: #FF0000; /* Red color for To Do */
   }
-  
   
 @media screen and (max-width: 768px) {
    
