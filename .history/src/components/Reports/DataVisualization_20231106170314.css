@@ -1,0 +1,51 @@
+.graphs-container {
+    display: flex;
+     /* Create 3 equal columns */
+    grid-gap: 20px; /* Add some spacing between charts */
+  }
+  
+  .line-chart {
+    width: auto; /* Calculate 1/3 of the page width and account for spacing */
+    border: 1px solid #ccc; /* Add a border for each chart for better separation */
+    padding: 10px; /* Add padding for spacing within the charts */
+  }
+  .status-box {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .status-box:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .status-title {
+    /* Remove the white background color */
+    
+    padding: 5px;
+  }
+  
+  .status-number {
+    font-size: 20px; /* Adjust the font size as needed */
+    margin-top: 5px; /* Adjust the margin as needed */
+  }
+  
+  .in-progress {
+    background-color: #ffffff; /* Orange color for In Progress */
+  }
+  
+  .completed {
+    background-color: #ffffff; /* Green color for Completed */
+  }
+  
+  .to-do {
+    background-color: #ffffff; /* Red color for To Do */
+  }

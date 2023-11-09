@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import Overview from './Overview/Overview';
-import FleetManagement from './FleetManagement/FleetManagement';
-import UserInfo from './UserInfo/UserInfo'; 
-import './Dashboard.css'; 
-import Reports from './Reports/Reports';
 
-const Dashboard: React.FC = () => {
+import UserInfo from '../UserInfo/UserInfo';
+import Overview from '../Overview/Overview';
+import FleetManagement from '../FleetManagement/FleetManagement';
+
+const Reports: React.FC = () => {
   return (
     <div className="dashboard">
       <div className="top-bar">

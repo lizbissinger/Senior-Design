@@ -5,7 +5,6 @@ import Dashboard from './components/Dashboard';
 import Overview from './components/Overview/Overview';
 import FleetManagement from './components/FleetManagement/FleetManagement';
 import LoadDetails from './components/LoadDetails/LoadDetails'; 
-import Reports from './components/Reports/Reports';
 
 const App: React.FC = () => {
   return (
@@ -15,7 +14,7 @@ const App: React.FC = () => {
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/overview" element={<Overview />} />
           <Route path="/fleet" element={<FleetManagement />} />
-          <Route path='/reports' element={<Reports />} />
+
         </Routes>
       </Router>
     </div>
