@@ -4,7 +4,6 @@ import Overview from './Overview/Overview';
 import FleetManagement from './FleetManagement/FleetManagement';
 import UserInfo from './UserInfo/UserInfo'; 
 import './Dashboard.css'; 
-import Reports from './Reports/Reports';
 
 const Dashboard: React.FC = () => {
   return (
@@ -33,7 +32,7 @@ const Dashboard: React.FC = () => {
         <Routes>
           <Route path="overview" element={<Overview />} />
           <Route path="fleet" element={<FleetManagement />} />
-          <Route path="reports" element={<Reports/>} />
+          <Route path="reports" /* add element here */ />
           <Route path="finance" /* add element here */ />
           {/* Add more routes for other tabs */}
         </Routes>

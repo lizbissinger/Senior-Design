@@ -250,24 +250,11 @@ const Overview: React.FC = () => {
       setFetchingActive(true);
     }
   }
-  const [inProgressCount, setInProgressCount] = useState(0);
-  const [completedCount, setCompletedCount] = useState(0);
-  const [toDoCount, setToDoCount] = useState(0);
-
-
+  const inProgressCount = loadDetails.filter((load) => load.status === 'In Progress').length;
+  const completedCount = loadDetails.filter((load) => load.status === 'Completed').length;
+  const toDoCount = loadDetails.filter((load) => load.status === 'To Do').length;
 
   useEffect(() => {
-    fetchAllLoads().then(() => {
-      // Calculate the counts for each status after data is fetched
-      const inProgressCount = loadDetails.filter((load) => load.status === 'In Progress').length;
-      const completedCount = loadDetails.filter((load) => load.status === 'Completed').length;
-      const toDoCount = loadDetails.filter((load) => load.status === 'To Do').length;
-
-      // Update the counts
-      setInProgressCount(inProgressCount);
-      setCompletedCount(completedCount);
-      setToDoCount(toDoCount);
-    });
     let errorsArr : string[] = [];
     Object.entries(errors).map(([key, value]) => {
       if (typeof value === "string") {
