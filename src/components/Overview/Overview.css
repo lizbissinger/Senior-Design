@@ -78,7 +78,6 @@
   .load-details-table {
     width: 100%;
     white-space: nowrap;
-    table-layout: fixed;
     width: 100%;
     overflow-x: auto;
     word-wrap: normal;
