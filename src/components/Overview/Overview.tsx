@@ -5,13 +5,17 @@ import { faPenAlt, faTrash, faPlus, faFilePdf } from '@fortawesome/free-solid-sv
 import DriverDropdown from '../DriverDropdown/DriverDropdown';
 import DriverForm from '../DriverForm/DriverForm';
 import InvoiceGenerator from '../Invoice/InvoiceGenerator';
+import GetAllLoads, { CreateNewLoad, DeleteLoad, UpdateLoad } from '../../routes/loadDetails';
 import _ from 'lodash'; //Sorting Library
 
 import { LoadDetail } from '../types';
+import { load } from 'mime';
+
 
 const Overview: React.FC = () => {
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
+    _id: '',
     loadNumber: '',
     truckObject: '',
     trailerObject: '',
@@ -20,9 +24,9 @@ const Overview: React.FC = () => {
     deliveryTime: '',
     documents: '',
     price: '',
-    detention: '',
+    detentionPrice: '',
     allMiles: '',
-    gallons: '',
+    fuelGallons: '',
     status: '',
     brokerInfo: {
       name: '',
@@ -33,11 +37,31 @@ const Overview: React.FC = () => {
     comments: '',
   });
 
+  const fetchAllLoads = async () => {
+    let allLoads: any = null;
+    allLoads = await GetAllLoads();
+    if (allLoads) {
+      let loadsArr: LoadDetail[] = [];
+      if (Array.isArray(allLoads)) {
+        allLoads.forEach((element) => {
+          let load: LoadDetail = JSON.parse(JSON.stringify(element));
+          loadsArr.push(load);
+        });
+      }
+      setLoadDetails(loadsArr);
+    }
+  }
+
+  useEffect(() => {
+    fetchAllLoads();
+  }, []);
+
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
     key: "", // Initialize with an empty key
     direction: "asc", // Set the initial direction to "asc"
   });
   
+  const [fetchingActive, setFetchingActive] = useState(false);
 
   const sortedData = _.orderBy(loadDetails, [sortConfig.key], [sortConfig.direction]);
 
@@ -58,9 +82,13 @@ const Overview: React.FC = () => {
     setNewLoad({ ...newLoad, driverObject: driver });
   };
 
-  const addLoadDetail = () => {
-    setLoadDetails([...loadDetails, newLoad]);
+  const addLoadDetail = async () => {
+    const returnedLoad = await CreateNewLoad(newLoad);
+    if (returnedLoad) {
+      setLoadDetails([...loadDetails, returnedLoad]);
+    }
     setNewLoad({
+      _id: '',
       loadNumber: '',
       truckObject: '',
       trailerObject: '',
@@ -69,9 +97,9 @@ const Overview: React.FC = () => {
       deliveryTime: '',
       documents: '',
       price: '',
-      detention: '',
+      detentionPrice: '',
       allMiles: '',
-      gallons: '',
+      fuelGallons: '',
       status: '',
       brokerInfo: {
         name: '',
@@ -84,6 +112,14 @@ const Overview: React.FC = () => {
     setShowForm(false);
   };
 
+  const deleteLoad = async (id: string) => {
+    await DeleteLoad(id);
+  }
+
+  const updateLoad = async (load: LoadDetail) => {
+    await UpdateLoad(load);
+  }
+
   const toggleFormVisibility = () => {
     setShowForm(!showForm); 
   };
@@ -94,17 +130,15 @@ const Overview: React.FC = () => {
   };
 
   const handleSaveClick = (index: number) => {
-    
+    updateLoad(loadDetails[index]);
     const updatedLoadDetails = [...loadDetails];
     updatedLoadDetails[index] = loadDetails[index];
     setLoadDetails(updatedLoadDetails);
-
-    
     setEditableIndex(null);
   };
 
   const handleDeleteClick = (index: number) => {
-    
+    deleteLoad(loadDetails[index]._id);
     const updatedLoadDetails = [...loadDetails];
     updatedLoadDetails.splice(index, 1);
     setLoadDetails(updatedLoadDetails);
@@ -135,9 +169,9 @@ const Overview: React.FC = () => {
       deliveryTime: '',
       documents: '',
       price: '',
-      detention: '',
+      detentionPrice: '',
       allMiles: '',
-      gallons: '',
+      fuelGallons: '',
     };
 
     Object.entries(errorsObj).map(([key, value]) => {
@@ -173,9 +207,9 @@ const Overview: React.FC = () => {
       errorsObj.price = "Price must be an amount";
     }
 
-    if (inputValues.detention.length > 0) {
-      if (isNaN(parseInt(inputValues.detention))) {
-        errorsObj.detention = "Detention must be an amount";
+    if (inputValues.detentionPrice.length > 0) {
+      if (isNaN(parseInt(inputValues.detentionPrice))) {
+        errorsObj.detentionPrice = "Detention must be an amount";
       }
     }
 
@@ -209,6 +243,14 @@ const Overview: React.FC = () => {
     setSubmitting(true);
   }
 
+  const fetchData = async () => {
+    if (!fetchingActive) {
+      const testData = GetAllLoads();
+      console.log(testData);
+      setFetchingActive(true);
+    }
+  }
+
   useEffect(() => {
     let errorsArr : string[] = [];
     Object.entries(errors).map(([key, value]) => {
@@ -227,7 +269,7 @@ const Overview: React.FC = () => {
   return (
     <div className="overview-container">
       <h2>Overview</h2>
-
+      {showForm ? <p className="closeButton" onClick={() => setShowForm(false)}>X</p> : null}
       <div>
         {!showForm ? (
           <div className="add-button">
@@ -330,14 +372,14 @@ const Overview: React.FC = () => {
                 </div>
                 <div className="field">
                   <input
-                      id="detention"
+                      id="detentionPrice"
                       type="text"
                       placeholder="Detention"
-                      value={newLoad.detention}
-                      onChange={(e) => setNewLoad({ ...newLoad, detention: e.target.value })}
+                      value={newLoad.detentionPrice}
+                      onChange={(e) => setNewLoad({ ...newLoad, detentionPrice: e.target.value })}
                   />
                   <br />
-                  <div className="error">{errors.detention}</div>
+                  <div className="error">{errors.detentionPrice}</div>
                 </div>
                 <div className="field">
                   <input
@@ -352,11 +394,11 @@ const Overview: React.FC = () => {
                 </div>
                 <div className="field">
                   <input
-                      id="gallons"
+                      id="fuelGallons"
                       type="text"
                       placeholder="Fuel"
-                      value={newLoad.gallons}
-                      onChange={(e) => setNewLoad({ ...newLoad, gallons: e.target.value })}
+                      value={newLoad.fuelGallons}
+                      onChange={(e) => setNewLoad({ ...newLoad, fuelGallons: e.target.value })}
                   />
                 </div>
                 {/* Add similar input fields for the other columns */}
@@ -373,18 +415,18 @@ const Overview: React.FC = () => {
           {/* The table headers */}
           <thead>
             <tr>
-            <th onClick={() => requestSort('loadNumber')}> Load # {sortConfig.key === "loadNumber" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('loadNumber')}> Load # {sortConfig.key === "loadNumber" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Truck #</th>
               <th>Trailer #</th>
               <th>Driver Name</th>
               <th>Pick-up Time</th>
               <th>Delivery Time</th>
               <th>Documents</th>
-              <th onClick={() => requestSort('price')}> Price {sortConfig.key === "price" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('price')}> Price {sortConfig.key === "price" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               <th>Detention</th>
               <th>All miles</th>
-              <th onClick={() => requestSort('gallons')}> Gallons {sortConfig.key === "gallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
-              <th onClick={() => requestSort('status')}> Status {sortConfig.key === "status" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('fuelGallons')}> Gallons {sortConfig.key === "fuelGallons" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
+              <th className="sort" onClick={() => requestSort('status')}> Status {sortConfig.key === "status" && sortConfig.direction === 'asc' ? '▲' : '▼'}</th>
               {/* <th>Broker info</th>
               <th>Name</th>
               <th>Phone number</th>
@@ -561,10 +603,10 @@ const Overview: React.FC = () => {
                         <input
                         className='load-details-table'
                         type="text"
-                        value={load.detention}
+                        value={load.detentionPrice}
                         onChange={(e) => {
                             const updatedLoad = { ...load };
-                            updatedLoad.detention = e.target.value;
+                            updatedLoad.detentionPrice = e.target.value;
                             setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
@@ -573,7 +615,7 @@ const Overview: React.FC = () => {
                         }}
                         />
                     ) : (
-                        load.detention.length > 0 ? `$${parseFloat(load.detention).toFixed(2)}` : `-`
+                        load.detentionPrice || parseInt(load.detentionPrice) >= 0 ? `$${parseFloat(load.detentionPrice).toFixed(2)}` : ``
                     )}
                 </td>
                 <td>
@@ -601,10 +643,10 @@ const Overview: React.FC = () => {
                     <input
                         className='load-details-table'
                         type="text"
-                        value={load.gallons}
+                        value={load.fuelGallons}
                         onChange={(e) => {
                         const updatedLoad = { ...load };
-                        updatedLoad.gallons = e.target.value;
+                        updatedLoad.fuelGallons = e.target.value;
                         setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
@@ -613,7 +655,7 @@ const Overview: React.FC = () => {
                         }}
                     />
                     ) : (
-                    load.gallons
+                    load.fuelGallons
                     )}
                 </td>
                 <td className={`status-cell ${load.status.toLowerCase()}`}>
