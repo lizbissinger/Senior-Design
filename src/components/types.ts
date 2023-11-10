@@ -1,4 +1,5 @@
 export type LoadDetail = {
+      _id: string,
       loadNumber: string;
       truckObject: string;
       trailerObject: string;
@@ -7,9 +8,9 @@ export type LoadDetail = {
       deliveryTime: string;
       documents: string;
       price: string;
-      detention: string;
+      detentionPrice: string;
       allMiles: string;
-      gallons: string;
+      fuelGallons: string;
       status: string;
       brokerInfo: {
         name: string;

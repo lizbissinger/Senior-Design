@@ -250,24 +250,8 @@ const Overview: React.FC = () => {
       setFetchingActive(true);
     }
   }
-  const [inProgressCount, setInProgressCount] = useState(0);
-  const [completedCount, setCompletedCount] = useState(0);
-  const [toDoCount, setToDoCount] = useState(0);
-
-
 
   useEffect(() => {
-    fetchAllLoads().then(() => {
-      // Calculate the counts for each status after data is fetched
-      const inProgressCount = loadDetails.filter((load) => load.status === 'In Progress').length;
-      const completedCount = loadDetails.filter((load) => load.status === 'Completed').length;
-      const toDoCount = loadDetails.filter((load) => load.status === 'To Do').length;
-
-      // Update the counts
-      setInProgressCount(inProgressCount);
-      setCompletedCount(completedCount);
-      setToDoCount(toDoCount);
-    });
     let errorsArr : string[] = [];
     Object.entries(errors).map(([key, value]) => {
       if (typeof value === "string") {
@@ -286,20 +270,17 @@ const Overview: React.FC = () => {
     <div className="overview-container">
       <h2>Overview</h2>
       <div className="status-boxes">
-      <div className="status-box to-do">
-          <div className="status-title">To Do</div>
-          <div className="status-number">{toDoCount}</div>
-      
-        </div>
         <div className="status-box in-progress">
           <div className="status-title">In Progress</div>
-          <div className="status-number">{inProgressCount}</div>
-       
+          <div className="status-number">12</div>
         </div>
         <div className="status-box completed">
           <div className="status-title">Completed</div>
-          <div className="status-number">{completedCount}</div>
-       
+          <div className="status-number">24</div>
+        </div>
+        <div className="status-box to-do">
+          <div className="status-title">To Do</div>
+          <div className="status-number">8</div>
         </div>
       </div>
       {showForm ? <p className="closeButton" onClick={() => setShowForm(false)}>X</p> : null}

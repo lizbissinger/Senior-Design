@@ -160,8 +160,9 @@
   }
   
   .status-title {
-    /* Remove the white background color */
-    
+    background-color: #fff; /* Background color for the title */
+    border: 1px solid #ccc;
+    border-radius: 5px;
     padding: 5px;
   }
   
@@ -174,14 +175,13 @@
     background-color: #FFA500; /* Orange color for In Progress */
   }
   
-  .completed {
+  completed {
     background-color: #008000; /* Green color for Completed */
   }
   
   .to-do {
     background-color: #FF0000; /* Red color for To Do */
   }
-  
   
 @media screen and (max-width: 768px) {
    
