@@ -23,6 +23,12 @@ h1 {
     padding: 10px;
 }
 
+@media (max-width: 768px){
+    .top-bar{
+        flex-direction: column;
+    }
+}
+
 .tabs {
     display: flex;
     flex-direction: row;
