@@ -1,8 +1,10 @@
 import { LoadDetail } from "../components/types";
 
+const api = import.meta.env.VITE_API_URL;
+
 async function GetAllLoads() {
     let loads;
-    await fetch('http://localhost:3000/loadDetails', {
+    await fetch(`${api}/loadDetails`, {
         method: "GET"
     })
     .then((response) => response.json())
@@ -22,7 +24,7 @@ export async function CreateNewLoad(load: LoadDetail) {
         },
         body: JSON.stringify(load)
     };
-    await fetch('http://localhost:3000/loadDetails', requestOptions)
+    await fetch(`${api}/loadDetails`, requestOptions)
         .then(response => response.json())
         .then(data => newLoad = data);
     return newLoad;
@@ -30,7 +32,7 @@ export async function CreateNewLoad(load: LoadDetail) {
 
 export async function DeleteLoad(id: string) {
     let deletedLoad;
-    await fetch(`http://localhost:3000/loadDetails/${id}`, {
+    await fetch(`${api}/loadDetails/${id}`, {
         method: "DELETE"
     })
         .then(response => response.json())
@@ -46,7 +48,7 @@ export async function UpdateLoad(load: LoadDetail) {
         },
         body: JSON.stringify(load)
     };
-    return await fetch(`http://localhost:3000/loadDetails/${load._id}`, requestOptions)
+    return await fetch(`${api}/loadDetails/${load._id}`, requestOptions)
         .then(response => response.json())
 }
 
