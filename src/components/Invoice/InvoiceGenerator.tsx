@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import "jspdf-AutoTable";
+import autoTable from "jspdf-autotable";
+//import "jspdf-AutoTable";
 import { LoadDetail } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
