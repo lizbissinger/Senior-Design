@@ -1,141 +1,114 @@
-# Senior-Design-Front-End
+# Senior-Design-Front-End - FLEETWAVE
 
-# Project Summary
+## Team Members and Project Abstract
 
-In the logistics cycle, there are brokers, carriers, and drivers. Carriers act as the liaison between brokers and drivers; providing a service to connect brokers (suppliers) with drivers (transporters). Carriers lack a way to manage loads, trucks, and drivers on one platform. This project's goal is to bridge this gap by saving time, hassle, and potential mistakes. This application will allow information to be relayed to brokers in a time-effective manner as well as allowing drivers and carriers to be more efficient in passing information to each other. Without a comparable application, a company will waste time and money on inefficient ways of managing documents, payroll, tracking loads, payments, and account receivables, etc.
+**Team Members:**
+| Team Member           | Degree + Track | Email                 | Contact Info               |
+|-----------------------|-----------------|-----------------------|----------------------------|
+| Rashminder Gill       | BSCS + MBA      | randhars@mail.uc.edu  | (513) 462-5849             |
+| Raj Sekhon            | BSIT + MBA      | sekonsj@mail.uc.edu   | (513) 807-9638             |
+| Rishabh Sharma        | BSIT + MSIT     | sharmrb@mail.uc.edu   | (513) 957-6505             |
+| Jaspreet Singh        | BSIT + MBA      | Singh2je@mail.uc.edu  | (513) 448-6879             |
+| Elizabeth Bissinger   | BSIT            | bissinel@mail.uc.edu  | (614) 832-9456             |
 
-## Problem Statement
+**Advisor: Yahya Gilany**
 
-In the logistics cycle, carriers lack an efficient way to manage loads, trucks, and drivers on one platform, resulting in inefficiencies that waste time and money. Additionally, brokers are often unable to access information in a timely manner, leading to potential mistakes and delays. The absence of a comprehensive application for managing logistics creates a need for an integrated platform that connects carriers, brokers, and drivers, improving communication and increasing efficiency in the transportation process. This project aims to bridge this gap and provide a solution that saves time, streamlines operations, and reduces potential errors.
 
-## Solution
+**Project Abstract:**
+Our web-based application, FLEETWAVE, is designed to optimize logistics operations by bridging the gap between carriers, brokers, and drivers. It offers streamlined load management, real-time communication, automated invoicing, and payroll functionalities, providing a unified platform for efficient and error-free logistics processes. FLEETWAVE saves time, enhances collaboration, and transforms the transportation workflow.
 
-Our solution will be a web-based application that will let the carriers track information about loads, drivers, and real-time information on where they are, status of the load, reports at the end of the year for tax purposes, revenue, and expense reports, integrated GPS to see the live location of drivers, invoice generation features to get payment from brokers, and aging history of loads.
+---
 
-## Contact Information
+## Project Description (Assignment #2)
 
-| Team Member        | Degree + Track | Email               | Phone Number OR Other Contact Info |
-|--------------------|----------------|---------------------|-----------------------------------|
-| Rashminder Gill    | BSCS + MBA     | randhars@mail.uc.edu | (513) 462-5849                    |
-| Raj Sekhon         | BSIT + MBA     | sekonsj@mail.uc.edu  | (513) 807-9638                    |
-| Rishabh Sharma     | BSIT + MSIT    | sharmrb@mail.uc.edu  | (513) 957-6505                    |
-| Jaspreet Singh     | BSIT + MBA     | Singh2je@mail.uc.edu | (513) 448-6879                    |
-| Elizabeth Bissinger | BSIT         | bissinel@mail.uc.edu | (614) 832-9456                    |
+### [Project Description](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%202%20-%20Team%20Formation%20and%20Project%20Description/Team%20Formation%20and%20Project%20Description.md.md)
 
-## Project Source
+---
 
-Jaspreet Singh, Raj Sekhon, and Rashminder Gill have family trucking businesses, and they are aware of everything that goes down in managing a carrier trucking company. We face these challenges daily, and we know we can create a large-scale application that will help millions of carriers in the United States, and they face the same problems as we do. So, we are a good fit to solve these problems given that we have technical, trucking and business knowledge. Elizabeth and Rishabh want to be part of this project because they found it interesting, and Jas, Raj, and Rash will provide them with knowledge about the industry they need before we start to build it. We will do additional research online to validate our anecdotal hypothesis.
+## User Stories and Design Diagrams (Assignment #4)
 
-## Project Objectives/Goals
+### [User Stories](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%204%20-%20Design%20Diagrams/User_Stories.md)
 
-The primary goal of our solution is to create an integrated platform that streamlines communication and processes within the logistics cycle involving brokers, carriers, and drivers. By providing A unified environment for managing loads, trucks, and drivers, we aim to achieve the following:
+### [Design Diagrams](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%204%20-%20Design%20Diagrams/Design_Diagrams.md)
 
-### Unified Platform
+#### Description of the Diagrams
+1. **Design D0: High-Level System Overview:**
+   - Provides a bird's-eye view of the entire logistics management system.
+   - Illustrates interactions between user types (Carriers, Drivers, Brokers) and main system components.
+   - Emphasizes the interconnectedness of key modules: Load Management, Real-time Communication, Invoicing & Payroll, Analytics & Reports.
 
-Create a single platform for carriers to manage loads, trucks, and driver, eliminating the need for disjointed systems.
+2. **Design D1: Elaborated System Modules:**
+   - Focuses on breaking down the system into detailed components.
+   - Users (Carriers, Drivers, Brokers) are at the core, interacting with distinct modules such as Load Management (encompassing Load Details and Document Management), Real-time Communication (including Messaging and Notifications), and other essential functionalities.
+   - Allows for a more granular understanding of how users engage with specific system features.
 
-**Impact:** Streamlined operations, reduced data duplication, and improved data integrity.
+3. **Design D2: Detailed Component Interactions:**
+   - Delves into the intricate relationships among critical system components.
+   - The User Interface serves as the entry point, connecting to modules like Load Details, Invoicing & Payroll, Analytics & Reports, Real-time Communication, and Data Security.
+   - Provides insights into the flow of data and interactions between components, highlighting dependencies and connections contributing to the overall functionality and security of the logistics management system.
 
-### Efficient Load Management
+---
 
-Enable carriers to track load details, including pickup and delivery times, documentation, and driver information.
+## Project Tasks and Timeline (Assignment #5-6)
 
-**Impact:** Faster load processing reduced manual input, and accurate load tracking.
+### [Task List](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%205%20-%20Task%20Lists/Task%20Lists.md)
 
-### Real-time Communication
+### [Timeline](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%206%20-%20Milestones%2C%20Timeline%2C%20and%20Effort%20Matrix/Timeline.md)
 
-Facilitate effective communication between carriers, drivers, and brokers for timely updates and decision making.
+### [Effort Matrix](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%206%20-%20Milestones%2C%20Timeline%2C%20and%20Effort%20Matrix/Effort%20Matrix.md)
 
-**Impact:** Improved collaboration, faster response times, and better load coordination.
+---
 
-### Automated Invoice Generation
+## ABET Concerns Essay (Assignment #7)
 
-Automatically generate invoices based on load details, reducing manual invoicing efforts.
+---
 
-**Impact:** Time and cost savings, minimizing invoicing errors, and improved payment accuracy.
+## PPT Slideshow (includes ABET Concerns) (Assignment #8)
 
-### Driver Payroll Calculation
+---
 
-Calculate driver pay based on load assignments and delivery data, ensuring fair compensation.
+## Self-Assessment Essays (Assignment #3)
 
-**Impact:** Accurate payroll, reduced disputes, and improved driver satisfaction.
+### [Rashminder Gill - Individual Capstone Assessment](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%203%20-%20Team%20Contract%20and%20Individual%20Capstone%20Assessment/Rashminder%20Gill%20-%20Assignment%20%233%20-%20Individual%20Capstone%20Assessment.md)
 
-### Financial Insights and Reports
+---
 
-Provide analytics on revenue, expenses, and IFTA reports, giving carriers a comprehensive view of their operations.
+## Professional Biographies (Assignment #1)
 
-**Impact:** Informed decision-making, better financial management, and strategic planning.
+### [Rashminder Gill](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%201%20-%20Professional%20Biography/Rashminder%20Gill%20-%20Biography.md)
 
-### Document Management
+### [Jaspreet Singh](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%201%20-%20Professional%20Biography/Jaspreet%20Singh%20-%20Biography.md)
 
-Store and manage essential documents, such as proof of delivery and rate confirmations, in a centralized location.
+### [Elizabeth Bissinger](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%201%20-%20Professional%20Biography/Elizabeth%20Bissinger%20-%20Biography.md)
 
-**Impact:** Easy document access, reduced paperwork, and improved compliance.
+### [Rishabh Shamra](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%201%20-%20Professional%20Biography/Rishabh%20Sharma%20-%20Biography.md)
 
-### User-Friendly Interface
+### [Raj Sekhon](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%201%20-%20Professional%20Biography/Raj%20Sekhon%20-%20Biography.md)
 
-Develop an intuitive user interface for easy navigation and quick adoption by carriers, drivers, and brokers.
 
-**Impact:** Increased user engagement, reduced learning curve, and enhanced user satisfaction.
+---
 
-### Data Security
+## Budget
 
-Implement robust data security measures to protect sensitive user information and maintain compliance.
+### Expenses to Date or Statement: N/A
 
-**Impact:** Enhanced user trust minimized data breaches, and compliance with privacy regulations.
+---
 
-By focusing on these major features, our application aims to transform the logistics cycle by providing an integrated, efficient, and user-friendly platform that brings together carriers, drivers, and brokers, resulting in a positive impact.
+## Appendix
 
-## Team Members and Responsibilities
+### Evidence of 45 Hours of Effort for Each Team Member
+- [Include evidence justifying 45 hours of effort for each team member]
 
-- **Software Engineer: Rishabh Sharma**
-  - Responsible for writing code.
-  - Writing unit tests.
-  - Building the UI.
+### References
+- [List of references]
 
-- **Software Engineer: Elizabeth**
-  - Responsible for writing code.
-  - Writing unit tests.
-  - Building the UI.
+### Citations
+- [List of citations]
 
-- **Software Engineer: Jaspreet Singh**
-  - Responsible for writing code.
-  - Writing unit tests.
-  - Building the UI.
+### Links to Code Repositories
+### [Front-End](https://github.com/lizbissinger/Senior-Design-Front-End)
+### [Back-End](https://github.com/lizbissinger/Senior-Design-Back-End)
 
-- **Software Engineer: Raj Sekhon**
-  - Responsible for writing code.
-  - Writing unit tests.
-  - Building the UI.
-
-- **Software Engineer: Rashminder Gill**
-  - Responsible for writing code.
-  - Writing unit tests.
-  - Building the UI.
-
-## Project Scope
-
-Our team will develop a functional application that enables users to address the challenges in load management within the logistics industry by utilizing the following features and functionality:
-
-### Scope of the Solution:
-
-**Administrator roles:**
-- Implement a user authentication system that allows multiple user roles for carriers, drivers, and brokers, each with specific privileges and functionalities.
-
-**Load Management:**
-- Develop a user-friendly interface for carriers to input load details, including load number, truck and trailer information, driver details, pickup, and delivery times.
-- Enable carriers to upload and manage load-related documents such as proof of delivery and rate confirmations.
-
-**Real-time Communication:**
-- Build a messaging system that facilitates seamless communication between carriers, drivers, and brokers.
-- Provide notifications and alerts to keep users informed about load updates, changes, and important milestones.
-
-**Document Management:**
-- Create a centralized repository for storing and managing essential load-related documents.
-- Implement document version control and access controls to ensure data integrity.
-
-**Automated Invoicing and Payroll:**
-- Design an automated invoicing system that generates invoices based on load details and rates.
-- Develop a payroll module that calculates driver
-
+### Meeting Notes
+- [Include detailed meeting notes]
 
