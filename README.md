@@ -61,6 +61,8 @@ Our web-based application, FLEETWAVE, is designed to optimize logistics operatio
 
 ## ABET Concerns Essay (Assignment #7)
 
+### [ABET Concerns Essay](https://github.com/lizbissinger/Senior-Design-Front-End/blob/main/CS5001%20Assignments/Assignment%207%20-%20Project%20Constraints%20Essay.md)
+
 ---
 
 ## PPT Slideshow (includes ABET Concerns) (Assignment #8)
@@ -99,15 +101,19 @@ Our web-based application, FLEETWAVE, is designed to optimize logistics operatio
 ### Evidence of 45 Hours of Effort for Each Team Member
 - [Include evidence justifying 45 hours of effort for each team member]
 
-### References
-- [List of references]
+### References and Citations
+Baase, S. (2012). A gift of fire: Social, legal, and ethical issues in computing and internet. Pearson Education.  
 
-### Citations
-- [List of citations]
+Cole, M. (2022, November 11). Small-fleet owner finds organization, growth with TMS. Overdrive. https://www.overdriveonline.com/business/article/15303003/smallfleet-owner-finds-organization-growth-with-tms 
+
+The truth about dispatching every trucker should know. America Truck Driving | Commercial Truck Driving Schools in Orange County and Riverside CA | America Truck Driving is a premier commercial truck driving school with multiple locations in Orange County, CA and Riverside, CA. (2022, February 8). https://www.americatruckdriving.com/the-truth-about-dispatching-every-trucker-should-know/#:~:text=Dispatchers%20don%27t%20have%20an,50%20drivers%20in%20one%20day. 
+
+TruckingOffice. (2021, March 12). Know Your Numbers: How to Run Your Trucking Business More Efficiently. https://www.truckingoffice.com/blog/know-your-numbers-how-to-manage-your-trucking-business-more-efficiently-2/#:~:text=Knowing%20Your%20Expenses&text=Many%20trucking%20business%20owners%20keep,of%20expenses%20and%20other%20data
+
 
 ### Links to Code Repositories
-### [Front-End](https://github.com/lizbissinger/Senior-Design-Front-End)
-### [Back-End](https://github.com/lizbissinger/Senior-Design-Back-End)
+#### [Front-End](https://github.com/lizbissinger/Senior-Design-Front-End)
+#### [Back-End](https://github.com/lizbissinger/Senior-Design-Back-End)
 
 ### Meeting Notes
 - [Include detailed meeting notes]
