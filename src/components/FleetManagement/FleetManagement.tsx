@@ -11,16 +11,17 @@ const FleetManagement: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [driverDetails, setDriverDetails] = useState<DriverDetail[]>([]);
 
-  useEffect(() => {
-    const fetchDriverDetails = async () => {
-      try {
-        const allDrivers = await GetAllDrivers();
-        setDriverDetails(allDrivers || []);
-      } catch (error) {
-        console.error("Error fetching driver details:", error);
-      }
-    };
 
+  const fetchDriverDetails = async () => {
+    try {
+      const allDrivers = await GetAllDrivers();
+      setDriverDetails(allDrivers || []);
+    } catch (error) {
+      console.error("Error fetching driver details:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchDriverDetails();
   }, []); // Empty dependency array ensures the effect runs only once on mount
 

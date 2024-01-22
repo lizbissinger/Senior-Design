@@ -6,12 +6,15 @@ import DriverDropdown from '../DriverDropdown/DriverDropdown';
 import DriverForm from '../DriverForm/DriverForm';
 import InvoiceGenerator from '../Invoice/InvoiceGenerator';
 import GetAllLoads, { CreateNewLoad, DeleteLoad, UpdateLoad } from '../../routes/loadDetails';
+import GetAllDrivers from "../../routes/driverDetails";
+
 import _ from 'lodash'; //Sorting Library
 
 import { LoadDetail } from '../Types/types';
 
 
 const Overview: React.FC = () => {
+  const [drivers, setDrivers] = useState<string[]>([]);
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
     _id: '',
@@ -51,7 +54,19 @@ const Overview: React.FC = () => {
     }
   }
 
+  const fetchDrivers = async () => {
+    try {
+        const driverList = await GetAllDrivers();
+        const driverNames = driverList.map(driver => driver.name);
+        setDrivers(driverNames);
+    } catch (error) {
+
+    }
+};
+
+
   useEffect(() => {
+    fetchDrivers();
     fetchAllLoads();
   }, []);
 
@@ -64,7 +79,7 @@ const Overview: React.FC = () => {
 
   const sortedData = _.orderBy(loadDetails, [sortConfig.key], [sortConfig.direction]);
 
-  const [drivers, setDrivers] = useState<string[]>([]);
+  
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
