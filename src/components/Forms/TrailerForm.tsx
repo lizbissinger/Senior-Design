@@ -1,22 +1,15 @@
 import React, { useState, ChangeEvent } from 'react';
-
-// Define the Trailer type if not already defined
-interface Trailer {
-  name: string;
-  vin: string;
-  year: number;
-  make: string;
-  model: string;
-}
+import {Trailer } from "../Types/types";
 
 // Define the prop types for TrailerForm
 interface TrailerFormProps {
   onClose: () => void;
 }
 
+
 const TrailerForm: React.FC<TrailerFormProps> = ({ onClose }) => {
   const [trailers, setTrailers] = useState<Trailer[]>([]);
-  const [formData, setFormData] = useState<Trailer>({ name: '', vin: '', year: 0, make: '', model: '' });
+  const [formData, setFormData] = useState<Trailer>({ _id: '', trailerNumber: '', vin: '', year: 0, make: '', model: '' });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,19 +17,19 @@ const TrailerForm: React.FC<TrailerFormProps> = ({ onClose }) => {
 
   const handleSubmit = () => {
     setTrailers((prevTrailers) => [...prevTrailers, formData]);
-    setFormData({ name: '', vin: '', year: 0, make: '', model: '' });
+    setFormData({ _id: '', trailerNumber: '', vin: '', year: 0, make: '', model: '' });
     onClose(); // Call the onClose prop when the form is submitted
   };
 
   const handleCancel = () => {
-    setFormData({ name: '', vin: '', year: 0, make: '', model: '' });
+    setFormData({ _id: '', trailerNumber: '', vin: '', year: 0, make: '', model: '' });
     onClose(); // Call the onClose prop when the form is canceled
   };
 
   return (
     <div>
       <label>Name:</label>
-      <input type="text" name="name" value={formData.name} onChange={handleChange} />
+      <input type="text" name="trailerNumber" value={formData.trailerNumber} onChange={handleChange} />
       <label>VIN#:</label>
       <input type="text" name="vin" value={formData.vin} onChange={handleChange} />
       <label>Year:</label>

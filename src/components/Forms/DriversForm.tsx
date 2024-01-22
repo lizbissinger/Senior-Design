@@ -1,13 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
+import {Driver } from "../Types/types";
 
-// Define the Driver type if not already defined
-interface Driver {
-  name: string;
-  vin: string;
-  year: number;
-  make: string;
-  model: string;
-}
 
 // Define the prop types for DriverForm
 interface DriverFormProps {
@@ -16,7 +9,7 @@ interface DriverFormProps {
 
 const DriverForm: React.FC<DriverFormProps> = ({ onClose }) => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
-  const [formData, setFormData] = useState<Driver>({ name: '', vin: '', year: 0, make: '', model: '' });
+  const [formData, setFormData] = useState<Driver>({ _id: '', name: '', licenseNumber: '', phoneNumber: '', email: '' });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,12 +17,12 @@ const DriverForm: React.FC<DriverFormProps> = ({ onClose }) => {
 
   const handleSubmit = () => {
     setDrivers((prevDrivers) => [...prevDrivers, formData]);
-    setFormData({ name: '', vin: '', year: 0, make: '', model: '' });
+    setFormData({ _id: '',name: '', licenseNumber: '', phoneNumber: '', email: '' });
     onClose(); // Call the onClose prop when the form is submitted
   };
 
   const handleCancel = () => {
-    setFormData({ name: '', vin: '', year: 0, make: '', model: '' }); //Do YOU WANT TO CLEAR OR LEAVE IT?
+    setFormData({ _id: '', name: '', licenseNumber: '', phoneNumber: '', email: ''}); //Do YOU WANT TO CLEAR OR LEAVE IT?
     onClose();
   }
 
@@ -37,14 +30,12 @@ const DriverForm: React.FC<DriverFormProps> = ({ onClose }) => {
     <div>
       <label>Name:</label>
       <input type="text" name="name" value={formData.name} onChange={handleChange} />
-      <label>VIN#:</label>
-      <input type="text" name="vin" value={formData.vin} onChange={handleChange} />
-      <label>Year:</label>
-      <input type="number" name="year" value={formData.year} onChange={handleChange} />
+      <label>licenseNumber#:</label>
+      <input type="text" name="licenseNumber" value={formData.licenseNumber} onChange={handleChange} />
+      <label>phoneNumber:</label>
+      <input type="number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} />
       <label>Make:</label>
-      <input type="text" name="make" value={formData.make} onChange={handleChange} />
-      <label>Model:</label>
-      <input type="text" name="model" value={formData.model} onChange={handleChange} />
+      <input type="text" name="email" value={formData.email} onChange={handleChange} />
       <button onClick={handleSubmit}>Submit</button>
       <button onClick={handleCancel}>Cancel</button>
     </div>
