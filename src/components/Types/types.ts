@@ -40,7 +40,7 @@ export type LoadDetail = {
     vin: string;
   };
   
-  export type Driver = {
+  export type DriverDetail = {
     _id: string;
     name: string;
     licenseNumber: string;

@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import {Driver } from "../Types/types";
+import {DriverDetail } from "../Types/types";
 
 
 // Define the prop types for DriverForm
@@ -8,8 +8,8 @@ interface DriverFormProps {
 }
 
 const DriverForm: React.FC<DriverFormProps> = ({ onClose }) => {
-  const [drivers, setDrivers] = useState<Driver[]>([]);
-  const [formData, setFormData] = useState<Driver>({ _id: '', name: '', licenseNumber: '', phoneNumber: '', email: '' });
+  const [drivers, setDrivers] = useState<DriverDetail[]>([]);
+  const [formData, setFormData] = useState<DriverDetail>({ _id: '', name: '', licenseNumber: '', phoneNumber: '', email: '' });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
