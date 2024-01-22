@@ -8,8 +8,7 @@ import InvoiceGenerator from '../Invoice/InvoiceGenerator';
 import GetAllLoads, { CreateNewLoad, DeleteLoad, UpdateLoad } from '../../routes/loadDetails';
 import _ from 'lodash'; //Sorting Library
 
-import { LoadDetail } from '../types';
-import { load } from 'mime';
+import { LoadDetail } from '../Types/types';
 
 
 const Overview: React.FC = () => {
