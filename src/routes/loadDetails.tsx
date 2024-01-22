@@ -1,4 +1,4 @@
-import { LoadDetail } from "../components/types";
+import { LoadDetail } from "../components/Types/types";
 
 const api = import.meta.env.VITE_API_URL;
 

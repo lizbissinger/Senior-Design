@@ -21,3 +21,29 @@ export type LoadDetail = {
       comments: string;
   };
   
+
+  export type Truck = {
+    _id: string;
+    truckNumber: string;
+    make: string;
+    model: string;
+    year: number;
+    vin: string;
+  };
+  
+  export type Trailer = {
+    _id: string;
+    trailerNumber: string;
+    make: string;
+    model: string;
+    year: number;
+    vin: string;
+  };
+  
+  export type DriverDetail = {
+    _id: string;
+    name: string;
+    licenseNumber: string;
+    phoneNumber: string;
+    email: string;
+  };
