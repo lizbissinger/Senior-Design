@@ -120,3 +120,9 @@ TruckingOffice. (2021, March 12). Know Your Numbers: How to Run Your Trucking Bu
 ### Meeting Notes
 - [Include detailed meeting notes]
 
+![Wireframe (2)](https://github.com/lizbissinger/Senior-Design-Front-End/assets/71667958/05296640-48b8-43fd-8a7a-f78033621cca)
+![Wireframe (1)](https://github.com/lizbissinger/Senior-Design-Front-End/assets/71667958/90a4a31b-e175-45fe-bee2-5a49330963db)
+
+
+
+
