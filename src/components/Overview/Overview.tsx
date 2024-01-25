@@ -385,7 +385,7 @@ const Overview: React.FC = () => {
                       onChange={(e) => setNewLoad({ ...newLoad, trailerObject: e.target.value })}
                   />
                   <br />
-                  <div className="error">{errors.trailerObject}</div>driver
+                  <div className="error">{errors.trailerObject}</div>
                 </div>
                 <div>
                     {/* Use the DriverDropdown component to select a driver */}
@@ -409,7 +409,7 @@ const Overview: React.FC = () => {
 
                 <div className="field">
                     {/* Use the DriverForm component to add new drivers */}
-                    <DriverForm onAddDriver={handleAddDriver} />
+                    {/* <DriverForm onAddDriver={handleAddDriver} /> */}
                 </div>
                 <div className="field">
                   <input
