@@ -1,29 +1,103 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import { DriverDetail } from "../Types/types";
 
 interface DriverFormProps {
-  onAddDriver: (driver: string) => void;
+  onAddDriver: (driver: DriverDetail) => void;
+  onEditDriver?: (driver: DriverDetail) => void;
+  editingDriver?: DriverDetail | null;
 }
 
-const DriverForm: React.FC<DriverFormProps> = ({ onAddDriver }) => {
-  const [newDriver, setNewDriver] = useState('');
+const DriverForm: React.FC<DriverFormProps> = ({
+  onAddDriver,
+  onEditDriver,
+  editingDriver,
+}) => {
+  const [newDriver, setNewDriver] = useState<DriverDetail>({
+    _id: "",
+    name: "",
+    licenseNumber: "",
+    phoneNumber: "",
+    email: "",
+  });
 
-  const handleAddDriver = () => {
-    if (newDriver.trim()) {
-      onAddDriver(newDriver);
-      setNewDriver('');
+  useEffect(() => {
+    console.log("editingDriver:", editingDriver);
+
+    if (editingDriver) {
+      console.log("Setting newDriver:", editingDriver);
+      setNewDriver(editingDriver);
+    } else {
+      console.log("Resetting newDriver");
+      setNewDriver({
+        _id: "",
+        name: "",
+        licenseNumber: "",
+        phoneNumber: "",
+        email: "",
+      });
     }
+  }, [editingDriver]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewDriver((prevDriver) => ({ ...prevDriver, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingDriver) {
+      onEditDriver && onEditDriver(newDriver);
+    } else {
+      onAddDriver(newDriver);
+    }
+
+    setNewDriver({
+      _id: "",
+      name: "",
+      licenseNumber: "",
+      phoneNumber: "",
+      email: "",
+    });
   };
 
   return (
-    <div>
+    <form className="driver-form" onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Add new driver"
-        value={newDriver}
-        onChange={(e) => setNewDriver(e.target.value)}
+        name="name"
+        placeholder="Name"
+        value={newDriver.name}
+        onChange={handleInputChange}
+        required
       />
-      <button onClick={handleAddDriver}>Add Driver</button>
-    </div>
+      <input
+        type="text"
+        name="licenseNumber"
+        placeholder="License Number"
+        value={newDriver.licenseNumber}
+        onChange={handleInputChange}
+        required
+      />
+      <input
+        type="tel"
+        name="phoneNumber"
+        placeholder="Phone Number"
+        value={newDriver.phoneNumber}
+        onChange={handleInputChange}
+        required
+      />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={newDriver.email}
+        onChange={handleInputChange}
+        required
+      />
+      <button type="submit">
+        {editingDriver ? "Update Driver" : "Add Driver"}
+      </button>
+    </form>
   );
 };
 
