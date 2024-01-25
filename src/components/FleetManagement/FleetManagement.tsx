@@ -11,6 +11,9 @@ import {
   VehiclesDetailsTableProps,
 } from "../Types/types";
 import GetAllDrivers from "../../routes/driverDetails";
+import GetAllTrailers from "../../routes/trailerDetails";
+import GetAllTrucks from "../../routes/truckDetails";
+
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -21,6 +24,8 @@ const FleetManagement: React.FC = () => {
   const [trucks, setTrucks] = useState<TruckDetail[]>([]);
   const [trailers, setTrailers] = useState<TrailerDetail[]>([]);
   const [driverDetails, setDriverDetails] = useState<DriverDetail[]>([]);
+  const [trailerDetails, setTrailerDetails] = useState<TrailerDetail[]>([]);
+  const [truckDetails, setTruckDetails] = useState<TruckDetail[]>([]);
 
   const [vehiclesDetails, setVehiclesDetails] =
     useState<VehiclesDetailsTableProps>({
@@ -57,8 +62,40 @@ const FleetManagement: React.FC = () => {
     }
   };
 
+  const fetchTrailerDetails = async () => {
+    try {
+      const allTrailers = await GetAllTrailers();
+      console.log("Fetched Trailers:", allTrailers);
+      setTrailerDetails(allTrailers || []);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trailers: allTrailers || [],
+      }));
+    } catch (error) {
+      console.error("Error fetching trailer details:", error);
+    }
+  };
+
+  
+  const fetchTruckDetails = async () => {
+    try {
+      const allTrucks = await GetAllTrucks();
+      console.log("Fetched Trucks:", allTrucks);
+      setTruckDetails(allTrucks || []);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trucks: allTrucks || [],
+      }));
+    } catch (error) {
+      console.error("Error fetching truck details:", error);
+    }
+  };
+
+
   useEffect(() => {
     fetchDriverDetails();
+    fetchTrailerDetails();
+    fetchTruckDetails();
   }, []);
 
   const handleAddDriver = (driver: DriverDetail) => {
