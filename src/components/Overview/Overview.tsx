@@ -7,6 +7,9 @@ import DriverForm from '../DriverForm/DriverForm';
 import InvoiceGenerator from '../Invoice/InvoiceGenerator';
 import GetAllLoads, { CreateNewLoad, DeleteLoad, UpdateLoad } from '../../routes/loadDetails';
 import GetAllDrivers from "../../routes/driverDetails";
+import GetAllTrailers from "../../routes/trailerDetails";
+import TrailerDropdown from '../TrailerForm/TrailerDropdown';
+
 
 import _ from 'lodash'; //Sorting Library
 
@@ -15,6 +18,7 @@ import { LoadDetail, TruckDetail, TrailerDetail, DriverDetail } from '../Types/t
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
+  const [trailers, setTrailers] = useState<string[]>([]);
   console.log('Driver', drivers)
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
@@ -67,8 +71,21 @@ const Overview: React.FC = () => {
     }
   };
 
+  const fetchTrailers = async () => {
+    try {
+      const trailerList = await GetAllTrailers();
+  
+      if (trailerList) {
+        const trailerNames = trailerList.map(trailer => trailer.trailerNumber);
+        setTrailers(trailerNames);
+      }
+    } catch (error) {
+    }
+  };
+
 
   useEffect(() => {
+    fetchTrailers();
     fetchDrivers();
     fetchAllLoads();
   }, []);
@@ -92,6 +109,10 @@ const Overview: React.FC = () => {
 
   const handleDriverSelect = (selectedDriver: string) => {
     setNewLoad({ ...newLoad, driverObject: selectedDriver });
+  };
+
+  const handleTrailerSelect = (selectedTrailer: string) => {
+    setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
   };
 
   const handleAddDriver = (driver: string) => {
@@ -364,7 +385,7 @@ const Overview: React.FC = () => {
                       onChange={(e) => setNewLoad({ ...newLoad, trailerObject: e.target.value })}
                   />
                   <br />
-                  <div className="error">{errors.trailerObject}</div>
+                  <div className="error">{errors.trailerObject}</div>driver
                 </div>
                 <div>
                     {/* Use the DriverDropdown component to select a driver */}
@@ -374,6 +395,16 @@ const Overview: React.FC = () => {
                       onSelectDriver={handleDriverSelect} 
                     />
                     <div className="error">{errors.driverObject}</div>
+                </div>
+
+                <div>
+                    {/* Use the TrailerDropdown component to select a trailer */}
+                    <TrailerDropdown
+                      trailerList={trailers} 
+                      selectedTrailer={newLoad.trailerObject} 
+                      onSelectTrailer={handleTrailerSelect} 
+                    />
+                    <div className="error">{errors.trailerObject}</div>
                 </div>
 
                 <div className="field">

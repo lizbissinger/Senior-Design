@@ -19,6 +19,7 @@ async function GetAllDrivers(): Promise<DriverDetail[] | undefined> {
     return undefined;
   }
 }
+
 // export async function CreateNewLoad(load: DriverDetail) {
 //     let newLoad;
 //     const requestOptions = {
