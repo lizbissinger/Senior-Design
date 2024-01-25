@@ -7,8 +7,10 @@ import DriverForm from '../DriverForm/DriverForm';
 import InvoiceGenerator from '../Invoice/InvoiceGenerator';
 import GetAllLoads, { CreateNewLoad, DeleteLoad, UpdateLoad } from '../../routes/loadDetails';
 import GetAllDrivers from "../../routes/driverDetails";
+import GetAllTrucks from "../../routes/truckDetails";
 import GetAllTrailers from "../../routes/trailerDetails";
 import TrailerDropdown from '../TrailerForm/TrailerDropdown';
+import TruckDropdown from '../TruckForm/TruckDropdown';
 
 
 import _ from 'lodash'; //Sorting Library
@@ -18,6 +20,7 @@ import { LoadDetail, TruckDetail, TrailerDetail, DriverDetail } from '../Types/t
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
+  const [trucks, setTrucks] = useState<string[]>([]);
   const [trailers, setTrailers] = useState<string[]>([]);
   console.log('Driver', drivers)
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
@@ -71,6 +74,18 @@ const Overview: React.FC = () => {
     }
   };
 
+  const fetchTrucks = async () => {
+    try {
+      const truckList = await GetAllTrucks();
+  
+      if (truckList) {
+        const truckNames = truckList.map(truck => truck.truckNumber);
+        setTrucks(truckNames);
+      }
+    } catch (error) {
+    }
+  };
+
   const fetchTrailers = async () => {
     try {
       const trailerList = await GetAllTrailers();
@@ -85,6 +100,7 @@ const Overview: React.FC = () => {
 
 
   useEffect(() => {
+    fetchTrucks();
     fetchTrailers();
     fetchDrivers();
     fetchAllLoads();
@@ -109,6 +125,10 @@ const Overview: React.FC = () => {
 
   const handleDriverSelect = (selectedDriver: string) => {
     setNewLoad({ ...newLoad, driverObject: selectedDriver });
+  };
+
+  const handleTruckSelect = (selectedTruck: string) => {
+    setNewLoad({ ...newLoad, truckObject: selectedTruck });
   };
 
   const handleTrailerSelect = (selectedTrailer: string) => {
@@ -350,7 +370,7 @@ const Overview: React.FC = () => {
           </div>
         ) : (
           
-            <div>
+            <form>
              
               <div className="form">
                 {/* Input fields for adding new load details */}
@@ -387,7 +407,7 @@ const Overview: React.FC = () => {
                   <br />
                   <div className="error">{errors.trailerObject}</div>
                 </div>
-                <div>
+                <div className='form'>
                     {/* Use the DriverDropdown component to select a driver */}
                     <DriverDropdown
                       driverList={drivers} 
@@ -397,7 +417,17 @@ const Overview: React.FC = () => {
                     <div className="error">{errors.driverObject}</div>
                 </div>
 
-                <div>
+                <div className='form'>
+                    {/* Use the TruckDropdown component to select a truck */}
+                    <TruckDropdown
+                      truckList={trucks} 
+                      selectedTruck={newLoad.truckObject} 
+                      onSelectTruck={handleTruckSelect} 
+                    />
+                    <div className="error">{errors.truckObject}</div>
+                </div>
+
+                <div className='form'>
                     {/* Use the TrailerDropdown component to select a trailer */}
                     <TrailerDropdown
                       trailerList={trailers} 
@@ -487,7 +517,7 @@ const Overview: React.FC = () => {
                 {/* Add similar input fields for the other columns */}
                 <button onClick={handleNewLoadSubmit}>Add</button>
                 </div>
-            </div>
+            </form>
         )}
       </div>
 
