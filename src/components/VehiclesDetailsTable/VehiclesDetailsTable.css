@@ -1,0 +1,24 @@
+.vehicles-details-container {
+  display: flex;
+}
+
+.drivers-table {
+  width: 40%;
+  padding-right: 10px;
+}
+
+.trucks-trailers-table {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+}
+
+.trucks-table,
+.trailers-table {
+  width: 100%;
+}
+
+.vehicles-details-table {
+  border-collapse: collapse;
+  width: 100%;
+}
