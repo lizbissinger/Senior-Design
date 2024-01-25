@@ -1,21 +1,57 @@
 import React, { useEffect, useState } from "react";
 import "./FleetManagement.css";
-import DriverForm from "../Forms/DriversForm";
-import TruckForm from "../Forms/TruckForm";
-import TrailerForm from "../Forms/TrailerForm";
+import DriverForm from "../DriverForm/DriverForm";
+import TruckForm from "../TruckForm/TruckForm";
+import TrailerForm from "../TrailerForm/TrailerForm";
+import VehiclesDetailsTable from "../VehiclesDetailsTable/VehiclesDetailsTable";
+import {
+  DriverDetail,
+  TruckDetail,
+  TrailerDetail,
+  VehiclesDetailsTableProps,
+} from "../Types/types";
 import GetAllDrivers from "../../routes/driverDetails";
-import { DriverDetail } from "../../components/Types/types";
 
 const FleetManagement: React.FC = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [showDriverForm, setShowDriverForm] = useState(false);
+  const [showTruckForm, setShowTruckForm] = useState(false);
+  const [showTrailerForm, setShowTrailerForm] = useState(false);
+
+  const [drivers, setDrivers] = useState<DriverDetail[]>([]);
+  const [trucks, setTrucks] = useState<TruckDetail[]>([]);
+  const [trailers, setTrailers] = useState<TrailerDetail[]>([]);
   const [driverDetails, setDriverDetails] = useState<DriverDetail[]>([]);
 
+  const [vehiclesDetails, setVehiclesDetails] =
+    useState<VehiclesDetailsTableProps>({
+      drivers: [],
+      trucks: [],
+      trailers: [],
+    });
+
+  const [selectedDriver, setSelectedDriver] = useState<DriverDetail | null>(
+    null
+  );
+  const [selectedTruck, setSelectedTruck] = useState<TruckDetail | null>(null);
+  const [selectedTrailer, setSelectedTrailer] = useState<TrailerDetail | null>(
+    null
+  );
+
+  const [editingDriver, setEditingDriver] = useState<DriverDetail | null>(null);
+  const [editingTruck, setEditingTruck] = useState<TruckDetail | null>(null);
+  const [editingTrailer, setEditingTrailer] = useState<TrailerDetail | null>(
+    null
+  );
 
   const fetchDriverDetails = async () => {
     try {
       const allDrivers = await GetAllDrivers();
+      console.log("Fetched Drivers:", allDrivers);
       setDriverDetails(allDrivers || []);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        drivers: allDrivers || [],
+      }));
     } catch (error) {
       console.error("Error fetching driver details:", error);
     }
@@ -23,101 +59,241 @@ const FleetManagement: React.FC = () => {
 
   useEffect(() => {
     fetchDriverDetails();
-  }, []); // Empty dependency array ensures the effect runs only once on mount
+  }, []);
 
-  const handleAddButtonClick = (option: string) => {
-    setSelectedOption(option);
-    setShowForm(true);
+  const handleAddDriver = (driver: DriverDetail) => {
+    setDrivers((prevDrivers) => [...prevDrivers, driver]);
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      drivers: [...prevDetails.drivers, driver],
+    }));
+    setShowDriverForm(false);
   };
 
-  const handleFormClose = () => {
-    setShowForm(false);
+  const handleAddTruck = (truck: TruckDetail) => {
+    setTrucks((prevTrucks) => [...prevTrucks, truck]);
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      trucks: [...prevDetails.trucks, truck],
+    }));
+    setShowTruckForm(false);
   };
 
-  const renderForm = () => {
-    // Show different forms based on the selected option
-    switch (selectedOption) {
+  const handleAddTrailer = (trailer: TrailerDetail) => {
+    setTrailers((prevTrailers) => [...prevTrailers, trailer]);
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      trailers: [...prevDetails.trailers, trailer],
+    }));
+    setShowTrailerForm(false);
+  };
+
+  const handleDeleteDriver = (driver: DriverDetail, index: number) => {
+    const updatedDrivers = drivers.filter((d, i) => i !== index);
+    setDrivers(updatedDrivers);
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      drivers: updatedDrivers,
+    }));
+    setSelectedDriver(null);
+  };
+
+  const handleDeleteTruck = (truck: TruckDetail, index: number) => {
+    const updatedTrucks = trucks.filter((t, i) => i !== index);
+    setTrucks(updatedTrucks);
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      trucks: updatedTrucks,
+    }));
+    setSelectedTruck(null);
+  };
+
+  const handleDeleteTrailer = (trailer: TrailerDetail, index: number) => {
+    const updatedTrailers = trailers.filter((t, i) => i !== index);
+    setTrailers(updatedTrailers);
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      trailers: updatedTrailers,
+    }));
+    setSelectedTrailer(null);
+  };
+
+  const handleAddButtonClick = (type: string) => {
+    switch (type) {
       case "driver":
-        return <DriverForm onClose={handleFormClose} />;
+        setShowDriverForm(true);
+        setEditingDriver(null);
+        break;
       case "truck":
-        return <TruckForm onClose={handleFormClose} />;
+        setShowTruckForm(true);
+        setEditingTruck(null);
+        break;
       case "trailer":
-        return <TrailerForm onClose={handleFormClose} />;
+        setShowTrailerForm(true);
+        setEditingTrailer(null);
+        break;
       default:
-        return null;
+        break;
     }
+  };
+
+  const handleEdit = (
+    type: string,
+    item: DriverDetail | TruckDetail | TrailerDetail
+  ) => {
+    switch (type) {
+      case "driver":
+        setEditingDriver(item as DriverDetail);
+        setShowDriverForm(true);
+        break;
+      case "truck":
+        setEditingTruck(item as TruckDetail);
+        setShowTruckForm(true);
+        break;
+      case "trailer":
+        setEditingTrailer(item as TrailerDetail);
+        setShowTrailerForm(true);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleEditDriver = (editedDriver: DriverDetail) => {
+    const updatedDrivers = drivers.map((driver) =>
+      driver._id === editedDriver._id ? editedDriver : driver
+    );
+
+    setDrivers(updatedDrivers);
+
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      drivers: updatedDrivers,
+    }));
+
+    setShowDriverForm(false);
+
+    setEditingDriver(null);
+  };
+
+  const handleEditTruck = (editedTruck: TruckDetail) => {
+    const updatedTrucks = trucks.map((truck) =>
+      truck._id === editedTruck._id ? editedTruck : truck
+    );
+
+    setTrucks(updatedTrucks);
+
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      trucks: updatedTrucks,
+    }));
+
+    setShowTruckForm(false);
+
+    setEditingTruck(null);
+  };
+
+  const handleEditTrailer = (editedTrailer: TrailerDetail) => {
+    const updatedTrailers = trailers.map((trailer) =>
+      trailer._id === editedTrailer._id ? editedTrailer : trailer
+    );
+
+    setTrailers(updatedTrailers);
+
+    setVehiclesDetails((prevDetails) => ({
+      ...prevDetails,
+      trailers: updatedTrailers,
+    }));
+
+    setShowTrailerForm(false);
+
+    setEditingTrailer(null);
   };
 
   return (
     <div className="fleet-management-container">
       <h2>Fleet Management</h2>
-      <div className="add-button">
-        <button onClick={() => handleAddButtonClick("driver")}>
-          Add Driver
+
+      <div className="add-button form">
+        <button
+          type="button"
+          className="dropdown-toggle"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Add
         </button>
-        <button onClick={() => handleAddButtonClick("truck")}>Add Truck</button>
-        <button onClick={() => handleAddButtonClick("trailer")}>
-          Add Trailer
-        </button>
+        <div className="dropdown-menu form">
+          <button
+            className="dropdown-item"
+            onClick={() => handleAddButtonClick("driver")}
+          >
+            Add Driver
+          </button>
+          <button
+            className="dropdown-item"
+            onClick={() => handleAddButtonClick("truck")}
+          >
+            Add Truck
+          </button>
+          <button
+            className="dropdown-item"
+            onClick={() => handleAddButtonClick("trailer")}
+          >
+            Add Trailer
+          </button>
+        </div>
       </div>
 
-      {showForm && <div className="form-container">{renderForm()}</div>}
+      {showDriverForm && (
+        <div className="popup active form">
+          <DriverForm
+            onAddDriver={handleAddDriver}
+            onEditDriver={handleEditDriver}
+            editingDriver={editingDriver}
+          />
+          <button onClick={() => setShowDriverForm(false)}>Close</button>
+        </div>
+      )}
 
-      {/* Display tables for drivers, trucks, and trailers */}
-      <div className="table-container">
-        <h3>Drivers</h3>
-        {driverDetails.length > 0 ? (
-          <table className="driver-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>License Number</th>
-                <th>Phone Number</th>
-                <th>Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              {driverDetails.map((driver) => (
-                <tr key={driver._id}>
-                  <td>{driver.name}</td>
-                  <td>{driver.licenseNumber}</td>
-                  <td>{driver.phoneNumber}</td>
-                  <td>{driver.email}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No drivers available.</p>
-        )}
-      </div>
+      {showTruckForm && (
+        <div className="popup active form">
+          <TruckForm
+            onAddTruck={handleAddTruck}
+            onEditTruck={handleEditTruck}
+            editingTruck={editingTruck}
+          />
+          <button onClick={() => setShowTruckForm(false)}>Close</button>
+        </div>
+      )}
 
-      <div className="table-container">
-        <h3>Trucks</h3>
-        {/* Display truck table */}
-      </div>
+      {showTrailerForm && (
+        <div className="popup active form">
+          <TrailerForm
+            onAddTrailer={handleAddTrailer}
+            onEditTrailer={handleEditTrailer}
+            editingTrailer={editingTrailer}
+          />
+          <button onClick={() => setShowTrailerForm(false)}>Close</button>
+        </div>
+      )}
 
-      <div className="table-container">
-        <h3>Trailers</h3>
-        {/* Display trailer table */}
+      <div className="load-details-table">
+        <VehiclesDetailsTable
+          drivers={vehiclesDetails.drivers}
+          trucks={vehiclesDetails.trucks}
+          trailers={vehiclesDetails.trailers}
+          onDeleteDriver={(driver, index) => handleDeleteDriver(driver, index)}
+          onDeleteTruck={(truck, index) => handleDeleteTruck(truck, index)}
+          onDeleteTrailer={(trailer, index) =>
+            handleDeleteTrailer(trailer, index)
+          }
+          onEdit={(type, item) => handleEdit(type, item)}
+        />
       </div>
     </div>
   );
 };
 
 export default FleetManagement;
-
-// const fetchAllLoads = async () => {
-//   let allDrivers: any = null;
-//   allDrivers = await GetAllDrivers();
-//   if (allDrivers) {
-//     let loadsArr: DriverDetail[] = [];
-//     if (Array.isArray(allDrivers)) {
-//       allDrivers.forEach((element) => {
-//         let load: DriverDetail = JSON.parse(JSON.stringify(element));
-//         loadsArr.push(load);
-//       });
-//     }
-//     setLoadDetails(loadsArr);
-//   }
-// }
