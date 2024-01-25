@@ -10,11 +10,12 @@ import GetAllDrivers from "../../routes/driverDetails";
 
 import _ from 'lodash'; //Sorting Library
 
-import { LoadDetail } from '../Types/types';
+import { LoadDetail, TruckDetail, TrailerDetail, DriverDetail } from '../Types/types';
 
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
+  console.log('Driver', drivers)
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
     _id: '',
@@ -37,7 +38,7 @@ const Overview: React.FC = () => {
       company: '',
     },
     comments: '',
-  });
+  });  
 
   const fetchAllLoads = async () => {
     let allLoads: any = null;
@@ -56,13 +57,15 @@ const Overview: React.FC = () => {
 
   const fetchDrivers = async () => {
     try {
-        const driverList = await GetAllDrivers();
+      const driverList = await GetAllDrivers();
+  
+      if (driverList) {
         const driverNames = driverList.map(driver => driver.name);
         setDrivers(driverNames);
+      }
     } catch (error) {
-
     }
-};
+  };
 
 
   useEffect(() => {
