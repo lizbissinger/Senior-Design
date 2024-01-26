@@ -22,6 +22,7 @@ import GetAllTrucks, {
   CreateNewTruck,
   DeleteTruck,
 } from "../../routes/truckDetails";
+import { de } from "@faker-js/faker";
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -102,7 +103,7 @@ const FleetManagement: React.FC = () => {
     fetchDriverDetails();
     fetchTrailerDetails();
     fetchTruckDetails();
-  }, [drivers, trailers, trucks]);
+  }, []);
 
   const handleAddDriver = async (driver: DriverDetail) => {
     const addedDriver = await CreateNewDriver(driver);
@@ -145,17 +146,19 @@ const FleetManagement: React.FC = () => {
 
   const handleDeleteDriver = async (driver: DriverDetail, index: number) => {
     try {
-      await DeleteDriver(driver._id);
+      const deletedDriver = await DeleteDriver(driver._id);
       console.log("Driver deleted:", driver);
 
-      const updatedDrivers = drivers.filter((d, i) => i !== index);
-      setDrivers(updatedDrivers);
-
-      setVehiclesDetails((prevDetails) => ({
-        ...prevDetails,
-        drivers: updatedDrivers,
-      }));
-
+      if (deletedDriver) {
+        const updatedDriverDetails = driverDetails.filter(driver => driver._id !== deletedDriver._id);
+        setDriverDetails(updatedDriverDetails);
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          drivers: vehiclesDetails.drivers.filter(driver => driver._id !== deletedDriver._id),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+      
       setSelectedDriver(null);
     } catch (error) {
       console.error("Error deleting driver:", error);
@@ -164,17 +167,19 @@ const FleetManagement: React.FC = () => {
 
   const handleDeleteTruck = async (truck: TruckDetail, index: number) => {
     try {
-      await DeleteTruck(truck._id);
+      const deletedTruck = await DeleteTruck(truck._id);
       console.log("Truck deleted:", truck);
 
-      const updatedTrucks = trucks.filter((t, i) => i !== index);
-      setTrucks(updatedTrucks);
-
-      setVehiclesDetails((prevDetails) => ({
-        ...prevDetails,
-        trucks: updatedTrucks,
-      }));
-
+      if (deletedTruck) {
+        const updatedTruckDetails = truckDetails.filter(truck => truck._id !== deletedTruck._id);
+        setTruckDetails(updatedTruckDetails);
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          trucks: vehiclesDetails.trucks.filter(truck => truck._id !== deletedTruck._id),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+      
       setSelectedTruck(null);
     } catch (error) {
       console.error("Error deleting truck:", error);
@@ -183,17 +188,19 @@ const FleetManagement: React.FC = () => {
 
   const handleDeleteTrailer = async (trailer: TrailerDetail, index: number) => {
     try {
-      await DeleteTrailer(trailer._id);
+      const deletedTrailer = await DeleteTrailer(trailer._id);
       console.log("Trailer deleted:", trailer);
 
-      const updatedTrailers = trailers.filter((t, i) => i !== index);
-      setTrailers(updatedTrailers);
-
-      setVehiclesDetails((prevDetails) => ({
-        ...prevDetails,
-        trailers: updatedTrailers,
-      }));
-
+      if (deletedTrailer) {
+        const updatedTrailerDetails = trailerDetails.filter(trailer => trailer._id !== deletedTrailer._id);
+        setTrailerDetails(updatedTrailerDetails);
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          trailers: vehiclesDetails.trailers.filter(trailer => trailer._id !== deletedTrailer._id),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+      
       setSelectedTrailer(null);
     } catch (error) {
       console.error("Error deleting trailer:", error);
@@ -225,21 +232,24 @@ const FleetManagement: React.FC = () => {
   ) => {
     switch (type) {
       case "driver":
+        setSelectedDriver(item as DriverDetail);
         setEditingDriver(item as DriverDetail);
         setShowDriverForm(true);
         break;
       case "truck":
+        setSelectedTruck(item as TruckDetail);
         setEditingTruck(item as TruckDetail);
         setShowTruckForm(true);
         break;
       case "trailer":
+        setSelectedTrailer(item as TrailerDetail);
         setEditingTrailer(item as TrailerDetail);
         setShowTrailerForm(true);
         break;
       default:
         break;
     }
-  };
+  };  
 
   const handleEditDriver = (editedDriver: DriverDetail) => {
     const updatedDrivers = drivers.map((driver) =>
