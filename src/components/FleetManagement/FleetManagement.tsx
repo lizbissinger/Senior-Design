@@ -18,10 +18,12 @@ import GetAllDrivers, {
 import GetAllTrailers, {
   CreateNewTrailer,
   DeleteTrailer,
+  UpdateTrailer,
 } from "../../routes/trailerDetails";
 import GetAllTrucks, {
   CreateNewTruck,
   DeleteTruck,
+  UpdateTruck,
 } from "../../routes/truckDetails";
 import { de } from "@faker-js/faker";
 
@@ -278,39 +280,57 @@ const FleetManagement: React.FC = () => {
     }
   };  
 
-  const handleEditTruck = (editedTruck: TruckDetail) => {
-    const updatedTrucks = trucks.map((truck) =>
-      truck._id === editedTruck._id ? editedTruck : truck
-    );
+  const handleEditTruck = async (editedTruck: TruckDetail) => {
+    try {
+      const updatedTruck = await UpdateTruck(editedTruck);
+  
+      if (updatedTruck) {
+        const updatedTruckDetails = truckDetails.map(truck =>
+          truck._id === updatedTruck._id ? updatedTruck : truck
+        );
+        setTruckDetails(updatedTruckDetails);
+  
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          trucks: vehiclesDetails.trucks.map(truck =>
+            truck._id === updatedTruck._id ? updatedTruck : truck
+          ),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+  
+      setShowTruckForm(false);
+      setEditingTruck(null);
+    } catch (error) {
+      console.error("Error updating truck:", error);
+    }
+  };  
 
-    setTrucks(updatedTrucks);
-
-    setVehiclesDetails((prevDetails) => ({
-      ...prevDetails,
-      trucks: updatedTrucks,
-    }));
-
-    setShowTruckForm(false);
-
-    setEditingTruck(null);
-  };
-
-  const handleEditTrailer = (editedTrailer: TrailerDetail) => {
-    const updatedTrailers = trailers.map((trailer) =>
-      trailer._id === editedTrailer._id ? editedTrailer : trailer
-    );
-
-    setTrailers(updatedTrailers);
-
-    setVehiclesDetails((prevDetails) => ({
-      ...prevDetails,
-      trailers: updatedTrailers,
-    }));
-
-    setShowTrailerForm(false);
-
-    setEditingTrailer(null);
-  };
+  const handleEditTrailer = async (editedTrailer: TrailerDetail) => {
+    try {
+      const updatedTrailer = await UpdateTrailer(editedTrailer);
+  
+      if (updatedTrailer) {
+        const updatedTrailerDetails = trailerDetails.map(trailer =>
+          trailer._id === updatedTrailer._id ? updatedTrailer : trailer
+        );
+        setTrailerDetails(updatedTrailerDetails);
+  
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          trailers: vehiclesDetails.trailers.map(trailer =>
+            trailer._id === updatedTrailer._id ? updatedTrailer : trailer
+          ),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+  
+      setShowTrailerForm(false);
+      setEditingTrailer(null);
+    } catch (error) {
+      console.error("Error updating trailer:", error);
+    }
+  };  
 
   return (
     <div className="fleet-management-container">
