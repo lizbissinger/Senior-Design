@@ -11,8 +11,8 @@ import {
   VehiclesDetailsTableProps,
 } from "../Types/types";
 import GetAllDrivers, { CreateNewDriver } from "../../routes/driverDetails";
-import GetAllTrailers from "../../routes/trailerDetails";
-import GetAllTrucks from "../../routes/truckDetails";
+import GetAllTrailers, { CreateNewTrailer } from "../../routes/trailerDetails";
+import GetAllTrucks , { CreateNewTruck } from "../../routes/truckDetails";
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -103,21 +103,19 @@ const FleetManagement: React.FC = () => {
     setShowDriverForm(false);
   };
 
-  const handleAddTruck = (truck: TruckDetail) => {
-    setTrucks((prevTrucks) => [...prevTrucks, truck]);
-    setVehiclesDetails((prevDetails) => ({
-      ...prevDetails,
-      trucks: [...prevDetails.trucks, truck],
-    }));
+  const handleAddTruck = async (truck: TruckDetail) => {
+    const addedTruck = await CreateNewTruck(truck);
+    if (addedTruck) {
+      console.log("Truck added:", addedTruck);
+    }
     setShowTruckForm(false);
   };
 
-  const handleAddTrailer = (trailer: TrailerDetail) => {
-    setTrailers((prevTrailers) => [...prevTrailers, trailer]);
-    setVehiclesDetails((prevDetails) => ({
-      ...prevDetails,
-      trailers: [...prevDetails.trailers, trailer],
-    }));
+  const handleAddTrailer = async (trailer: TrailerDetail) => {
+    const addedTrailer = await CreateNewTrailer(trailer);
+    if (addedTrailer) {
+      console.log("Trailer added:", addedTrailer);
+    }
     setShowTrailerForm(false);
   };
 
