@@ -101,7 +101,6 @@ const FleetManagement: React.FC = () => {
   const handleAddDriver = async (driver: DriverDetail) => {
     const addedDriver = await CreateNewDriver(driver);
     if (addedDriver) {
-      // Do something with the added driver if needed
       console.log("Driver added:", addedDriver);
     }
     setShowDriverForm(false);
