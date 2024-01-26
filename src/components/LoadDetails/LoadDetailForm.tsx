@@ -12,12 +12,12 @@ const LoadDetailCard: React.FC<LoadDetailCardProps> = ({
   trailer,
 }) => {
   return (
-    <div className="load-detail-card">
+    <form className="load-detail-card">
       <h2>Load Number: {loadNumber}</h2>
       <p>Truck: {truck.name}</p>
       <p>Trailer: {trailer.name}</p>
       {/* Display other load details here */}
-    </div>
+    </form>
   );
 };
 

@@ -1,0 +1,28 @@
+.vehicles-details-container {
+  display: flex;
+  overflow: none;
+  max-height: 670px;
+}
+
+.drivers-table {
+  width: 50%;
+  padding-right: 10px;
+  overflow: auto;
+}
+
+.trucks-trailers-table {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+}
+
+.trucks-table,
+.trailers-table {
+  width: 100%;
+  overflow: auto;
+}
+
+.vehicles-details-table {
+  border-collapse: collapse;
+  width: 100%;
+}

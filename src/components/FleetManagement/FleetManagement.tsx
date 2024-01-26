@@ -1,123 +1,421 @@
 import React, { useEffect, useState } from "react";
 import "./FleetManagement.css";
-import DriverForm from "../Forms/DriversForm";
-import TruckForm from "../Forms/TruckForm";
-import TrailerForm from "../Forms/TrailerForm";
-import GetAllDrivers from "../../routes/driverDetails";
-import { DriverDetail } from "../../components/Types/types";
+import DriverForm from "../DriverForm/DriverForm";
+import TruckForm from "../TruckForm/TruckForm";
+import TrailerForm from "../TrailerForm/TrailerForm";
+import VehiclesDetailsTable from "../VehiclesDetailsTable/VehiclesDetailsTable";
+import {
+  DriverDetail,
+  TruckDetail,
+  TrailerDetail,
+  VehiclesDetailsTableProps,
+} from "../Types/types";
+import GetAllDrivers, {
+  CreateNewDriver,
+  DeleteDriver,
+  UpdateDriver,
+} from "../../routes/driverDetails";
+import GetAllTrailers, {
+  CreateNewTrailer,
+  DeleteTrailer,
+  UpdateTrailer,
+} from "../../routes/trailerDetails";
+import GetAllTrucks, {
+  CreateNewTruck,
+  DeleteTruck,
+  UpdateTruck,
+} from "../../routes/truckDetails";
+import { de } from "@faker-js/faker";
 
 const FleetManagement: React.FC = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [driverDetails, setDriverDetails] = useState<DriverDetail[]>([]);
+  const [showDriverForm, setShowDriverForm] = useState(false);
+  const [showTruckForm, setShowTruckForm] = useState(false);
+  const [showTrailerForm, setShowTrailerForm] = useState(false);
 
+  const [drivers, setDrivers] = useState<DriverDetail[]>([]);
+  const [trucks, setTrucks] = useState<TruckDetail[]>([]);
+  const [trailers, setTrailers] = useState<TrailerDetail[]>([]);
+  const [driverDetails, setDriverDetails] = useState<DriverDetail[]>([]);
+  const [trailerDetails, setTrailerDetails] = useState<TrailerDetail[]>([]);
+  const [truckDetails, setTruckDetails] = useState<TruckDetail[]>([]);
+
+  const [vehiclesDetails, setVehiclesDetails] =
+    useState<VehiclesDetailsTableProps>({
+      drivers: [],
+      trucks: [],
+      trailers: [],
+    });
+
+  const [selectedDriver, setSelectedDriver] = useState<DriverDetail | null>(
+    null
+  );
+  const [selectedTruck, setSelectedTruck] = useState<TruckDetail | null>(null);
+  const [selectedTrailer, setSelectedTrailer] = useState<TrailerDetail | null>(
+    null
+  );
+
+  const [editingDriver, setEditingDriver] = useState<DriverDetail | null>(null);
+  const [editingTruck, setEditingTruck] = useState<TruckDetail | null>(null);
+  const [editingTrailer, setEditingTrailer] = useState<TrailerDetail | null>(
+    null
+  );
 
   const fetchDriverDetails = async () => {
     try {
       const allDrivers = await GetAllDrivers();
+      console.log("Fetched Drivers:", allDrivers);
       setDriverDetails(allDrivers || []);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        drivers: allDrivers || [],
+      }));
     } catch (error) {
       console.error("Error fetching driver details:", error);
     }
   };
 
-  useEffect(() => {
-    fetchDriverDetails();
-  }, []); // Empty dependency array ensures the effect runs only once on mount
-
-  const handleAddButtonClick = (option: string) => {
-    setSelectedOption(option);
-    setShowForm(true);
-  };
-
-  const handleFormClose = () => {
-    setShowForm(false);
-  };
-
-  const renderForm = () => {
-    // Show different forms based on the selected option
-    switch (selectedOption) {
-      case "driver":
-        return <DriverForm onClose={handleFormClose} />;
-      case "truck":
-        return <TruckForm onClose={handleFormClose} />;
-      case "trailer":
-        return <TrailerForm onClose={handleFormClose} />;
-      default:
-        return null;
+  const fetchTrailerDetails = async () => {
+    try {
+      const allTrailers = await GetAllTrailers();
+      console.log("Fetched Trailers:", allTrailers);
+      setTrailerDetails(allTrailers || []);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trailers: allTrailers || [],
+      }));
+    } catch (error) {
+      console.error("Error fetching trailer details:", error);
     }
   };
+
+  const fetchTruckDetails = async () => {
+    try {
+      const allTrucks = await GetAllTrucks();
+      console.log("Fetched Trucks:", allTrucks);
+      setTruckDetails(allTrucks || []);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trucks: allTrucks || [],
+      }));
+    } catch (error) {
+      console.error("Error fetching truck details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDriverDetails();
+    fetchTrailerDetails();
+    fetchTruckDetails();
+  }, []);
+
+  const handleAddDriver = async (driver: DriverDetail) => {
+    const addedDriver = await CreateNewDriver(driver);
+    if (addedDriver) {
+      console.log("Driver added:", addedDriver);
+      setDriverDetails((prevDrivers) => [...prevDrivers, addedDriver]);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        drivers: [...prevDetails.drivers, addedDriver],
+      }));
+    }
+    setShowDriverForm(false);
+  };
+
+  const handleAddTruck = async (truck: TruckDetail) => {
+    const addedTruck = await CreateNewTruck(truck);
+    if (addedTruck) {
+      console.log("Truck added:", addedTruck);
+      setTruckDetails((prevTrucks) => [...prevTrucks, addedTruck]);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trucks: [...prevDetails.trucks, addedTruck],
+      }));
+    }
+    setShowTruckForm(false);
+  };
+
+  const handleAddTrailer = async (trailer: TrailerDetail) => {
+    const addedTrailer = await CreateNewTrailer(trailer);
+    if (addedTrailer) {
+      console.log("Trailer added:", addedTrailer);
+      setTrailerDetails((prevTrailers) => [...prevTrailers, addedTrailer]);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trailers: [...prevDetails.trailers, addedTrailer],
+      }));
+    }
+    setShowTrailerForm(false);
+  };
+
+  const handleDeleteDriver = async (driver: DriverDetail, index: number) => {
+    try {
+      const deletedDriver = await DeleteDriver(driver._id);
+      console.log("Driver deleted:", driver);
+
+      if (deletedDriver) {
+        const updatedDriverDetails = driverDetails.filter(driver => driver._id !== deletedDriver._id);
+        setDriverDetails(updatedDriverDetails);
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          drivers: vehiclesDetails.drivers.filter(driver => driver._id !== deletedDriver._id),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+      
+      setSelectedDriver(null);
+    } catch (error) {
+      console.error("Error deleting driver:", error);
+    }
+  };
+
+  const handleDeleteTruck = async (truck: TruckDetail, index: number) => {
+    try {
+      const deletedTruck = await DeleteTruck(truck._id);
+      console.log("Truck deleted:", truck);
+
+      if (deletedTruck) {
+        const updatedTruckDetails = truckDetails.filter(truck => truck._id !== deletedTruck._id);
+        setTruckDetails(updatedTruckDetails);
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          trucks: vehiclesDetails.trucks.filter(truck => truck._id !== deletedTruck._id),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+      
+      setSelectedTruck(null);
+    } catch (error) {
+      console.error("Error deleting truck:", error);
+    }
+  };
+
+  const handleDeleteTrailer = async (trailer: TrailerDetail, index: number) => {
+    try {
+      const deletedTrailer = await DeleteTrailer(trailer._id);
+      console.log("Trailer deleted:", trailer);
+
+      if (deletedTrailer) {
+        const updatedTrailerDetails = trailerDetails.filter(trailer => trailer._id !== deletedTrailer._id);
+        setTrailerDetails(updatedTrailerDetails);
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          trailers: vehiclesDetails.trailers.filter(trailer => trailer._id !== deletedTrailer._id),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+      
+      setSelectedTrailer(null);
+    } catch (error) {
+      console.error("Error deleting trailer:", error);
+    }
+  };
+
+  const handleAddButtonClick = (type: string) => {
+    switch (type) {
+      case "driver":
+        setShowDriverForm(true);
+        setEditingDriver(null);
+        break;
+      case "truck":
+        setShowTruckForm(true);
+        setEditingTruck(null);
+        break;
+      case "trailer":
+        setShowTrailerForm(true);
+        setEditingTrailer(null);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleEdit = (
+    type: string,
+    item: DriverDetail | TruckDetail | TrailerDetail
+  ) => {
+    switch (type) {
+      case "driver":
+        setSelectedDriver(item as DriverDetail);
+        setEditingDriver(item as DriverDetail);
+        setShowDriverForm(true);
+        break;
+      case "truck":
+        setSelectedTruck(item as TruckDetail);
+        setEditingTruck(item as TruckDetail);
+        setShowTruckForm(true);
+        break;
+      case "trailer":
+        setSelectedTrailer(item as TrailerDetail);
+        setEditingTrailer(item as TrailerDetail);
+        setShowTrailerForm(true);
+        break;
+      default:
+        break;
+    }
+  };  
+
+  const handleEditDriver = async (editedDriver: DriverDetail) => {
+    try {
+      const updatedDriver = await UpdateDriver(editedDriver);
+  
+      if (updatedDriver) {
+        const updatedDriverDetails = driverDetails.map(driver =>
+          driver._id === updatedDriver._id ? updatedDriver : driver
+        );
+        setDriverDetails(updatedDriverDetails);
+  
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          drivers: vehiclesDetails.drivers.map(driver =>
+            driver._id === updatedDriver._id ? updatedDriver : driver
+          ),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+  
+      setShowDriverForm(false);
+      setEditingDriver(null);
+    } catch (error) {
+      console.error("Error updating driver:", error);
+    }
+  };  
+
+  const handleEditTruck = async (editedTruck: TruckDetail) => {
+    try {
+      const updatedTruck = await UpdateTruck(editedTruck);
+  
+      if (updatedTruck) {
+        const updatedTruckDetails = truckDetails.map(truck =>
+          truck._id === updatedTruck._id ? updatedTruck : truck
+        );
+        setTruckDetails(updatedTruckDetails);
+  
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          trucks: vehiclesDetails.trucks.map(truck =>
+            truck._id === updatedTruck._id ? updatedTruck : truck
+          ),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+  
+      setShowTruckForm(false);
+      setEditingTruck(null);
+    } catch (error) {
+      console.error("Error updating truck:", error);
+    }
+  };  
+
+  const handleEditTrailer = async (editedTrailer: TrailerDetail) => {
+    try {
+      const updatedTrailer = await UpdateTrailer(editedTrailer);
+  
+      if (updatedTrailer) {
+        const updatedTrailerDetails = trailerDetails.map(trailer =>
+          trailer._id === updatedTrailer._id ? updatedTrailer : trailer
+        );
+        setTrailerDetails(updatedTrailerDetails);
+  
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          trailers: vehiclesDetails.trailers.map(trailer =>
+            trailer._id === updatedTrailer._id ? updatedTrailer : trailer
+          ),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+  
+      setShowTrailerForm(false);
+      setEditingTrailer(null);
+    } catch (error) {
+      console.error("Error updating trailer:", error);
+    }
+  };  
 
   return (
     <div className="fleet-management-container">
       <h2>Fleet Management</h2>
-      <div className="add-button">
-        <button onClick={() => handleAddButtonClick("driver")}>
-          Add Driver
+
+      <div className="add-button form">
+        <button
+          type="button"
+          className="dropdown-toggle"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Add
         </button>
-        <button onClick={() => handleAddButtonClick("truck")}>Add Truck</button>
-        <button onClick={() => handleAddButtonClick("trailer")}>
-          Add Trailer
-        </button>
+        <div className="dropdown-menu form">
+          <button
+            className="dropdown-item"
+            onClick={() => handleAddButtonClick("driver")}
+          >
+            Add Driver
+          </button>
+          <button
+            className="dropdown-item"
+            onClick={() => handleAddButtonClick("truck")}
+          >
+            Add Truck
+          </button>
+          <button
+            className="dropdown-item"
+            onClick={() => handleAddButtonClick("trailer")}
+          >
+            Add Trailer
+          </button>
+        </div>
       </div>
 
-      {showForm && <div className="form-container">{renderForm()}</div>}
+      {showDriverForm && (
+        <div className="popup active form">
+          <DriverForm
+            onAddDriver={handleAddDriver}
+            onEditDriver={handleEditDriver}
+            editingDriver={editingDriver}
+          />
+          <button onClick={() => setShowDriverForm(false)}>Close</button>
+        </div>
+      )}
 
-      {/* Display tables for drivers, trucks, and trailers */}
-      <div className="table-container">
-        <h3>Drivers</h3>
-        {driverDetails.length > 0 ? (
-          <table className="driver-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>License Number</th>
-                <th>Phone Number</th>
-                <th>Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              {driverDetails.map((driver) => (
-                <tr key={driver._id}>
-                  <td>{driver.name}</td>
-                  <td>{driver.licenseNumber}</td>
-                  <td>{driver.phoneNumber}</td>
-                  <td>{driver.email}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No drivers available.</p>
-        )}
-      </div>
+      {showTruckForm && (
+        <div className="popup active form">
+          <TruckForm
+            onAddTruck={handleAddTruck}
+            onEditTruck={handleEditTruck}
+            editingTruck={editingTruck}
+          />
+          <button onClick={() => setShowTruckForm(false)}>Close</button>
+        </div>
+      )}
 
-      <div className="table-container">
-        <h3>Trucks</h3>
-        {/* Display truck table */}
-      </div>
+      {showTrailerForm && (
+        <div className="popup active form">
+          <TrailerForm
+            onAddTrailer={handleAddTrailer}
+            onEditTrailer={handleEditTrailer}
+            editingTrailer={editingTrailer}
+          />
+          <button onClick={() => setShowTrailerForm(false)}>Close</button>
+        </div>
+      )}
 
-      <div className="table-container">
-        <h3>Trailers</h3>
-        {/* Display trailer table */}
+      <div className="load-details-table">
+        <VehiclesDetailsTable
+          drivers={vehiclesDetails.drivers}
+          trucks={vehiclesDetails.trucks}
+          trailers={vehiclesDetails.trailers}
+          onDeleteDriver={(driver, index) => handleDeleteDriver(driver, index)}
+          onDeleteTruck={(truck, index) => handleDeleteTruck(truck, index)}
+          onDeleteTrailer={(trailer, index) =>
+            handleDeleteTrailer(trailer, index)
+          }
+          onEdit={(type, item) => handleEdit(type, item)}
+        />
       </div>
     </div>
   );
 };
 
 export default FleetManagement;
-
-// const fetchAllLoads = async () => {
-//   let allDrivers: any = null;
-//   allDrivers = await GetAllDrivers();
-//   if (allDrivers) {
-//     let loadsArr: DriverDetail[] = [];
-//     if (Array.isArray(allDrivers)) {
-//       allDrivers.forEach((element) => {
-//         let load: DriverDetail = JSON.parse(JSON.stringify(element));
-//         loadsArr.push(load);
-//       });
-//     }
-//     setLoadDetails(loadsArr);
-//   }
-// }
