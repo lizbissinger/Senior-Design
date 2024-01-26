@@ -13,6 +13,7 @@ import {
 import GetAllDrivers, {
   CreateNewDriver,
   DeleteDriver,
+  UpdateDriver,
 } from "../../routes/driverDetails";
 import GetAllTrailers, {
   CreateNewTrailer,
@@ -251,22 +252,31 @@ const FleetManagement: React.FC = () => {
     }
   };  
 
-  const handleEditDriver = (editedDriver: DriverDetail) => {
-    const updatedDrivers = drivers.map((driver) =>
-      driver._id === editedDriver._id ? editedDriver : driver
-    );
-
-    setDrivers(updatedDrivers);
-
-    setVehiclesDetails((prevDetails) => ({
-      ...prevDetails,
-      drivers: updatedDrivers,
-    }));
-
-    setShowDriverForm(false);
-
-    setEditingDriver(null);
-  };
+  const handleEditDriver = async (editedDriver: DriverDetail) => {
+    try {
+      const updatedDriver = await UpdateDriver(editedDriver);
+  
+      if (updatedDriver) {
+        const updatedDriverDetails = driverDetails.map(driver =>
+          driver._id === updatedDriver._id ? updatedDriver : driver
+        );
+        setDriverDetails(updatedDriverDetails);
+  
+        const updatedVehiclesDetails = {
+          ...vehiclesDetails,
+          drivers: vehiclesDetails.drivers.map(driver =>
+            driver._id === updatedDriver._id ? updatedDriver : driver
+          ),
+        };
+        setVehiclesDetails(updatedVehiclesDetails);
+      }
+  
+      setShowDriverForm(false);
+      setEditingDriver(null);
+    } catch (error) {
+      console.error("Error updating driver:", error);
+    }
+  };  
 
   const handleEditTruck = (editedTruck: TruckDetail) => {
     const updatedTrucks = trucks.map((truck) =>
