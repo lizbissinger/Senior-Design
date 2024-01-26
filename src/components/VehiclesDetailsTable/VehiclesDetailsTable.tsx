@@ -1,6 +1,8 @@
 import React from "react";
 import { DriverDetail, TruckDetail, TrailerDetail } from "../Types/types";
 import "./VehiclesDetailsTable.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faPenAlt } from '@fortawesome/free-solid-svg-icons';
 
 type VehiclesDetailsTableProps = {
   drivers: DriverDetail[];
@@ -47,16 +49,16 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                 <td>{driver.email}</td>
                 <td>
                   <button
-                    onClick={() => onDeleteDriver(driver, index)}
-                    className="delete-button"
-                  >
-                    Delete
-                  </button>
-                  <button
                     onClick={() => onEdit("driver", driver)}
                     className="edit-button"
                   >
-                    Edit
+                    <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
+                  </button>
+                  <button
+                    onClick={() => onDeleteDriver(driver, index)}
+                    className="delete-button"
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
                   </button>
                 </td>
               </tr>
@@ -89,16 +91,16 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                   <td>{truck.vin}</td>
                   <td>
                     <button
-                      onClick={() => onDeleteTruck(truck, index)}
-                      className="delete-button"
-                    >
-                      Delete
-                    </button>
-                    <button
                       onClick={() => onEdit("truck", truck)}
                       className="edit-button"
                     >
-                      Edit
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
+                    </button>
+                    <button
+                      onClick={() => onDeleteTruck(truck, index)}
+                      className="delete-button"
+                    >
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
                     </button>
                   </td>
                 </tr>
@@ -130,16 +132,16 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                   <td>{trailer.vin}</td>
                   <td>
                     <button
-                      onClick={() => onDeleteTrailer(trailer, index)}
-                      className="delete-button"
-                    >
-                      Delete
-                    </button>
-                    <button
                       onClick={() => onEdit("trailer", trailer)}
                       className="edit-button"
                     >
-                      Edit
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
+                    </button>
+                    <button
+                      onClick={() => onDeleteTrailer(trailer, index)}
+                      className="delete-button"
+                    >
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
                     </button>
                   </td>
                 </tr>
