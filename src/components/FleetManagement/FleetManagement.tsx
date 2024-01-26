@@ -10,10 +10,9 @@ import {
   TrailerDetail,
   VehiclesDetailsTableProps,
 } from "../Types/types";
-import GetAllDrivers, {CreateNewDriver} from "../../routes/driverDetails";
+import GetAllDrivers, { CreateNewDriver } from "../../routes/driverDetails";
 import GetAllTrailers from "../../routes/trailerDetails";
 import GetAllTrucks from "../../routes/truckDetails";
-
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -76,7 +75,6 @@ const FleetManagement: React.FC = () => {
     }
   };
 
-  
   const fetchTruckDetails = async () => {
     try {
       const allTrucks = await GetAllTrucks();
@@ -90,7 +88,6 @@ const FleetManagement: React.FC = () => {
       console.error("Error fetching truck details:", error);
     }
   };
-
 
   useEffect(() => {
     fetchDriverDetails();
@@ -173,7 +170,10 @@ const FleetManagement: React.FC = () => {
     }
   };
 
-  const handleEdit = (type: string, item: DriverDetail | TruckDetail | TrailerDetail) => {
+  const handleEdit = (
+    type: string,
+    item: DriverDetail | TruckDetail | TrailerDetail
+  ) => {
     switch (type) {
       case "driver":
         setEditingDriver(item as DriverDetail);
