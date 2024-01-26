@@ -14,8 +14,14 @@ import GetAllDrivers, {
   CreateNewDriver,
   DeleteDriver,
 } from "../../routes/driverDetails";
-import GetAllTrailers, { CreateNewTrailer } from "../../routes/trailerDetails";
-import GetAllTrucks, { CreateNewTruck } from "../../routes/truckDetails";
+import GetAllTrailers, {
+  CreateNewTrailer,
+  DeleteTrailer,
+} from "../../routes/trailerDetails";
+import GetAllTrucks, {
+  CreateNewTruck,
+  DeleteTruck,
+} from "../../routes/truckDetails";
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -156,24 +162,42 @@ const FleetManagement: React.FC = () => {
     }
   };
 
-  const handleDeleteTruck = (truck: TruckDetail, index: number) => {
-    const updatedTrucks = trucks.filter((t, i) => i !== index);
-    setTrucks(updatedTrucks);
-    setVehiclesDetails((prevDetails) => ({
-      ...prevDetails,
-      trucks: updatedTrucks,
-    }));
-    setSelectedTruck(null);
+  const handleDeleteTruck = async (truck: TruckDetail, index: number) => {
+    try {
+      await DeleteTruck(truck._id);
+      console.log("Truck deleted:", truck);
+
+      const updatedTrucks = trucks.filter((t, i) => i !== index);
+      setTrucks(updatedTrucks);
+
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trucks: updatedTrucks,
+      }));
+
+      setSelectedTruck(null);
+    } catch (error) {
+      console.error("Error deleting truck:", error);
+    }
   };
 
-  const handleDeleteTrailer = (trailer: TrailerDetail, index: number) => {
-    const updatedTrailers = trailers.filter((t, i) => i !== index);
-    setTrailers(updatedTrailers);
-    setVehiclesDetails((prevDetails) => ({
-      ...prevDetails,
-      trailers: updatedTrailers,
-    }));
-    setSelectedTrailer(null);
+  const handleDeleteTrailer = async (trailer: TrailerDetail, index: number) => {
+    try {
+      await DeleteTrailer(trailer._id);
+      console.log("Trailer deleted:", trailer);
+
+      const updatedTrailers = trailers.filter((t, i) => i !== index);
+      setTrailers(updatedTrailers);
+
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trailers: updatedTrailers,
+      }));
+
+      setSelectedTrailer(null);
+    } catch (error) {
+      console.error("Error deleting trailer:", error);
+    }
   };
 
   const handleAddButtonClick = (type: string) => {
