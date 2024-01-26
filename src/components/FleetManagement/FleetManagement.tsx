@@ -10,7 +10,7 @@ import {
   TrailerDetail,
   VehiclesDetailsTableProps,
 } from "../Types/types";
-import GetAllDrivers from "../../routes/driverDetails";
+import GetAllDrivers, {CreateNewDriver} from "../../routes/driverDetails";
 import GetAllTrailers from "../../routes/trailerDetails";
 import GetAllTrucks from "../../routes/truckDetails";
 
@@ -98,12 +98,12 @@ const FleetManagement: React.FC = () => {
     fetchTruckDetails();
   }, []);
 
-  const handleAddDriver = (driver: DriverDetail) => {
-    setDrivers((prevDrivers) => [...prevDrivers, driver]);
-    setVehiclesDetails((prevDetails) => ({
-      ...prevDetails,
-      drivers: [...prevDetails.drivers, driver],
-    }));
+  const handleAddDriver = async (driver: DriverDetail) => {
+    const addedDriver = await CreateNewDriver(driver);
+    if (addedDriver) {
+      // Do something with the added driver if needed
+      console.log("Driver added:", addedDriver);
+    }
     setShowDriverForm(false);
   };
 
@@ -174,10 +174,7 @@ const FleetManagement: React.FC = () => {
     }
   };
 
-  const handleEdit = (
-    type: string,
-    item: DriverDetail | TruckDetail | TrailerDetail
-  ) => {
+  const handleEdit = (type: string, item: DriverDetail | TruckDetail | TrailerDetail) => {
     switch (type) {
       case "driver":
         setEditingDriver(item as DriverDetail);
