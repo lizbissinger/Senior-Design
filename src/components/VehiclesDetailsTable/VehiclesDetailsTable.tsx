@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { DriverDetail, TruckDetail, TrailerDetail } from "../Types/types";
 import "./VehiclesDetailsTable.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,10 +26,19 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
   onDeleteTrailer,
   onEdit,
 }) => {
+  const [driverSearch, setDriverSearch] = useState<string>("");
+  const [truckSearch, setTruckSearch] = useState<string>("");
+  const [trailerSearch, setTrailerSearch] = useState<string>("");
   return (
     <div className="vehicles-details-container">
       <div className="drivers-table">
         <h3>Drivers</h3>
+        <input
+          type="text"
+          placeholder="Search by name"
+          value={driverSearch}
+          onChange={(e) => setDriverSearch(e.target.value)}
+        />
         <table className="vehicles-details-table">
           <thead>
             <tr>
@@ -41,7 +50,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {drivers.map((driver, index) => (
+            {drivers.filter((driver) => driver.name.toLowerCase().includes(driverSearch.toLowerCase())).map((driver, index) => (
               <tr key={index}>
                 <td>{driver.name}</td>
                 <td>{driver.licenseNumber}</td>
@@ -70,6 +79,12 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
       <div className="trucks-trailers-table">
         <div className="trucks-table">
           <h3>Trucks</h3>
+          <input
+            type="text"
+            placeholder="Search by truck number"
+            value={truckSearch}
+            onChange={(e) => setTruckSearch(e.target.value)}
+          />
           <table className="vehicles-details-table">
             <thead>
               <tr>
@@ -82,7 +97,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
               </tr>
             </thead>
             <tbody>
-              {trucks.map((truck, index) => (
+              {trucks.filter((truck) => truck.truckNumber.toLowerCase().includes(truckSearch.toLowerCase())).map((truck, index) => (
                 <tr key={index}>
                   <td>{truck.truckNumber}</td>
                   <td>{truck.make}</td>
@@ -111,6 +126,12 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
 
         <div className="trailers-table">
           <h3>Trailers</h3>
+          <input
+            type="text"
+            placeholder="Search by trailer number"
+            value={trailerSearch}
+            onChange={(e) => setTrailerSearch(e.target.value)}
+          />
           <table className="vehicles-details-table">
             <thead>
               <tr>
@@ -123,7 +144,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
               </tr>
             </thead>
             <tbody>
-              {trailers.map((trailer, index) => (
+              {trailers.filter((trailer) => trailer.trailerNumber.toLowerCase().includes(trailerSearch.toLowerCase())).map((trailer, index) => (
                 <tr key={index}>
                   <td>{trailer.trailerNumber}</td>
                   <td>{trailer.make}</td>
