@@ -10,7 +10,10 @@ import {
   TrailerDetail,
   VehiclesDetailsTableProps,
 } from "../Types/types";
-import GetAllDrivers, { CreateNewDriver, DeleteDriver } from "../../routes/driverDetails";
+import GetAllDrivers, {
+  CreateNewDriver,
+  DeleteDriver,
+} from "../../routes/driverDetails";
 import GetAllTrailers, { CreateNewTrailer } from "../../routes/trailerDetails";
 import GetAllTrucks, { CreateNewTruck } from "../../routes/truckDetails";
 
@@ -99,7 +102,6 @@ const FleetManagement: React.FC = () => {
     const addedDriver = await CreateNewDriver(driver);
     if (addedDriver) {
       console.log("Driver added:", addedDriver);
-      //updating the state for the drivers when a new one is added
       setDriverDetails((prevDrivers) => [...prevDrivers, addedDriver]);
       setVehiclesDetails((prevDetails) => ({
         ...prevDetails,
@@ -113,7 +115,6 @@ const FleetManagement: React.FC = () => {
     const addedTruck = await CreateNewTruck(truck);
     if (addedTruck) {
       console.log("Truck added:", addedTruck);
-      // Update the state with the newly added truck
       setTruckDetails((prevTrucks) => [...prevTrucks, addedTruck]);
       setVehiclesDetails((prevDetails) => ({
         ...prevDetails,
@@ -127,7 +128,6 @@ const FleetManagement: React.FC = () => {
     const addedTrailer = await CreateNewTrailer(trailer);
     if (addedTrailer) {
       console.log("Trailer added:", addedTrailer);
-      // Update the state with the newly added trailer
       setTrailerDetails((prevTrailers) => [...prevTrailers, addedTrailer]);
       setVehiclesDetails((prevDetails) => ({
         ...prevDetails,
@@ -139,24 +139,22 @@ const FleetManagement: React.FC = () => {
 
   const handleDeleteDriver = async (driver: DriverDetail, index: number) => {
     try {
-      await DeleteDriver(driver._id); // Assuming _id is the unique identifier for a driver
+      await DeleteDriver(driver._id);
       console.log("Driver deleted:", driver);
-  
-      // Update the state after successfully deleting the driver
+
       const updatedDrivers = drivers.filter((d, i) => i !== index);
       setDrivers(updatedDrivers);
-  
+
       setVehiclesDetails((prevDetails) => ({
         ...prevDetails,
         drivers: updatedDrivers,
       }));
-  
+
       setSelectedDriver(null);
     } catch (error) {
       console.error("Error deleting driver:", error);
     }
   };
-  
 
   const handleDeleteTruck = (truck: TruckDetail, index: number) => {
     const updatedTrucks = trucks.filter((t, i) => i !== index);
