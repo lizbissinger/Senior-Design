@@ -12,7 +12,7 @@ import {
 } from "../Types/types";
 import GetAllDrivers, { CreateNewDriver } from "../../routes/driverDetails";
 import GetAllTrailers, { CreateNewTrailer } from "../../routes/trailerDetails";
-import GetAllTrucks , { CreateNewTruck } from "../../routes/truckDetails";
+import GetAllTrucks, { CreateNewTruck } from "../../routes/truckDetails";
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -93,7 +93,7 @@ const FleetManagement: React.FC = () => {
     fetchDriverDetails();
     fetchTrailerDetails();
     fetchTruckDetails();
-  }, [drivers]);
+  }, [drivers, trailers, trucks]);
 
   const handleAddDriver = async (driver: DriverDetail) => {
     const addedDriver = await CreateNewDriver(driver);
@@ -113,6 +113,12 @@ const FleetManagement: React.FC = () => {
     const addedTruck = await CreateNewTruck(truck);
     if (addedTruck) {
       console.log("Truck added:", addedTruck);
+      // Update the state with the newly added truck
+      setTruckDetails((prevTrucks) => [...prevTrucks, addedTruck]);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trucks: [...prevDetails.trucks, addedTruck],
+      }));
     }
     setShowTruckForm(false);
   };
@@ -121,9 +127,16 @@ const FleetManagement: React.FC = () => {
     const addedTrailer = await CreateNewTrailer(trailer);
     if (addedTrailer) {
       console.log("Trailer added:", addedTrailer);
+      // Update the state with the newly added trailer
+      setTrailerDetails((prevTrailers) => [...prevTrailers, addedTrailer]);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        trailers: [...prevDetails.trailers, addedTrailer],
+      }));
     }
     setShowTrailerForm(false);
   };
+  
 
   const handleDeleteDriver = (driver: DriverDetail, index: number) => {
     const updatedDrivers = drivers.filter((d, i) => i !== index);
