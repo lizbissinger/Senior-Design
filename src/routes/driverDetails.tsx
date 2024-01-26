@@ -5,7 +5,7 @@ const api = import.meta.env.VITE_API_URL;
 async function GetAllDrivers(): Promise<DriverDetail[] | undefined> {
   try {
     const response = await fetch(`${api}/driverDetails`, {
-      method: "GET"
+      method: "GET",
     });
 
     if (!response.ok) {
@@ -20,12 +20,14 @@ async function GetAllDrivers(): Promise<DriverDetail[] | undefined> {
   }
 }
 
-export async function CreateNewDriver(driver: DriverDetail): Promise<DriverDetail | undefined> {
+export async function CreateNewDriver(
+  driver: DriverDetail
+): Promise<DriverDetail | undefined> {
   try {
     const requestOptions = {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(driver),
     };
@@ -44,8 +46,9 @@ export async function CreateNewDriver(driver: DriverDetail): Promise<DriverDetai
   }
 }
 
-
-export async function DeleteDriver(id: string): Promise<DriverDetail | undefined> {
+export async function DeleteDriver(
+  id: string
+): Promise<DriverDetail | undefined> {
   try {
     const response = await fetch(`${api}/driverDetails/${id}`, {
       method: "DELETE",
@@ -63,18 +66,22 @@ export async function DeleteDriver(id: string): Promise<DriverDetail | undefined
   }
 }
 
-
-export async function UpdateDriver(driver: DriverDetail): Promise<DriverDetail | undefined> {
+export async function UpdateDriver(
+  driver: DriverDetail
+): Promise<DriverDetail | undefined> {
   try {
     const requestOptions = {
       method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(driver),
     };
 
-    const response = await fetch(`${api}/driverDetails/${driver._id}`, requestOptions);
+    const response = await fetch(
+      `${api}/driverDetails/${driver._id}`,
+      requestOptions
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to update the driver: ${response.statusText}`);
