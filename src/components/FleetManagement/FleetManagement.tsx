@@ -93,12 +93,18 @@ const FleetManagement: React.FC = () => {
     fetchDriverDetails();
     fetchTrailerDetails();
     fetchTruckDetails();
-  }, []);
+  }, [drivers]);
 
   const handleAddDriver = async (driver: DriverDetail) => {
     const addedDriver = await CreateNewDriver(driver);
     if (addedDriver) {
       console.log("Driver added:", addedDriver);
+      //updating the state for the drivers when a new one is added
+      setDriverDetails((prevDrivers) => [...prevDrivers, addedDriver]);
+      setVehiclesDetails((prevDetails) => ({
+        ...prevDetails,
+        drivers: [...prevDetails.drivers, addedDriver],
+      }));
     }
     setShowDriverForm(false);
   };
