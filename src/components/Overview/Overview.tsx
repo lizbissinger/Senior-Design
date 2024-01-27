@@ -468,7 +468,7 @@ const Overview: React.FC = () => {
               <div className="field">
                 <input
                   id="price"
-                  type="text"
+                  type="number"
                   placeholder="Price"
                   value={newLoad.price}
                   onChange={(e) =>
@@ -481,7 +481,7 @@ const Overview: React.FC = () => {
               <div className="field">
                 <input
                   id="detentionPrice"
-                  type="text"
+                  type="number"
                   placeholder="Detention"
                   value={newLoad.detentionPrice}
                   onChange={(e) =>
@@ -494,7 +494,7 @@ const Overview: React.FC = () => {
               <div className="field">
                 <input
                   id="allMiles"
-                  type="text"
+                  type="number"
                   placeholder="Miles"
                   value={newLoad.allMiles}
                   onChange={(e) =>
@@ -507,7 +507,7 @@ const Overview: React.FC = () => {
               <div className="field">
                 <input
                   id="fuelGallons"
-                  type="text"
+                  type="number"
                   placeholder="Fuel"
                   value={newLoad.fuelGallons}
                   onChange={(e) =>
@@ -599,14 +599,13 @@ const Overview: React.FC = () => {
                     )}
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="text"
-                        value={load.truckObject}
-                        onChange={(e) => {
+                  {editableIndex === index ? (
+                      <TruckDropdown
+                        truckList={trucks}
+                        selectedTruck={load.truckObject}
+                        onSelectTruck={(selectedTruck) => {
                           const updatedLoad = { ...load };
-                          updatedLoad.truckObject = e.target.value;
+                          updatedLoad.truckObject = selectedTruck;
                           setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
@@ -615,18 +614,20 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      load.truckObject
-                    )}
+                      <div>
+                        {load.truckObject}
+                      </div>
+                    )
+                  }
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="text"
-                        value={load.trailerObject}
-                        onChange={(e) => {
+                  {editableIndex === index ? (
+                      <TrailerDropdown
+                        trailerList={trailers}
+                        selectedTrailer={load.trailerObject}
+                        onSelectTrailer={(selectedTrailer) => {
                           const updatedLoad = { ...load };
-                          updatedLoad.trailerObject = e.target.value;
+                          updatedLoad.trailerObject = selectedTrailer;
                           setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
@@ -635,18 +636,20 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      load.trailerObject
-                    )}
+                      <div>
+                        {load.trailerObject}
+                      </div>
+                    )
+                  }
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="text"
-                        value={load.driverObject}
-                        onChange={(e) => {
+                  {editableIndex === index ? (
+                      <DriverDropdown
+                        driverList={drivers}
+                        selectedDriver={load.driverObject}
+                        onSelectDriver={(selectedDriver) => {
                           const updatedLoad = { ...load };
-                          updatedLoad.driverObject = e.target.value;
+                          updatedLoad.driverObject = selectedDriver;
                           setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
@@ -655,14 +658,17 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      load.driverObject
-                    )}
+                      <div>
+                        {load.driverObject}
+                      </div>
+                    )
+                  }
                   </td>
                   <td>
                     {editableIndex === index ? (
                       <input
                         className="load-details-table"
-                        type="text"
+                        type="datetime-local"
                         value={load.pickupTime}
                         onChange={(e) => {
                           const updatedLoad = { ...load };
@@ -682,7 +688,7 @@ const Overview: React.FC = () => {
                     {editableIndex === index ? (
                       <input
                         className="load-details-table"
-                        type="text"
+                        type="datetime-local"
                         value={load.deliveryTime}
                         onChange={(e) => {
                           const updatedLoad = { ...load };
@@ -722,7 +728,7 @@ const Overview: React.FC = () => {
                     {editableIndex === index ? (
                       <input
                         className="load-details-table"
-                        type="text"
+                        type="number"
                         value={load.price}
                         onChange={(e) => {
                           const updatedLoad = { ...load };
@@ -742,7 +748,7 @@ const Overview: React.FC = () => {
                     {editableIndex === index ? (
                       <input
                         className="load-details-table"
-                        type="text"
+                        type="number"
                         value={load.detentionPrice}
                         onChange={(e) => {
                           const updatedLoad = { ...load };
@@ -765,7 +771,7 @@ const Overview: React.FC = () => {
                     {editableIndex === index ? (
                       <input
                         className="load-details-table"
-                        type="text"
+                        type="number"
                         value={load.allMiles}
                         onChange={(e) => {
                           const updatedLoad = { ...load };
@@ -785,7 +791,7 @@ const Overview: React.FC = () => {
                     {editableIndex === index ? (
                       <input
                         className="load-details-table"
-                        type="text"
+                        type="number"
                         value={load.fuelGallons}
                         onChange={(e) => {
                           const updatedLoad = { ...load };
