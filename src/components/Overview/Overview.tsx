@@ -265,14 +265,6 @@ const Overview: React.FC = () => {
       errorsObj.trailerObject = "Trailer # is required";
     }
 
-    if (inputValues.pickupTime.length == 0) {
-      errorsObj.pickupTime = "Pick-up time is required";
-    }
-
-    if (inputValues.deliveryTime.length == 0) {
-      errorsObj.deliveryTime = "Delivery time is required";
-    }
-
     if (inputValues.price.length == 0) {
       errorsObj.price = "Price is required";
     } else if (isNaN(parseInt(inputValues.price))) {
@@ -404,32 +396,6 @@ const Overview: React.FC = () => {
                 <br />
                 <div className="error">{errors.loadNumber}</div>
               </div>
-              <div className="field">
-                <input
-                  id="truckObject"
-                  type="text"
-                  placeholder="Truck #"
-                  value={newLoad.truckObject}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, truckObject: e.target.value })
-                  }
-                />
-                <br />
-                <div className="error">{errors.truckObject}</div>
-              </div>
-              <div className="field">
-                <input
-                  id="trailerObject"
-                  type="text"
-                  placeholder="Trailer #"
-                  value={newLoad.trailerObject}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, trailerObject: e.target.value })
-                  }
-                />
-                <br />
-                <div className="error">{errors.trailerObject}</div>
-              </div>
               <div className="form">
                 {/* Use the DriverDropdown component to select a driver */}
                 <DriverDropdown
@@ -467,7 +433,7 @@ const Overview: React.FC = () => {
               <div className="field">
                 <input
                   id="pickupTime"
-                  type="time"
+                  type="datetime-local"
                   placeholder="Pick-Up Time"
                   value={newLoad.pickupTime}
                   onChange={(e) =>
@@ -475,12 +441,11 @@ const Overview: React.FC = () => {
                   }
                 />
                 <br />
-                <div className="error">{errors.pickupTime}</div>
               </div>
               <div className="field">
                 <input
                   id="deliveryTime"
-                  type="time"
+                  type="datetime-local"
                   placeholder="Delivery Time"
                   value={newLoad.deliveryTime}
                   onChange={(e) =>
@@ -488,7 +453,6 @@ const Overview: React.FC = () => {
                   }
                 />
                 <br />
-                <div className="error">{errors.deliveryTime}</div>
               </div>
               <div className="field">
                 <input
