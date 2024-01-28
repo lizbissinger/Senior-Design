@@ -42,9 +42,9 @@ const Dashboard: React.FC = () => {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <h1 className="h-8 w-auto select-none">FLEETWAVE</h1>
+                  <h1 className="h-8 w-auto select-none ml-1 mb-3">FLEETWAVE</h1>
                 </div>
-                <div className="hidden sm:ml-6 sm:block">
+                <div className="hidden sm:ml-6 sm:block mt-1">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
                       <a
