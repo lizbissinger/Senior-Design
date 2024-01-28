@@ -145,11 +145,6 @@ const Overview: React.FC = () => {
     setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
   };
 
-  const handleAddDriver = (driver: string) => {
-    setDrivers([...drivers, driver]);
-    setNewLoad({ ...newLoad, driverObject: driver });
-  };
-
   const addLoadDetail = async () => {
     const returnedLoad = await CreateNewLoad(newLoad);
     if (returnedLoad) {
@@ -323,7 +318,7 @@ const Overview: React.FC = () => {
         (load) => load.status === "Completed"
       ).length;
       const toDoCount = loadDetails.filter(
-        (load) => load.status === "To Do"
+        (load) => load.status === "To-Do"
       ).length;
 
       // Update the counts
@@ -343,7 +338,7 @@ const Overview: React.FC = () => {
       addLoadDetail();
     }
     setSubmitting(false);
-  }, [errors]);
+  }, [errors, loadDetails]);
 
   return (
     <div className="overview-container">
@@ -793,29 +788,26 @@ const Overview: React.FC = () => {
                       load.fuelGallons
                     )}
                   </td>
-                  <td className={`status-cell ${load.status.toLowerCase()}`}>
+                  <td >
                     {editableIndex === index ? (
                       <select
                         className="load-details-table"
                         value={load.status}
                         onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.status = e.target.value;
+                          const newStatus = e.target.value;
+                          const updatedLoad = { ...load, status: newStatus }; 
                           setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
                             return updatedDetails;
                           });
+                          // Updating load details with status immediately here upon selection of the status
+                          updateLoad(updatedLoad); 
                         }}
                       >
-                        <option value="Yellow">Enroute to Shipper</option>
-                        <option value="Yellow">At Shipper</option>
-                        <option value="Yellow">Loaded</option>
-                        <option value="Yellow">Enroute to Receiver</option>
-                        <option value="Yellow">At Receiver</option>
-                        <option value="Red">Shipment Issue</option>
-                        <option value="Red">Payment Issue</option>
-                        <option value="Green">Delivered</option>
+                        <option value="To-Do">To Do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
                       </select>
                     ) : (
                       load.status

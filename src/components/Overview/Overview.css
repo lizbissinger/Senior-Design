@@ -99,7 +99,7 @@ h3 {
 .load-details-table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
-
+/* 
 .status-cell {
   text-align: center;
   font-weight: bold;
@@ -120,7 +120,7 @@ h3 {
 .status-cell.yellow {
   background-color: yellow;
   color: yellow;
-}
+} */
 
 .add-button {
   text-align: right;
