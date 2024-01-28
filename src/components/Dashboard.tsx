@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-white hover:bg-indigo-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-neutral-950 hover:bg-[#6686DC] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -42,7 +42,7 @@ const Dashboard: React.FC = () => {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <h1 className="h-8 w-auto">FLEETWAVE</h1>
+                  <h1 className="h-8 w-auto select-none">FLEETWAVE</h1>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
@@ -140,7 +140,7 @@ const Dashboard: React.FC = () => {
                   as="a"
                   href={item.href}
                   className={classNames(
-                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                    item.current ? 'bg-[#6686DC] text-neutral-950' : 'no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950',
                     'block rounded-md px-3 py-2 text-base font-medium'
                   )}
                   aria-current={item.current ? 'page' : undefined}
