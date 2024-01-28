@@ -14,12 +14,32 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
     const doc = new jsPDF() as jsPDF & { autoTable: (options: any) => void };
 
     doc.setFontSize(11);
-    doc.text(`FLEETWAVE`, 10, 15);
+    doc.text(`LOGO?`, 14, 15);
+
+    doc.setTextColor(128, 128, 128); // Gray color
+    doc.setFontSize(30);
+    doc.text("INVOICE", doc.internal.pageSize.width - 15, 20, { align: "right" });
+    doc.setTextColor(0, 0, 0); // Reset to black
+    doc.setFontSize(11);
+
+    // Address on the left side
+    doc.text(`FLEETWAVE`, 14, 30);
+    doc.text("2600 Clifton Ave.", 14, 35);
+    doc.text("Cincinnati, OH 45221", 14, 40);
+    doc.text("513-556-0000", 14, 45);
+
+    doc.text(`Bill To: ${load.brokerInfo}`, 14, 55);
+    doc.text("BROKER", 14, 60);
+    doc.text("Cincinnati, OH XXXXX", 14, 65);
+    doc.text("513-XXX-XXXX", 14, 70);
+  
+    const today = new Date();
+    const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
 
     // invoice info
-    doc.text(`Invoice #: ${load.loadNumber}`, 180, 15, { align: "right" });
-    doc.text(`Date: ${load.pickupTime}`, 180, 20, { align: "right" });
-    doc.text(`Bill to: ${load.brokerInfo}`, 150, 35, { align: "right" });
+    doc.text(`Invoice #: ${load.loadNumber}`, 193, 30, { align: "right" });
+    doc.text(`Date: ${formattedDate}`, 193, 35, { align: "right" });
+    
 
     const tableData = [
       [
@@ -40,7 +60,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
         load.pickupTime,
         load.deliveryTime,
         `$${parseFloat(load.price).toFixed(2)}`,
-        `$${parseFloat(load.detention).toFixed(2)}`,
+        `$${parseFloat(load.detentionPrice).toFixed(2)}`,
       ],
     ];
 
@@ -51,7 +71,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
 
     // table for driver and truck info
     doc.autoTable({
-      startY: 45,
+      startY: 77,
       theme: "grid",
       margin: { left: margin },
       styles: {
@@ -82,7 +102,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
 
     // table for load info
     doc.autoTable({
-      startY: 65,
+      startY: 97,
       theme: "grid",
       styles: {
         fillColor: [0, 0, 0],
