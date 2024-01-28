@@ -82,6 +82,7 @@ h3 {
 .load-details-table td {
   padding: 12px;
   text-align: left;
+  overflow: auto;
 }
 
 .load-details-table th {
