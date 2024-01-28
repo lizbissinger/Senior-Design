@@ -788,21 +788,21 @@ const Overview: React.FC = () => {
                       load.fuelGallons
                     )}
                   </td>
-                  <td >
+                  <td>
                     {editableIndex === index ? (
                       <select
                         className="load-details-table"
                         value={load.status}
                         onChange={(e) => {
                           const newStatus = e.target.value;
-                          const updatedLoad = { ...load, status: newStatus }; 
+                          const updatedLoad = { ...load, status: newStatus };
                           setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
                             return updatedDetails;
                           });
                           // Updating load details with status immediately here upon selection of the status
-                          updateLoad(updatedLoad); 
+                          updateLoad(updatedLoad);
                         }}
                       >
                         <option value="To-Do">To Do</option>
