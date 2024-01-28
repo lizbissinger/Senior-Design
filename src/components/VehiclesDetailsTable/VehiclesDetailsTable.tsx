@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { DriverDetail, TruckDetail, TrailerDetail } from "../Types/types";
 import "./VehiclesDetailsTable.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faPenAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPenAlt } from "@fortawesome/free-solid-svg-icons";
 
 type VehiclesDetailsTableProps = {
   drivers: DriverDetail[];
@@ -35,7 +35,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
         <h3>Drivers</h3>
         <input
           type="text"
-          placeholder="Search by name"
+          placeholder="Search driver"
           value={driverSearch}
           onChange={(e) => setDriverSearch(e.target.value)}
         />
@@ -50,28 +50,40 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {drivers.filter((driver) => driver.name.toLowerCase().includes(driverSearch.toLowerCase())).map((driver, index) => (
-              <tr key={index}>
-                <td>{driver.name}</td>
-                <td>{driver.licenseNumber}</td>
-                <td>{driver.phoneNumber}</td>
-                <td>{driver.email}</td>
-                <td>
-                  <button
-                    onClick={() => onEdit("driver", driver)}
-                    className="edit-button"
-                  >
-                    <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
-                  </button>
-                  <button
-                    onClick={() => onDeleteDriver(driver, index)}
-                    className="delete-button"
-                  >
-                    <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {drivers
+              .filter((driver) => {
+                const searchLowerCase = driverSearch.toLowerCase();
+                return (
+                  driver.name.toLowerCase().includes(searchLowerCase) ||
+                  driver.licenseNumber
+                    .toLowerCase()
+                    .includes(searchLowerCase) ||
+                  driver.phoneNumber.toLowerCase().includes(searchLowerCase) ||
+                  driver.email.toLowerCase().includes(searchLowerCase)
+                );
+              })
+              .map((driver, index) => (
+                <tr key={index}>
+                  <td>{driver.name}</td>
+                  <td>{driver.licenseNumber}</td>
+                  <td>{driver.phoneNumber}</td>
+                  <td>{driver.email}</td>
+                  <td>
+                    <button
+                      onClick={() => onEdit("driver", driver)}
+                      className="edit-button"
+                    >
+                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
+                    </button>
+                    <button
+                      onClick={() => onDeleteDriver(driver, index)}
+                      className="delete-button"
+                    >
+                      <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -81,7 +93,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
           <h3>Trucks</h3>
           <input
             type="text"
-            placeholder="Search by truck number"
+            placeholder="Search truck"
             value={truckSearch}
             onChange={(e) => setTruckSearch(e.target.value)}
           />
@@ -97,29 +109,40 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
               </tr>
             </thead>
             <tbody>
-              {trucks.filter((truck) => truck.truckNumber.toLowerCase().includes(truckSearch.toLowerCase())).map((truck, index) => (
-                <tr key={index}>
-                  <td>{truck.truckNumber}</td>
-                  <td>{truck.make}</td>
-                  <td>{truck.model}</td>
-                  <td>{truck.year}</td>
-                  <td>{truck.vin}</td>
-                  <td>
-                    <button
-                      onClick={() => onEdit("truck", truck)}
-                      className="edit-button"
-                    >
-                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
-                    </button>
-                    <button
-                      onClick={() => onDeleteTruck(truck, index)}
-                      className="delete-button"
-                    >
-                      <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {trucks
+                .filter((truck) => {
+                  const searchLowerCase = truckSearch.toLowerCase();
+                  return (
+                    truck.truckNumber.toLowerCase().includes(searchLowerCase) ||
+                    truck.make.toLowerCase().includes(searchLowerCase) ||
+                    truck.model.toLowerCase().includes(searchLowerCase) ||
+                    truck.year.toString().includes(searchLowerCase) ||
+                    truck.vin.toLowerCase().includes(searchLowerCase)
+                  );
+                })
+                .map((truck, index) => (
+                  <tr key={index}>
+                    <td>{truck.truckNumber}</td>
+                    <td>{truck.make}</td>
+                    <td>{truck.model}</td>
+                    <td>{truck.year}</td>
+                    <td>{truck.vin}</td>
+                    <td>
+                      <button
+                        onClick={() => onEdit("truck", truck)}
+                        className="edit-button"
+                      >
+                        <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
+                      </button>
+                      <button
+                        onClick={() => onDeleteTruck(truck, index)}
+                        className="delete-button"
+                      >
+                        <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -128,7 +151,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
           <h3>Trailers</h3>
           <input
             type="text"
-            placeholder="Search by trailer number"
+            placeholder="Search trailer"
             value={trailerSearch}
             onChange={(e) => setTrailerSearch(e.target.value)}
           />
@@ -144,29 +167,42 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
               </tr>
             </thead>
             <tbody>
-              {trailers.filter((trailer) => trailer.trailerNumber.toLowerCase().includes(trailerSearch.toLowerCase())).map((trailer, index) => (
-                <tr key={index}>
-                  <td>{trailer.trailerNumber}</td>
-                  <td>{trailer.make}</td>
-                  <td>{trailer.model}</td>
-                  <td>{trailer.year}</td>
-                  <td>{trailer.vin}</td>
-                  <td>
-                    <button
-                      onClick={() => onEdit("trailer", trailer)}
-                      className="edit-button"
-                    >
-                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
-                    </button>
-                    <button
-                      onClick={() => onDeleteTrailer(trailer, index)}
-                      className="delete-button"
-                    >
-                      <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {trailers
+                .filter((trailer) => {
+                  const searchLowerCase = trailerSearch.toLowerCase();
+                  return (
+                    trailer.trailerNumber
+                      .toLowerCase()
+                      .includes(searchLowerCase) ||
+                    trailer.make.toLowerCase().includes(searchLowerCase) ||
+                    trailer.model.toLowerCase().includes(searchLowerCase) ||
+                    trailer.year.toString().includes(searchLowerCase) ||
+                    trailer.vin.toLowerCase().includes(searchLowerCase)
+                  );
+                })
+                .map((trailer, index) => (
+                  <tr key={index}>
+                    <td>{trailer.trailerNumber}</td>
+                    <td>{trailer.make}</td>
+                    <td>{trailer.model}</td>
+                    <td>{trailer.year}</td>
+                    <td>{trailer.vin}</td>
+                    <td>
+                      <button
+                        onClick={() => onEdit("trailer", trailer)}
+                        className="edit-button"
+                      >
+                        <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
+                      </button>
+                      <button
+                        onClick={() => onDeleteTrailer(trailer, index)}
+                        className="delete-button"
+                      >
+                        <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
