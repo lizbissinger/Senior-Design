@@ -23,12 +23,7 @@ import TruckDropdown from "../TruckForm/TruckDropdown";
 
 import _ from "lodash"; //Sorting Library
 
-import {
-  LoadDetail,
-  TruckDetail,
-  TrailerDetail,
-  DriverDetail,
-} from "../Types/types";
+import { LoadDetail } from "../Types/types";
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
@@ -599,7 +594,7 @@ const Overview: React.FC = () => {
                     )}
                   </td>
                   <td>
-                  {editableIndex === index ? (
+                    {editableIndex === index ? (
                       <TruckDropdown
                         truckList={trucks}
                         selectedTruck={load.truckObject}
@@ -614,14 +609,11 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      <div>
-                        {load.truckObject}
-                      </div>
-                    )
-                  }
+                      <div>{load.truckObject}</div>
+                    )}
                   </td>
                   <td>
-                  {editableIndex === index ? (
+                    {editableIndex === index ? (
                       <TrailerDropdown
                         trailerList={trailers}
                         selectedTrailer={load.trailerObject}
@@ -636,14 +628,11 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      <div>
-                        {load.trailerObject}
-                      </div>
-                    )
-                  }
+                      <div>{load.trailerObject}</div>
+                    )}
                   </td>
                   <td>
-                  {editableIndex === index ? (
+                    {editableIndex === index ? (
                       <DriverDropdown
                         driverList={drivers}
                         selectedDriver={load.driverObject}
@@ -658,11 +647,8 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      <div>
-                        {load.driverObject}
-                      </div>
-                    )
-                  }
+                      <div>{load.driverObject}</div>
+                    )}
                   </td>
                   <td>
                     {editableIndex === index ? (
