@@ -8,7 +8,7 @@ import {
   faFilePdf,
 } from "@fortawesome/free-solid-svg-icons";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
-import { Card, Metric, Text } from "@tremor/react";
+import { Flex, Card, Metric, Text } from "@tremor/react";
 import DriverForm from "../DriverForm/DriverForm";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
@@ -345,31 +345,32 @@ const Overview: React.FC = () => {
     <div className="overview-container">
       <h2>Overview</h2>
       <div className="status-boxes">
-        <Card
-          className="max-w-xs mx-auto"
-          decoration="top"
-          decorationColor="red"
-        >
-          <Text>To Do</Text>
-          <Metric>{toDoCount}</Metric>
+        <Card className="max-w-xs" decoration="top" decorationColor="red">
+          <Flex>
+            <div>
+              <Text>To Do</Text>
+              <Metric>{toDoCount}</Metric>
+            </div>
+          </Flex>
         </Card>
-        <Card
-          className="max-w-xs mx-auto"
-          decoration="top"
-          decorationColor="yellow"
-        >
-          <Text>In Progress</Text>
-          <Metric>{inProgressCount}</Metric>
+        <Card className="max-w-xs" decoration="top" decorationColor="yellow">
+          <Flex>
+            <div>
+              <Text>In Progress</Text>
+              <Metric>{inProgressCount}</Metric>
+            </div>
+          </Flex>
         </Card>
-        <Card
-          className="max-w-xs mx-auto"
-          decoration="top"
-          decorationColor="green"
-        >
-          <Text>Completed</Text>
-          <Metric>{completedCount}</Metric>
+        <Card className="max-w-xs" decoration="top" decorationColor="green">
+          <Flex>
+            <div>
+              <Text>Completed</Text>
+              <Metric>{completedCount}</Metric>
+            </div>
+          </Flex>
         </Card>
       </div>
+
       {showForm ? (
         <p className="closeButton" onClick={() => setShowForm(false)}>
           X

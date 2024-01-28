@@ -115,8 +115,13 @@ h3 {
 
 .status-boxes {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
+  justify-content: flex-start; /* Align items to the start of the flex container */
+  width: 35%; /* Ensure the status boxes take up the full width */
+  gap: 20px; /* Add some space between cards */
+}
+
+.card {
+  margin-right: 10px; /* Adjust the margin as needed */
 }
 
 @media screen and (max-width: 768px) {
