@@ -115,49 +115,8 @@ h3 {
 
 .status-boxes {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px; /* Adjust the margin as needed */
-}
-
-.status-box {
-  flex: 1;
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.status-box:hover {
-  background-color: #f0f0f0;
-}
-
-.status-title {
-  /* Remove the white background color */
-
-  padding: 5px;
-}
-
-.status-number {
-  font-size: 20px; /* Adjust the font size as needed */
-  margin-top: 5px; /* Adjust the margin as needed */
-}
-
-.in-progress {
-  background-color: #ffa500; /* Orange color for In Progress */
-}
-
-.completed {
-  background-color: #008000; /* Green color for Completed */
-}
-
-.to-do {
-  background-color: #ff0000; /* Red color for To Do */
+  justify-content: space-around;
+  margin-bottom: 20px;
 }
 
 @media screen and (max-width: 768px) {

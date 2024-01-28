@@ -8,6 +8,7 @@ import {
   faFilePdf,
 } from "@fortawesome/free-solid-svg-icons";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
+import { Card, Metric, Text } from "@tremor/react";
 import DriverForm from "../DriverForm/DriverForm";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
@@ -344,18 +345,30 @@ const Overview: React.FC = () => {
     <div className="overview-container">
       <h2>Overview</h2>
       <div className="status-boxes">
-        <div className="status-box to-do">
-          <div className="status-title">To Do</div>
-          <div className="status-number">{toDoCount}</div>
-        </div>
-        <div className="status-box in-progress">
-          <div className="status-title">In Progress</div>
-          <div className="status-number">{inProgressCount}</div>
-        </div>
-        <div className="status-box completed">
-          <div className="status-title">Completed</div>
-          <div className="status-number">{completedCount}</div>
-        </div>
+        <Card
+          className="max-w-xs mx-auto"
+          decoration="top"
+          decorationColor="red"
+        >
+          <Text>To Do</Text>
+          <Metric>{toDoCount}</Metric>
+        </Card>
+        <Card
+          className="max-w-xs mx-auto"
+          decoration="top"
+          decorationColor="yellow"
+        >
+          <Text>In Progress</Text>
+          <Metric>{inProgressCount}</Metric>
+        </Card>
+        <Card
+          className="max-w-xs mx-auto"
+          decoration="top"
+          decorationColor="green"
+        >
+          <Text>Completed</Text>
+          <Metric>{completedCount}</Metric>
+        </Card>
       </div>
       {showForm ? (
         <p className="closeButton" onClick={() => setShowForm(false)}>
