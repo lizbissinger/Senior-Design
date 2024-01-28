@@ -5,11 +5,8 @@ import {
   faPenAlt,
   faTrash,
   faPlus,
-  faFilePdf,
 } from "@fortawesome/free-solid-svg-icons";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
-import { Flex, Card, Metric, Text } from "@tremor/react";
-import DriverForm from "../DriverForm/DriverForm";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
   CreateNewLoad,
@@ -21,6 +18,7 @@ import GetAllTrucks from "../../routes/truckDetails";
 import GetAllTrailers from "../../routes/trailerDetails";
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
+import StatusBars from "../StatusBars/StatusBars";
 
 import _ from "lodash"; //Sorting Library
 
@@ -344,32 +342,12 @@ const Overview: React.FC = () => {
   return (
     <div className="overview-container">
       <h2>Overview</h2>
-      <div className="status-boxes">
-        <Card className="max-w-xs" decoration="top" decorationColor="red">
-          <Flex>
-            <div>
-              <Text>To Do</Text>
-              <Metric>{toDoCount}</Metric>
-            </div>
-          </Flex>
-        </Card>
-        <Card className="max-w-xs" decoration="top" decorationColor="yellow">
-          <Flex>
-            <div>
-              <Text>In Progress</Text>
-              <Metric>{inProgressCount}</Metric>
-            </div>
-          </Flex>
-        </Card>
-        <Card className="max-w-xs" decoration="top" decorationColor="green">
-          <Flex>
-            <div>
-              <Text>Completed</Text>
-              <Metric>{completedCount}</Metric>
-            </div>
-          </Flex>
-        </Card>
-      </div>
+
+      <StatusBars
+        toDoCount={toDoCount}
+        inProgressCount={inProgressCount}
+        completedCount={completedCount}
+      />
 
       {showForm ? (
         <p className="closeButton" onClick={() => setShowForm(false)}>
