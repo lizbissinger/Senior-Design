@@ -26,3 +26,24 @@
   border-collapse: collapse;
   width: 100%;
 }
+
+@media (max-width: 767px) {
+  .vehicles-details-container {
+    display: block;
+    overflow: auto;
+    max-height: none;
+  }
+
+  .drivers-table,
+  .trucks-trailers-table,
+  .trucks-table,
+  .trailers-table,
+  .vehicles-details-table {
+    width: 100%;
+    overflow: auto;
+  }
+
+  .content {
+    padding: 0 !important;
+  }
+}
