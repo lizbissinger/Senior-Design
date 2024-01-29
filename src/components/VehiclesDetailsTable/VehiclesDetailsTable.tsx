@@ -11,10 +11,10 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
-  Text,
   Title,
   MultiSelect,
-  MultiSelectItem
+  MultiSelectItem,
+  Grid,
 } from "@tremor/react";
 
 type VehiclesDetailsTableProps = {
@@ -42,31 +42,31 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
   const [driverSearch, setDriverSearch] = useState<string>("");
   const [selectedDrivers, setSelectedDrivers] = useState<string[]>(
     drivers.map((driver) => driver.name)
-  );  
-  const [truckSearch, setTruckSearch] = useState<string>(""); 
+  );
+  const [truckSearch, setTruckSearch] = useState<string>("");
   const [selectedTrucks, setSelectedTrucks] = useState<string[]>(
     trucks.map((truck) => truck.truckNumber)
-  );  
+  );
   const [trailerSearch, setTrailerSearch] = useState<string>("");
   const [selectedTrailers, setSelectedTrailers] = useState<string[]>(
     trailers.map((trailer) => trailer.trailerNumber)
-  ); 
+  );
 
   const handleDriverSelectionChange = (selectedItems: string[]) => {
-    console.log('Selected Drivers:', selectedItems);
+    console.log("Selected Drivers:", selectedItems);
     setSelectedDrivers(selectedItems);
   };
 
   const handleTruckSelectionChange = (selectedItems: string[]) => {
-    console.log('Selected Trucks:', selectedItems);
+    console.log("Selected Trucks:", selectedItems);
     setSelectedTrucks(selectedItems);
   };
 
   const handleTrailerSelectionChange = (selectedItems: string[]) => {
-    console.log('Selected Trailers:', selectedItems);
+    console.log("Selected Trailers:", selectedItems);
     setSelectedTrailers(selectedItems);
   };
-  
+
   // Filter drivers based on search and selected drivers
   const filteredDrivers = drivers.filter((driver) => {
     const searchLowerCase = driverSearch.toLowerCase();
@@ -99,10 +99,10 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
     return (
       isSelected &&
       (truck.truckNumber.toLowerCase().includes(searchLowerCase) ||
-      truck.make.toLowerCase().includes(searchLowerCase) ||
-      truck.model.toLowerCase().includes(searchLowerCase) ||
-      truck.year.toString().includes(searchLowerCase) ||
-      truck.vin.toLowerCase().includes(searchLowerCase))
+        truck.make.toLowerCase().includes(searchLowerCase) ||
+        truck.model.toLowerCase().includes(searchLowerCase) ||
+        truck.year.toString().includes(searchLowerCase) ||
+        truck.vin.toLowerCase().includes(searchLowerCase))
     );
   });
 
@@ -119,16 +119,15 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
     return (
       isSelected &&
       (trailer.trailerNumber.toLowerCase().includes(searchLowerCase) ||
-      trailer.make.toLowerCase().includes(searchLowerCase) ||
-      trailer.model.toLowerCase().includes(searchLowerCase) ||
-      trailer.year.toString().includes(searchLowerCase) ||
-      trailer.vin.toLowerCase().includes(searchLowerCase))
+        trailer.make.toLowerCase().includes(searchLowerCase) ||
+        trailer.model.toLowerCase().includes(searchLowerCase) ||
+        trailer.year.toString().includes(searchLowerCase) ||
+        trailer.vin.toLowerCase().includes(searchLowerCase))
     );
   });
 
-
   return (
-    <div className="vehicles-details-container">
+    <Grid className="vehicles-details-container">
       <div className="drivers-table">
         <Card>
           <Title>Drivers</Title>
@@ -157,15 +156,9 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
               {filteredDrivers.map((driver, index) => (
                 <TableRow key={index}>
                   <TableCell>{driver.name}</TableCell>
-                  <TableCell>
-                    <Text>{driver.licenseNumber}</Text>
-                  </TableCell>
-                  <TableCell>
-                    <Text>{driver.phoneNumber}</Text>
-                  </TableCell>
-                  <TableCell>
-                    <Text>{driver.email}</Text>
-                  </TableCell>
+                  <TableCell>{driver.licenseNumber}</TableCell>
+                  <TableCell>{driver.phoneNumber}</TableCell>
+                  <TableCell>{driver.email}</TableCell>
                   <TableCell>
                     <button
                       onClick={() => onEdit("driver", driver)}
@@ -188,47 +181,39 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
       </div>
 
       <div className="trucks-trailers-table">
-      <div className="trucks-table">
-        <Card>
-          <Title>Trucks</Title>
-          <MultiSelect
-            onValueChange={handleTruckSelectionChange}
-            placeholder="Select Truck..."
-            className="max-w-xs"
-          >
-            {trucks.map((truck, index) => (
-              <MultiSelectItem key={index} value={truck.truckNumber}>
-                {truck.truckNumber}
-              </MultiSelectItem>
-            ))}
-          </MultiSelect>
-          <Table className="mt-2">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Number</TableHeaderCell>
-                <TableHeaderCell>Make</TableHeaderCell>
-                <TableHeaderCell>Model</TableHeaderCell>
-                <TableHeaderCell>Year</TableHeaderCell>
-                <TableHeaderCell>VIN</TableHeaderCell>
-                <TableHeaderCell>Action</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredTrucks.map((truck, index) => (
-                <TableRow key={index}>
-                  <TableCell>{truck.truckNumber}</TableCell>
-                    <TableCell>
-                      <Text>{truck.make}</Text>
-                    </TableCell>
-                    <TableCell>
-                      <Text>{truck.model}</Text>
-                    </TableCell>
-                    <TableCell>
-                      <Text>{truck.year}</Text>
-                    </TableCell>
-                    <TableCell>
-                      <Text>{truck.vin}</Text>
-                    </TableCell>
+        <div className="trucks-table">
+          <Card>
+            <Title>Trucks</Title>
+            <MultiSelect
+              onValueChange={handleTruckSelectionChange}
+              placeholder="Select Truck..."
+              className="max-w-xs"
+            >
+              {trucks.map((truck, index) => (
+                <MultiSelectItem key={index} value={truck.truckNumber}>
+                  {truck.truckNumber}
+                </MultiSelectItem>
+              ))}
+            </MultiSelect>
+            <Table className="mt-2">
+              <TableHead>
+                <TableRow>
+                  <TableHeaderCell>Number</TableHeaderCell>
+                  <TableHeaderCell>Make</TableHeaderCell>
+                  <TableHeaderCell>Model</TableHeaderCell>
+                  <TableHeaderCell>Year</TableHeaderCell>
+                  <TableHeaderCell>VIN</TableHeaderCell>
+                  <TableHeaderCell>Action</TableHeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredTrucks.map((truck, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{truck.truckNumber}</TableCell>
+                    <TableCell>{truck.make}</TableCell>
+                    <TableCell>{truck.model}</TableCell>
+                    <TableCell>{truck.year}</TableCell>
+                    <TableCell>{truck.vin}</TableCell>
                     <TableCell>
                       <button
                         onClick={() => onEdit("truck", truck)}
@@ -245,52 +230,44 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </TableCell>
                   </TableRow>
                 ))}
-            </TableBody>
-          </Table>
-        </Card>
-      </div>
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
 
-      <div className="trailers-table">
-        <Card>
-          <Title>Trailers</Title>
-          <MultiSelect
-            onValueChange={handleTrailerSelectionChange}
-            placeholder="Select Trailer..."
-            className="max-w-xs"
-          >
-            {trailers.map((trailer, index) => (
-              <MultiSelectItem key={index} value={trailer.trailerNumber}>
-                {trailer.trailerNumber}
-              </MultiSelectItem>
-            ))}
-          </MultiSelect>
-          <Table className="mt-2">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Number</TableHeaderCell>
-                <TableHeaderCell>Make</TableHeaderCell>
-                <TableHeaderCell>Model</TableHeaderCell>
-                <TableHeaderCell>Year</TableHeaderCell>
-                <TableHeaderCell>VIN</TableHeaderCell>
-                <TableHeaderCell>Action</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredTrailers.map((trailer, index) => (
-                <TableRow key={index}>
-                  <TableCell>{trailer.trailerNumber}</TableCell>
-                    <TableCell>
-                      <Text>{trailer.make}</Text>
-                    </TableCell>
-                    <TableCell>
-                      <Text>{trailer.model}</Text>
-                    </TableCell>
-                    <TableCell>
-                      <Text>{trailer.year}</Text>
-                    </TableCell>
-                    <TableCell>
-                      <Text>{trailer.vin}</Text>
-                    </TableCell>
+        <div className="trailers-table">
+          <Card>
+            <Title>Trailers</Title>
+            <MultiSelect
+              onValueChange={handleTrailerSelectionChange}
+              placeholder="Select Trailer..."
+              className="max-w-xs"
+            >
+              {trailers.map((trailer, index) => (
+                <MultiSelectItem key={index} value={trailer.trailerNumber}>
+                  {trailer.trailerNumber}
+                </MultiSelectItem>
+              ))}
+            </MultiSelect>
+            <Table className="mt-2">
+              <TableHead>
+                <TableRow>
+                  <TableHeaderCell>Number</TableHeaderCell>
+                  <TableHeaderCell>Make</TableHeaderCell>
+                  <TableHeaderCell>Model</TableHeaderCell>
+                  <TableHeaderCell>Year</TableHeaderCell>
+                  <TableHeaderCell>VIN</TableHeaderCell>
+                  <TableHeaderCell>Action</TableHeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredTrailers.map((trailer, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{trailer.trailerNumber}</TableCell>
+                    <TableCell>{trailer.make}</TableCell>
+                    <TableCell>{trailer.model}</TableCell>
+                    <TableCell>{trailer.year}</TableCell>
+                    <TableCell>{trailer.vin}</TableCell>
                     <TableCell>
                       <button
                         onClick={() => onEdit("trailer", trailer)}
@@ -307,12 +284,12 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </TableCell>
                   </TableRow>
                 ))}
-            </TableBody>
-          </Table>
-        </Card>
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
       </div>
-      </div>
-    </div>
+    </Grid>
   );
 };
 
