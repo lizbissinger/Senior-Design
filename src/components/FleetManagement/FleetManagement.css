@@ -3,9 +3,9 @@ body {
   margin: 0;
 }
 
-.fleet-management-container {
-  margin: 20px;
-}
+  /* .fleet-management-container {
+    margin: 10px;
+  } */
 
 h2 {
   font-size: 24px;
@@ -70,7 +70,7 @@ h3 {
   display: block;
 }
 
-.popup {
+/* .popup {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -88,13 +88,13 @@ h3 {
 
 .popup button {
   margin-top: 10px;
-}
+} */
 
 .form-container {
   position: fixed;
   top: 0;
   right: 0;
-  height: 100%;
+  height: auto;
   width: 300px;
   background-color: #ffffff;
   box-shadow: -5px 0px 10px rgba(0, 0, 0, 0.1);

@@ -334,8 +334,6 @@ const FleetManagement: React.FC = () => {
 
   return (
     <div className="fleet-management-container">
-      <h2>Fleet Management</h2>
-
       <div className="add-button form">
         <button
           type="button"

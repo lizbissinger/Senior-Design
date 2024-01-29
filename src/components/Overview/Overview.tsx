@@ -353,23 +353,15 @@ const Overview: React.FC = () => {
   return (
     <div className="overview-container">
 
-      <Grid numItems={2} numItemsSm={2} numItemsLg={3} className="gap-2">
-    <Col>
-      <Card>
+      <Grid numItems={2} numItemsSm={2} numItemsLg={3} className="gap-4">
         <StatusBars
           toDoCount={toDoCount}
           inProgressCount={inProgressCount}
           completedCount={completedCount}
         />
-      </Card>
-    </Col>
-    <Col>
-      <Card>
         <TotalPricePerDriverChart loadDetails={loadDetails} />
-      </Card>
-    </Col>
-    {/* You can add more components here within additional Col components */}
-  </Grid>
+        {/* can add more components here within additional Col components */}
+      </Grid>
 
       {showForm ? (
         <p className="closeButton" onClick={() => setShowForm(false)}>
