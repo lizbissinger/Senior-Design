@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import{ PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
-import DriverForm from "../DriverForm/DriverForm";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
   CreateNewLoad,
@@ -16,20 +15,19 @@ import GetAllTrucks from "../../routes/truckDetails";
 import GetAllTrailers from "../../routes/trailerDetails";
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
+import StatusBars from "../OverviewCharts/StatusBars";
+import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
+import { Grid, Col, Card, Text, Metric } from "@tremor/react";
 
 import _ from "lodash"; //Sorting Library
 
-import {
-  LoadDetail,
-  TruckDetail,
-  TrailerDetail,
-  DriverDetail,
-} from "../Types/types";
+import { LoadDetail } from "../Types/types";
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
   const [trucks, setTrucks] = useState<string[]>([]);
   const [trailers, setTrailers] = useState<string[]>([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   console.log("Driver", drivers);
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
@@ -144,11 +142,6 @@ const Overview: React.FC = () => {
 
   const handleTrailerSelect = (selectedTrailer: string) => {
     setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
-  };
-
-  const handleAddDriver = (driver: string) => {
-    setDrivers([...drivers, driver]);
-    setNewLoad({ ...newLoad, driverObject: driver });
   };
 
   const addLoadDetail = async () => {
@@ -303,6 +296,14 @@ const Overview: React.FC = () => {
     setSubmitting(true);
   };
 
+  const calculateTotalPrice = () => {
+    let total = 0;
+    loadDetails.forEach((load) => {
+      total += parseFloat(load.price) || 0;
+    });
+    setTotalPrice(total);
+  };
+
   const fetchData = async () => {
     if (!fetchingActive) {
       const testData = GetAllLoads();
@@ -324,8 +325,11 @@ const Overview: React.FC = () => {
         (load) => load.status === "Completed"
       ).length;
       const toDoCount = loadDetails.filter(
-        (load) => load.status === "To Do"
+        (load) => load.status === "To-Do"
       ).length;
+
+      // total price
+      calculateTotalPrice();
 
       // Update the counts
       setInProgressCount(inProgressCount);
@@ -344,25 +348,29 @@ const Overview: React.FC = () => {
       addLoadDetail();
     }
     setSubmitting(false);
-  }, [errors]);
+  }, [errors, loadDetails]);
 
   return (
     <div className="overview-container">
-      <h2>Overview</h2>
-      <div className="status-boxes">
-        <div className="status-box to-do">
-          <div className="status-title">To Do</div>
-          <div className="status-number">{toDoCount}</div>
-        </div>
-        <div className="status-box in-progress">
-          <div className="status-title">In Progress</div>
-          <div className="status-number">{inProgressCount}</div>
-        </div>
-        <div className="status-box completed">
-          <div className="status-title">Completed</div>
-          <div className="status-number">{completedCount}</div>
-        </div>
-      </div>
+
+      <Grid numItems={2} numItemsSm={2} numItemsLg={3} className="gap-2">
+    <Col>
+      <Card>
+        <StatusBars
+          toDoCount={toDoCount}
+          inProgressCount={inProgressCount}
+          completedCount={completedCount}
+        />
+      </Card>
+    </Col>
+    <Col>
+      <Card>
+        <TotalPricePerDriverChart loadDetails={loadDetails} />
+      </Card>
+    </Col>
+    {/* You can add more components here within additional Col components */}
+  </Grid>
+
       {showForm ? (
         <p className="closeButton" onClick={() => setShowForm(false)}>
           X
@@ -595,7 +603,7 @@ const Overview: React.FC = () => {
                     )}
                   </td>
                   <td>
-                  {editableIndex === index ? (
+                    {editableIndex === index ? (
                       <TruckDropdown
                         truckList={trucks}
                         selectedTruck={load.truckObject}
@@ -610,14 +618,11 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      <div>
-                        {load.truckObject}
-                      </div>
-                    )
-                  }
+                      <div>{load.truckObject}</div>
+                    )}
                   </td>
                   <td>
-                  {editableIndex === index ? (
+                    {editableIndex === index ? (
                       <TrailerDropdown
                         trailerList={trailers}
                         selectedTrailer={load.trailerObject}
@@ -632,14 +637,11 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      <div>
-                        {load.trailerObject}
-                      </div>
-                    )
-                  }
+                      <div>{load.trailerObject}</div>
+                    )}
                   </td>
                   <td>
-                  {editableIndex === index ? (
+                    {editableIndex === index ? (
                       <DriverDropdown
                         driverList={drivers}
                         selectedDriver={load.driverObject}
@@ -654,11 +656,8 @@ const Overview: React.FC = () => {
                         }}
                       />
                     ) : (
-                      <div>
-                        {load.driverObject}
-                      </div>
-                    )
-                  }
+                      <div>{load.driverObject}</div>
+                    )}
                   </td>
                   <td>
                     {editableIndex === index ? (
@@ -803,29 +802,26 @@ const Overview: React.FC = () => {
                       load.fuelGallons
                     )}
                   </td>
-                  <td className={`status-cell ${load.status.toLowerCase()}`}>
+                  <td>
                     {editableIndex === index ? (
                       <select
                         className="load-details-table"
                         value={load.status}
                         onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.status = e.target.value;
+                          const newStatus = e.target.value;
+                          const updatedLoad = { ...load, status: newStatus };
                           setLoadDetails((prevLoadDetails) => {
                             const updatedDetails = [...prevLoadDetails];
                             updatedDetails[index] = updatedLoad;
                             return updatedDetails;
                           });
+                          // Updating load details with status immediately here upon selection of the status
+                          updateLoad(updatedLoad);
                         }}
                       >
-                        <option value="Yellow">Enroute to Shipper</option>
-                        <option value="Yellow">At Shipper</option>
-                        <option value="Yellow">Loaded</option>
-                        <option value="Yellow">Enroute to Receiver</option>
-                        <option value="Yellow">At Receiver</option>
-                        <option value="Red">Shipment Issue</option>
-                        <option value="Red">Payment Issue</option>
-                        <option value="Green">Delivered</option>
+                        <option value="To-Do">To Do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
                       </select>
                     ) : (
                       load.status
