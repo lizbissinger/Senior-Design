@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-AutoTable";
 import { LoadDetail } from "../Types/types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 
 interface InvoiceGeneratorProps {
   loadDetails: LoadDetail[];
@@ -150,7 +149,10 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
             onClick={() => generateInvoice(load)}
             style={{ cursor: "pointer" }}
           >
-            <FontAwesomeIcon icon={faFilePdf} /> Invoice
+            <div className="relative flex items-center">
+              <DocumentArrowDownIcon className="w-6 ml-1 cursor-pointer" />
+              <span className="text-xs mt-1">Invoice</span>
+            </div>
           </span>
         </div>
       ))}

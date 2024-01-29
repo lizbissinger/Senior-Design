@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Overview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPenAlt,
-  faTrash,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import{ PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
@@ -832,22 +829,14 @@ const Overview: React.FC = () => {
                   </td>
                   <td>
                     {editableIndex === index ? (
-                      <div>
-                        <button onClick={() => handleSaveClick(index)}>
-                          <FontAwesomeIcon icon={faPenAlt} /> {/* Save icon */}
-                        </button>
-                        <button onClick={() => handleDeleteClick(index)}>
-                          <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
-                        </button>
+                      <div className="relative flex items-center">
+                        <PencilIcon className="w-6 mr-2 ml-1 mb-1 cursor-pointer" onClick={() => handleSaveClick(index)} />
+                        <TrashIcon className="w-6 mb-1 cursor-pointer" onClick={() => handleDeleteClick(index)} />
                       </div>
                     ) : (
-                      <div>
-                        <button onClick={() => handleEditClick(index)}>
-                          <FontAwesomeIcon icon={faPenAlt} /> {/* Edit icon */}
-                        </button>
-                        <button onClick={() => handleDeleteClick(index)}>
-                          <FontAwesomeIcon icon={faTrash} /> {/* Delete icon */}
-                        </button>
+                      <div className="relative flex items-center">
+                        <PencilIcon className="w-6 mr-2 ml-1 mb-1 cursor-pointer" onClick={() => handleEditClick(index)} />
+                        <TrashIcon className="w-6 mb-1 cursor-pointer" onClick={() => handleDeleteClick(index)} />
                       </div>
                     )}
                     <InvoiceGenerator loadDetails={[loadDetails[index]]} />
