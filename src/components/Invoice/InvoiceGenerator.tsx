@@ -62,7 +62,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
         load.pickupTime,
         load.deliveryTime,
         `$${parseFloat(load.price).toFixed(2)}`,
-        `$${parseFloat(load.detentionPrice).toFixed(2)}`,
+        //`$${parseFloat(load.detentionPrice).toFixed(2)}`,
       ],
     ];
 
