@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import "jspdf-AutoTable";
+import autoTable from "jspdf-autotable";
 import { LoadDetail } from "../Types/types";
 import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 
@@ -17,7 +17,9 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
 
     doc.setTextColor(128, 128, 128); // Gray color
     doc.setFontSize(30);
-    doc.text("INVOICE", doc.internal.pageSize.width - 15, 20, { align: "right" });
+    doc.text("INVOICE", doc.internal.pageSize.width - 15, 20, {
+      align: "right",
+    });
     doc.setTextColor(0, 0, 0); // Reset to black
     doc.setFontSize(11);
 
@@ -31,14 +33,15 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
     doc.text("BROKER", 14, 60);
     doc.text("Cincinnati, OH XXXXX", 14, 65);
     doc.text("513-XXX-XXXX", 14, 70);
-  
+
     const today = new Date();
-    const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+    const formattedDate = `${
+      today.getMonth() + 1
+    }/${today.getDate()}/${today.getFullYear()}`;
 
     // invoice info
     doc.text(`Invoice #: ${load.loadNumber}`, 193, 30, { align: "right" });
     doc.text(`Date: ${formattedDate}`, 193, 35, { align: "right" });
-    
 
     const tableData = [
       [

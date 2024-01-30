@@ -8,6 +8,7 @@ export type LoadDetail = {
   deliveryTime: string;
   documents: string;
   price: string;
+  detention: string;
   detentionPrice: string;
   allMiles: string;
   fuelGallons: string;
