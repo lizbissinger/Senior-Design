@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Overview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import{ PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
@@ -40,6 +40,7 @@ const Overview: React.FC = () => {
     deliveryTime: "",
     documents: "",
     price: "",
+    detention: "",
     detentionPrice: "",
     allMiles: "",
     fuelGallons: "",
@@ -159,6 +160,7 @@ const Overview: React.FC = () => {
       deliveryTime: "",
       documents: "",
       price: "",
+      detention: "",
       detentionPrice: "",
       allMiles: "",
       fuelGallons: "",
@@ -352,7 +354,6 @@ const Overview: React.FC = () => {
 
   return (
     <div className="overview-container">
-
       <Grid numItems={2} numItemsSm={2} numItemsLg={3} className="gap-4">
         <StatusBars
           toDoCount={toDoCount}
@@ -822,13 +823,25 @@ const Overview: React.FC = () => {
                   <td>
                     {editableIndex === index ? (
                       <div className="relative flex items-center">
-                        <PencilIcon className="w-6 mr-2 ml-1 mb-1 cursor-pointer" onClick={() => handleSaveClick(index)} />
-                        <TrashIcon className="w-6 mb-1 cursor-pointer" onClick={() => handleDeleteClick(index)} />
+                        <PencilIcon
+                          className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
+                          onClick={() => handleSaveClick(index)}
+                        />
+                        <TrashIcon
+                          className="w-6 mb-1 cursor-pointer"
+                          onClick={() => handleDeleteClick(index)}
+                        />
                       </div>
                     ) : (
                       <div className="relative flex items-center">
-                        <PencilIcon className="w-6 mr-2 ml-1 mb-1 cursor-pointer" onClick={() => handleEditClick(index)} />
-                        <TrashIcon className="w-6 mb-1 cursor-pointer" onClick={() => handleDeleteClick(index)} />
+                        <PencilIcon
+                          className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
+                          onClick={() => handleEditClick(index)}
+                        />
+                        <TrashIcon
+                          className="w-6 mb-1 cursor-pointer"
+                          onClick={() => handleDeleteClick(index)}
+                        />
                       </div>
                     )}
                     <InvoiceGenerator loadDetails={[loadDetails[index]]} />
