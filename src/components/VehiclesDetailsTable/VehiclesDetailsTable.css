@@ -52,8 +52,4 @@
     width: 100%;
     overflow: auto;
   }
-
-  .content {
-    padding: 0 !important;
-  }
 }
