@@ -26,6 +26,10 @@ import GetAllTrucks, {
   UpdateTruck,
 } from "../../routes/truckDetails";
 import { de } from "@faker-js/faker";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -332,10 +336,37 @@ const FleetManagement: React.FC = () => {
     }
   };  
 
+  const [driverModalOpen, setDriverModalOpen] = React.useState(false);
+  const [truckModalOpen, setTruckModalOpen] = React.useState(false);
+  const [trailerModalOpen, setTrailerModalOpen] = React.useState(false);
+
+  const handleDriverModalOpen = () => setDriverModalOpen(true);
+  const handleDriverModalClose = () => setDriverModalOpen(false);
+
+  const handleTruckModalOpen = () => setTruckModalOpen(true);
+  const handleTruckModalClose = () => setTruckModalOpen(false);
+
+  const handleTrailerModalOpen = () => setTrailerModalOpen(true);
+  const handleTrailerModalClose = () => setTrailerModalOpen(false);
+
+
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
-    <div className="fleet-management-container">
-      <div className="add-button form">
-        <button
+  <div className="fleet-management-container">
+      <div className="main-button">
+        <Button
+          variant="contained"
           type="button"
           className="dropdown-toggle"
           data-toggle="dropdown"
@@ -343,61 +374,66 @@ const FleetManagement: React.FC = () => {
           aria-expanded="false"
         >
           Add
-        </button>
-        <div className="dropdown-menu form">
-          <button
-            className="dropdown-item"
-            onClick={() => handleAddButtonClick("driver")}
+        </Button>
+        <div className="dropdown-menu">
+        <Button onClick={handleDriverModalOpen}>Add Driver</Button>
+          <Modal
+            open={driverModalOpen}
+            onClose={handleDriverModalClose}
+            aria-labelledby="driver-modal-title"
+            aria-describedby="driver-modal-description"
           >
-            Add Driver
-          </button>
-          <button
-            className="dropdown-item"
-            onClick={() => handleAddButtonClick("truck")}
+            <Box sx={style}>
+              <div className="popup active form">
+                <DriverForm
+                  onAddDriver={handleAddDriver}
+                  onEditDriver={handleEditDriver}
+                  editingDriver={editingDriver}
+                />
+                <Button className="mt-2" onClick={handleDriverModalClose}>Close</Button>
+              </div>
+            </Box>
+          </Modal>
+
+          <Button onClick={handleTruckModalOpen}>Add Truck</Button>
+          <Modal
+            open={truckModalOpen}
+            onClose={handleTruckModalClose}
+            aria-labelledby="truck-modal-title"
+            aria-describedby="truck-modal-description"
           >
-            Add Truck
-          </button>
-          <button
-            className="dropdown-item"
-            onClick={() => handleAddButtonClick("trailer")}
+            <Box sx={style}>
+              <div className="popup active form">
+                <TruckForm
+                  onAddTruck={handleAddTruck}
+                  onEditTruck={handleEditTruck}
+                  editingTruck={editingTruck}
+                />
+                <Button className="mt-2" onClick={handleTruckModalClose}>Close</Button>
+              </div>
+            </Box>
+          </Modal>
+
+          <Button onClick={handleTrailerModalOpen}>Add Trailer</Button>
+          <Modal
+            open={trailerModalOpen}
+            onClose={handleTrailerModalClose}
+            aria-labelledby="trailer-modal-title"
+            aria-describedby="trailer-modal-description"
           >
-            Add Trailer
-          </button>
+            <Box sx={style}>
+              <div className="popup active form">
+                <TrailerForm
+                  onAddTrailer={handleAddTrailer}
+                  onEditTrailer={handleEditTrailer}
+                  editingTrailer={editingTrailer}
+                />
+                <Button className="mt-2" onClick={handleTrailerModalClose}>Close</Button>
+              </div>
+            </Box>
+          </Modal>
         </div>
       </div>
-
-      {showDriverForm && (
-        <div className="popup active form">
-          <DriverForm
-            onAddDriver={handleAddDriver}
-            onEditDriver={handleEditDriver}
-            editingDriver={editingDriver}
-          />
-          <button onClick={() => setShowDriverForm(false)}>Close</button>
-        </div>
-      )}
-
-      {showTruckForm && (
-        <div className="popup active form">
-          <TruckForm
-            onAddTruck={handleAddTruck}
-            onEditTruck={handleEditTruck}
-            editingTruck={editingTruck}
-          />
-          <button onClick={() => setShowTruckForm(false)}>Close</button>
-        </div>
-      )}
-
-      {showTrailerForm && (
-        <div className="popup active form">
-          <TrailerForm
-            onAddTrailer={handleAddTrailer}
-            onEditTrailer={handleEditTrailer}
-            editingTrailer={editingTrailer}
-          />
-          <button onClick={() => setShowTrailerForm(false)}>Close</button>
-        </div>
-      )}
 
       <div className="load-details-table">
         <VehiclesDetailsTable

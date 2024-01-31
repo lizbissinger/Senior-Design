@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TrailerDetail } from "../Types/types";
+import Button from '@mui/material/Button';
 
 interface TrailerFormProps {
   onAddTrailer: (trailer: TrailerDetail) => void;
@@ -92,9 +93,9 @@ const TrailerForm: React.FC<TrailerFormProps> = ({
         onChange={handleInputChange}
         required
       />
-      <button type="submit">
+      <Button className= "mt-3" type="submit">
         {editingTrailer ? "Update Trailer" : "Add Trailer"}
-      </button>
+      </Button>
     </form>
   );
 };
