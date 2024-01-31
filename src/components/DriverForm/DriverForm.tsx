@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DriverDetail } from "../Types/types";
+import Button from '@mui/material/Button';
 
 interface DriverFormProps {
   onAddDriver: (driver: DriverDetail) => void;
@@ -94,9 +95,9 @@ const DriverForm: React.FC<DriverFormProps> = ({
         onChange={handleInputChange}
         required
       />
-      <button type="submit">
+      <Button className= "mt-3" type="submit">
         {editingDriver ? "Update Driver" : "Add Driver"}
-      </button>
+      </Button>
     </form>
   );
 };

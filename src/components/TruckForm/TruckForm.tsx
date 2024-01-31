@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TruckDetail } from "../Types/types";
+import Button from '@mui/material/Button';
 
 interface TruckFormProps {
   onAddTruck: (truck: TruckDetail) => void;
@@ -92,9 +93,9 @@ const TruckForm: React.FC<TruckFormProps> = ({
         onChange={handleInputChange}
         required
       />
-      <button type="submit">
+      <Button className= "mt-3" type="submit">
         {editingTruck ? "Update Truck" : "Add Truck"}
-      </button>
+      </Button>
     </form>
   );
 };
