@@ -17,7 +17,19 @@ import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
-import { Grid, Col, Card, Text, Metric } from "@tremor/react";
+import {
+  Card,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Title,
+  MultiSelect,
+  MultiSelectItem,
+  Grid,
+} from "@tremor/react";
 
 import _ from "lodash"; //Sorting Library
 
@@ -522,10 +534,10 @@ const Overview: React.FC = () => {
       <div>
         <p></p>
         <div className="table-container">
-          <table className="load-details-table">
+          <Table className="">
             {/* The table headers */}
-            <thead>
-              <tr>
+            <TableHead>
+              <TableRow>
                 <th className="sort" onClick={() => requestSort("loadNumber")}>
                   {" "}
                   Load #{" "}
@@ -569,12 +581,13 @@ const Overview: React.FC = () => {
               <th>Phone number</th>
               <th>Email</th> */}
                 <th>Action</th>
-              </tr>
-            </thead>
+              </TableRow>
+            </TableHead>
             {/* The table body */}
             <tbody>
+              
               {sortedData.map((load, index) => (
-                <tr key={index}>
+                <TableRow key={index}>
                   <td>
                     {editableIndex === index ? (
                       <input
@@ -846,10 +859,10 @@ const Overview: React.FC = () => {
                     )}
                     <InvoiceGenerator loadDetails={[loadDetails[index]]} />
                   </td>
-                </tr>
+                </TableRow>
               ))}
             </tbody>
-          </table>
+          </Table>
         </div>
       </div>
     </div>
