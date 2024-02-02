@@ -364,9 +364,11 @@ const Overview: React.FC = () => {
     setSubmitting(false);
   }, [errors, loadDetails]);
 
+  const isMobileView = window.innerWidth <= 767;
+
   return (
     <div className="overview-container">
-      <Grid numItems={2} numItemsSm={2} numItemsLg={3} className="gap-4">
+      <Grid  numItems={isMobileView ? 1 : 2} numItemsMd={1} numItemsSm={1} numItemsLg={3} className="gap-4">
         <StatusBars
           toDoCount={toDoCount}
           inProgressCount={inProgressCount}
