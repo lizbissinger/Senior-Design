@@ -154,7 +154,7 @@ const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({
             .toString()}`}</Metric>
         </div>
         <TabGroup>
-          <TabList className="mt-4">
+          <TabList className="mt-2 p-1">
             <Tab onClick={() => setSelectedTab("week")}>Week</Tab>
             <Tab onClick={() => setSelectedTab("month")}>Month</Tab>
             <Tab onClick={() => setSelectedTab("quarter")}>Quarter</Tab>

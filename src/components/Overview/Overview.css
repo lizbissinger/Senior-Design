@@ -167,4 +167,21 @@ h3 {
     font-size: 14px;
     padding: 4px 8px;
   }
+
+  .status-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: auto;
+  }
+  
+  .card {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .chart-container {
+    padding: 0px;
+    margin: inherit
+  }
 }
