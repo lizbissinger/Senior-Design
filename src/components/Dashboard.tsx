@@ -8,6 +8,7 @@ import Reports from './Reports/Reports';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import Finance from './Finance/Finance';
 
 const Dashboard: React.FC = () => {
   const navigation = [
@@ -162,7 +163,7 @@ const Dashboard: React.FC = () => {
           <Route path="overview" element={<Overview />} />
           <Route path="fleet" element={<FleetManagement />} />
           <Route path="reports" element={<Reports/>} />
-          <Route path="finance" /* add element here */ />
+          <Route path="finance" element={<Finance/>} />
           {/* Add more routes for other tabs */}
         </Routes>
       </div>
