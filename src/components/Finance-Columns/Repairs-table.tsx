@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Dialog, DialogPanel } from "@tremor/react";
 import {
     Table,
     TableHead,
@@ -7,16 +8,37 @@ import {
     TableRow,
     TableCell,
   } from "@tremor/react";
+import { RepairDetail } from '../Types/types';
 
-  const data= [
-    {expense: "Brake Replacemnet",
-     cost:"500"},
-     {expense:"Oil Change",
-     cost:"200"}
+import GetAllRepairs,{
+  CreateNewRepair,
+  DeleteRepair,
+} from '../../routes/repairDetails';
 
-  ]
-  const RepairTable: React.FC = () => {
+
+
+interface RepairTableProps {
+  repairDetails: RepairDetail[];
+}
+
+  const RepairTable: React.FC<RepairTableProps> = ({  }) => {
+    const [repairDetails, setRepairDetails] = useState<RepairDetail[]>([]);
+
+    useEffect(() => {
+
+      const fetchRepairs = async () => {
+        try{
+          const repairs = await GetAllRepairs();
+          if(repairs){
+            setRepairDetails(repairs);
+          }
+        } catch (error){
+          console.error(error);
+        }
+      };
+      }, []);
   return(
+    
     <Table className="mt-5">
       <TableHead>
         <TableRow>
@@ -26,11 +48,11 @@ import {
         </TableRow>
       </TableHead>
       <TableBody>
-        {data.map((item) => (
-          <TableRow key={item.expense}>
-            <TableCell>{item.expense}</TableCell>
+        {repairDetails.map((item) => (
+          <TableRow key={item.repair}>
+            <TableCell>{item.repair}</TableCell>
             <TableCell>
-              {item.cost}
+              {item.repairCost}
             </TableCell>
           
            
