@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Grid, Title } from "@tremor/react";
+import RepairTable from '../Finance-Columns/Repairs-table';
 
 const Finance: React.FC= () =>{
     return(
@@ -9,7 +10,7 @@ const Finance: React.FC= () =>{
         <Grid numItemsMd={4} numItemsLg={4} className="gap-6 mt-6">
           <Card>
               <Title>Repairs</Title>
-            
+            <RepairTable />
               
             </Card>
             <Card>
