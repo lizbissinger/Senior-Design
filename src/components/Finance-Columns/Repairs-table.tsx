@@ -23,19 +23,19 @@ interface RepairTableProps {
 
   const RepairTable: React.FC<RepairTableProps> = ({  }) => {
     const [repairDetails, setRepairDetails] = useState<RepairDetail[]>([]);
-
-    useEffect(() => {
-
-      const fetchRepairs = async () => {
-        try{
-          const repairs = await GetAllRepairs();
-          if(repairs){
-            setRepairDetails(repairs);
-          }
-        } catch (error){
-          console.error(error);
+    const fetchRepairs = async () => {
+      try{
+        const repairs = await GetAllRepairs();
+        if(repairs){
+          setRepairDetails(repairs);
         }
-      };
+      } catch (error){
+        console.error(error);
+      }
+    };
+    useEffect(() => {
+fetchRepairs();
+      console.log("Fetching working",repairDetails);
       }, []);
   return(
     

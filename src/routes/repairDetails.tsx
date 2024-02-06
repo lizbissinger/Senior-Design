@@ -4,7 +4,7 @@ const api = import.meta.env.VITE_API_URL;
 
 export async function GetAllRepairs(): Promise<RepairDetail[] | undefined> {
   try {
-    const response = await fetch(`${api}/`, {
+    const response = await fetch(`${api}/repairs`, {
       method: "GET"
     });
 
@@ -22,6 +22,7 @@ export async function GetAllRepairs(): Promise<RepairDetail[] | undefined> {
 }
 
 export async function CreateNewRepair(repair: RepairDetail): Promise<RepairDetail | undefined> {
+  console.log("Createing new repair");
   try {
     const requestOptions = {
       method: "POST",
@@ -31,7 +32,7 @@ export async function CreateNewRepair(repair: RepairDetail): Promise<RepairDetai
       body: JSON.stringify(repair),
     };
 
-    const response = await fetch(`${api}/repairDetails`, requestOptions);
+    const response = await fetch(`${api}/repairs`, requestOptions);
 
     if (!response.ok) {
       throw new Error(`Failed to create a new repair: ${response.statusText}`);

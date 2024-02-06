@@ -1,32 +1,21 @@
-"use client";
+
 import React, { useState } from "react";
 import { Button, Card, Dialog, DialogPanel, Divider, TextInput, Title ,DatePicker, DatePickerValue } from "@tremor/react";
-import { FloatingLabel } from 'flowbite-react';
+
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import { RepairDetail } from "../Types/types";
+import { CreateNewRepair } from "../../routes/repairDetails";
 // const [trucks, setTrucks] = useState<string[]>([]);
 interface RepairsFormProps {
     onSubmitRepair: (repairDetail: RepairDetail) => void;
   }
   
   
-export default function RepairsForm({ onSubmitRepair }: RepairsFormProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
   
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     console.log("Form submitted");
-//     const repairDetail: RepairDetail = {
-//         repair: "", 
-//         truckObject: "", 
-//         trailerObject: "", 
-//         repairDate: "", 
-//         repairCost: "", 
-//         repairComments: "", 
-//       };
-//       onSubmitRepair(repairDetail);
+export default function RepairsForm({ onSubmitRepair }: RepairsFormProps) {
+ const [isOpen, setIsOpen] = React.useState(false);
+  
 
-//   };
 const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
     repair: "",
     truckObject: "",
@@ -39,21 +28,54 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
     const { name, value } = e.target;
     setRepairDetail((prevDetail) => ({ ...prevDetail, [name]: value }));
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmitRepair(repairDetail as RepairDetail);
-
-    // Clear the form or perform any additional actions as needed
-    setRepairDetail({
-      repair: "",
-      truckObject: "",
-      trailerObject: "",
-      repairDate: "",
-      repairCost: "",
-      repairComments: "",
-    });
+  const handleDateChangeWrapper: React.FormEventHandler<HTMLDivElement> = (event) => {
+    const date = (event.target as HTMLInputElement).valueAsDate;
+    handleDateChange(date !== null ? date : undefined);
   };
+
+  const handleDateChange = (date: Date | undefined) => {
+    setRepairDetail((prevDetail) => ({ ...prevDetail, repairDate: date?.toISOString() || "" }));
+  };
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+   console.log("Creating new repair", repairDetail);
+    const newRepair = await CreateNewRepair(repairDetail as RepairDetail);
+
+    if (newRepair) {
+      // Update the parent component state or perform any other actions as needed
+      onSubmitRepair(newRepair);
+      
+      // Clear the form
+      setRepairDetail({
+        repair: "",
+        truckObject: "",
+        trailerObject: "",
+        repairDate: "",
+        repairCost: "",
+        repairComments: "",
+      }); 
+
+      // Close the dialog
+      setIsOpen(false);
+    }
+  };
+//   const handleSubmit = (e: React.FormEvent) => {
+//     e.preventDefault();
+//     onSubmitRepair(repairDetail as RepairDetail);
+
+//     // Clear the form or perform any additional actions as needed
+//     setRepairDetail({
+//       repair: "",
+//       truckObject: "",
+//       trailerObject: "",
+//       repairDate: "",
+//       repairCost: "",
+//       repairComments: "",
+//     });
+//   };
 
   return (
     <>
@@ -90,7 +112,7 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
         <Divider></Divider>
         <DatePicker className="max-w-sm mx-auto"
          value={repairDetail.repairDate ? new Date(repairDetail.repairDate) : undefined}
-         onChange={handleInputChange}
+         onChange={handleDateChangeWrapper}
          />
          <Divider></Divider>
         <TextInput
@@ -112,47 +134,11 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
         <TextInput
           placeholder="Comments"
           type="text"
-          name="Comments"
+          name="repairComments"
           value={repairDetail.repairComments}
           onChange={handleInputChange}
           />
-    {/* <div className="form">
-                Use the TruckDropdown component to select a truck
-                <TruckDropdown
-                  truckList={trucks}
-                  selectedTruck={newLoad.truckObject}
-                  onSelectTruck={handleTruckSelect}
-                />
-                <div className="error">{errors.truckObject}</div>
-              </div> */}
-                
-      {/* <input
-      id="RepairName"
-        type="text"
-        name="RepairName"
-        placeholder="Repair Name"
-      
-        required
-      />
-      <Divider></Divider>
-      <input
-        type="text"
-        name="make"
-        placeholder="Make"
-      
-        required
-      />
-      <Divider></Divider>
-      
-      <input
-      
-        type="text"
-        name="model"
-        placeholder="Model"
-      
-        required
-      />
-     <Divider></Divider> */}
+  
       <Button className= "mt-3" type="submit"  > 
       {/* onClick={() => setIsOpen(false)}     -- To close form on creation*/}
         Create
