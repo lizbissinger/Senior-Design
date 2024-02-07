@@ -19,24 +19,11 @@ import GetAllRepairs,{
 
 interface RepairTableProps {
   repairDetails: RepairDetail[];
+  fetchRepairs: () => void;
 }
 
-  const RepairTable: React.FC<RepairTableProps> = ({  }) => {
-    const [repairDetails, setRepairDetails] = useState<RepairDetail[]>([]);
-    const fetchRepairs = async () => {
-      try{
-        const repairs = await GetAllRepairs();
-        if(repairs){
-          setRepairDetails(repairs);
-        }
-      } catch (error){
-        console.error(error);
-      }
-    };
-    useEffect(() => {
-fetchRepairs();
-      console.log("Fetching working",repairDetails);
-      }, []);
+  const RepairTable: React.FC<RepairTableProps> = ({ repairDetails, fetchRepairs }) => {
+    
   return(
     
     <Table className="mt-5">
@@ -44,7 +31,7 @@ fetchRepairs();
         <TableRow>
           <TableHeaderCell>Expense</TableHeaderCell>
           <TableHeaderCell>Cost</TableHeaderCell>
-        
+          <TableHeaderCell>Truck</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -54,7 +41,9 @@ fetchRepairs();
             <TableCell>
               {item.repairCost}
             </TableCell>
-          
+          <TableCell>
+            {item.truckObject}
+          </TableCell>
            
           </TableRow>
         ))}
