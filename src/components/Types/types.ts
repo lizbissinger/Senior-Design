@@ -53,3 +53,13 @@ export type VehiclesDetailsTableProps = {
   trucks: TruckDetail[];
   trailers: TrailerDetail[];
 };
+
+export type RepairDetail = {
+  _id: string;
+  repair: string;
+  truckObject: string;
+  trailerObject: string;
+  repairDate: string;
+  repairCost: string;
+  repairComments: string;
+};
