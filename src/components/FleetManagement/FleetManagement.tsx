@@ -26,10 +26,26 @@ import GetAllTrucks, {
   UpdateTruck,
 } from "../../routes/truckDetails";
 import { de } from "@faker-js/faker";
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import {
+  Card,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Title,
+  MultiSelect,
+  MultiSelectItem,
+  Grid,
+  Button,
+  Dialog,
+  DialogPanel,
+} from "@tremor/react";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -157,15 +173,19 @@ const FleetManagement: React.FC = () => {
       console.log("Driver deleted:", driver);
 
       if (deletedDriver) {
-        const updatedDriverDetails = driverDetails.filter(driver => driver._id !== deletedDriver._id);
+        const updatedDriverDetails = driverDetails.filter(
+          (driver) => driver._id !== deletedDriver._id
+        );
         setDriverDetails(updatedDriverDetails);
         const updatedVehiclesDetails = {
           ...vehiclesDetails,
-          drivers: vehiclesDetails.drivers.filter(driver => driver._id !== deletedDriver._id),
+          drivers: vehiclesDetails.drivers.filter(
+            (driver) => driver._id !== deletedDriver._id
+          ),
         };
         setVehiclesDetails(updatedVehiclesDetails);
       }
-      
+
       setSelectedDriver(null);
     } catch (error) {
       console.error("Error deleting driver:", error);
@@ -178,15 +198,19 @@ const FleetManagement: React.FC = () => {
       console.log("Truck deleted:", truck);
 
       if (deletedTruck) {
-        const updatedTruckDetails = truckDetails.filter(truck => truck._id !== deletedTruck._id);
+        const updatedTruckDetails = truckDetails.filter(
+          (truck) => truck._id !== deletedTruck._id
+        );
         setTruckDetails(updatedTruckDetails);
         const updatedVehiclesDetails = {
           ...vehiclesDetails,
-          trucks: vehiclesDetails.trucks.filter(truck => truck._id !== deletedTruck._id),
+          trucks: vehiclesDetails.trucks.filter(
+            (truck) => truck._id !== deletedTruck._id
+          ),
         };
         setVehiclesDetails(updatedVehiclesDetails);
       }
-      
+
       setSelectedTruck(null);
     } catch (error) {
       console.error("Error deleting truck:", error);
@@ -199,15 +223,19 @@ const FleetManagement: React.FC = () => {
       console.log("Trailer deleted:", trailer);
 
       if (deletedTrailer) {
-        const updatedTrailerDetails = trailerDetails.filter(trailer => trailer._id !== deletedTrailer._id);
+        const updatedTrailerDetails = trailerDetails.filter(
+          (trailer) => trailer._id !== deletedTrailer._id
+        );
         setTrailerDetails(updatedTrailerDetails);
         const updatedVehiclesDetails = {
           ...vehiclesDetails,
-          trailers: vehiclesDetails.trailers.filter(trailer => trailer._id !== deletedTrailer._id),
+          trailers: vehiclesDetails.trailers.filter(
+            (trailer) => trailer._id !== deletedTrailer._id
+          ),
         };
         setVehiclesDetails(updatedVehiclesDetails);
       }
-      
+
       setSelectedTrailer(null);
     } catch (error) {
       console.error("Error deleting trailer:", error);
@@ -256,183 +284,158 @@ const FleetManagement: React.FC = () => {
       default:
         break;
     }
-  };  
+  };
 
   const handleEditDriver = async (editedDriver: DriverDetail) => {
     try {
       const updatedDriver = await UpdateDriver(editedDriver);
-  
+
       if (updatedDriver) {
-        const updatedDriverDetails = driverDetails.map(driver =>
+        const updatedDriverDetails = driverDetails.map((driver) =>
           driver._id === updatedDriver._id ? updatedDriver : driver
         );
         setDriverDetails(updatedDriverDetails);
-  
+
         const updatedVehiclesDetails = {
           ...vehiclesDetails,
-          drivers: vehiclesDetails.drivers.map(driver =>
+          drivers: vehiclesDetails.drivers.map((driver) =>
             driver._id === updatedDriver._id ? updatedDriver : driver
           ),
         };
         setVehiclesDetails(updatedVehiclesDetails);
       }
-  
+
       setShowDriverForm(false);
       setEditingDriver(null);
     } catch (error) {
       console.error("Error updating driver:", error);
     }
-  };  
+  };
 
   const handleEditTruck = async (editedTruck: TruckDetail) => {
     try {
       const updatedTruck = await UpdateTruck(editedTruck);
-  
+
       if (updatedTruck) {
-        const updatedTruckDetails = truckDetails.map(truck =>
+        const updatedTruckDetails = truckDetails.map((truck) =>
           truck._id === updatedTruck._id ? updatedTruck : truck
         );
         setTruckDetails(updatedTruckDetails);
-  
+
         const updatedVehiclesDetails = {
           ...vehiclesDetails,
-          trucks: vehiclesDetails.trucks.map(truck =>
+          trucks: vehiclesDetails.trucks.map((truck) =>
             truck._id === updatedTruck._id ? updatedTruck : truck
           ),
         };
         setVehiclesDetails(updatedVehiclesDetails);
       }
-  
+
       setShowTruckForm(false);
       setEditingTruck(null);
     } catch (error) {
       console.error("Error updating truck:", error);
     }
-  };  
+  };
 
   const handleEditTrailer = async (editedTrailer: TrailerDetail) => {
     try {
       const updatedTrailer = await UpdateTrailer(editedTrailer);
-  
+
       if (updatedTrailer) {
-        const updatedTrailerDetails = trailerDetails.map(trailer =>
+        const updatedTrailerDetails = trailerDetails.map((trailer) =>
           trailer._id === updatedTrailer._id ? updatedTrailer : trailer
         );
         setTrailerDetails(updatedTrailerDetails);
-  
+
         const updatedVehiclesDetails = {
           ...vehiclesDetails,
-          trailers: vehiclesDetails.trailers.map(trailer =>
+          trailers: vehiclesDetails.trailers.map((trailer) =>
             trailer._id === updatedTrailer._id ? updatedTrailer : trailer
           ),
         };
         setVehiclesDetails(updatedVehiclesDetails);
       }
-  
+
       setShowTrailerForm(false);
       setEditingTrailer(null);
     } catch (error) {
       console.error("Error updating trailer:", error);
     }
-  };  
-
-  const [driverModalOpen, setDriverModalOpen] = React.useState(false);
-  const [truckModalOpen, setTruckModalOpen] = React.useState(false);
-  const [trailerModalOpen, setTrailerModalOpen] = React.useState(false);
-
-  const handleDriverModalOpen = () => setDriverModalOpen(true);
-  const handleDriverModalClose = () => setDriverModalOpen(false);
-
-  const handleTruckModalOpen = () => setTruckModalOpen(true);
-  const handleTruckModalClose = () => setTruckModalOpen(false);
-
-  const handleTrailerModalOpen = () => setTrailerModalOpen(true);
-  const handleTrailerModalClose = () => setTrailerModalOpen(false);
-
-
-  const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
   };
 
+  const [isOpenLoadDialog, setIsOpenLoadDialog] = useState(false);
+  const [isOpenTruckDialog, setIsOpenTruckDialog] = useState(false);
+  const [isOpenTrailerDialog, setIsOpenTrailerDialog] = useState(false);
+
+  useEffect(() => {
+    setIsOpenLoadDialog(false);
+    setIsOpenTrailerDialog(false);
+    setIsOpenTrailerDialog(false);
+  }, []);
+
   return (
-  <div className="fleet-management-container">
-      <div className="main-button">
-        <Button
-          variant="contained"
-          type="button"
-          className="dropdown-toggle"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          Add
-        </Button>
-        <div className="dropdown-menu">
-        <Button onClick={handleDriverModalOpen}>Add Driver</Button>
-          <Modal
-            open={driverModalOpen}
-            onClose={handleDriverModalClose}
-            aria-labelledby="driver-modal-title"
-            aria-describedby="driver-modal-description"
-          >
-            <Box sx={style}>
-              <div className="popup active form">
-                <DriverForm
-                  onAddDriver={handleAddDriver}
-                  onEditDriver={handleEditDriver}
-                  editingDriver={editingDriver}
-                />
-                <Button className="mt-2" onClick={handleDriverModalClose}>Close</Button>
-              </div>
-            </Box>
-          </Modal>
+    <div className="fleet-management-container">
+      <div className="form">
+        <Dropdown>
+          <Dropdown.Toggle variant="primary" id="dropdown-basic">
+            Add
+          </Dropdown.Toggle>
 
-          <Button onClick={handleTruckModalOpen}>Add Truck</Button>
-          <Modal
-            open={truckModalOpen}
-            onClose={handleTruckModalClose}
-            aria-labelledby="truck-modal-title"
-            aria-describedby="truck-modal-description"
-          >
-            <Box sx={style}>
-              <div className="popup active form">
-                <TruckForm
-                  onAddTruck={handleAddTruck}
-                  onEditTruck={handleEditTruck}
-                  editingTruck={editingTruck}
-                />
-                <Button className="mt-2" onClick={handleTruckModalClose}>Close</Button>
-              </div>
-            </Box>
-          </Modal>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => setIsOpenLoadDialog(true)}>
+              Add Load
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)}>
+              Add Truck
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setIsOpenTrailerDialog(true)}>
+              Add Trailer
+            </Dropdown.Item>
+          </Dropdown.Menu>
 
-          <Button onClick={handleTrailerModalOpen}>Add Trailer</Button>
-          <Modal
-            open={trailerModalOpen}
-            onClose={handleTrailerModalClose}
-            aria-labelledby="trailer-modal-title"
-            aria-describedby="trailer-modal-description"
+          <Dialog
+            open={isOpenLoadDialog}
+            onClose={() => setIsOpenLoadDialog(false)}
+            static={true}
           >
-            <Box sx={style}>
-              <div className="popup active form">
-                <TrailerForm
-                  onAddTrailer={handleAddTrailer}
-                  onEditTrailer={handleEditTrailer}
-                  editingTrailer={editingTrailer}
-                />
-                <Button className="mt-2" onClick={handleTrailerModalClose}>Close</Button>
-              </div>
-            </Box>
-          </Modal>
-        </div>
+            <DialogPanel className="form">
+              <DriverForm
+                onAddDriver={handleAddDriver}
+                onEditDriver={handleEditDriver}
+                editingDriver={editingDriver}
+              />
+            </DialogPanel>
+          </Dialog>
+
+          <Dialog
+            open={isOpenTruckDialog}
+            onClose={() => setIsOpenTruckDialog(false)}
+            static={true}
+          >
+            <DialogPanel>
+              <TruckForm
+                onAddTruck={handleAddTruck}
+                onEditTruck={handleEditTruck}
+                editingTruck={editingTruck}
+              />
+            </DialogPanel>
+          </Dialog>
+
+          <Dialog
+            open={isOpenTrailerDialog}
+            onClose={() => setIsOpenTrailerDialog(false)}
+            static={true}
+          >
+            <DialogPanel>
+              <TrailerForm
+                onAddTrailer={handleAddTrailer}
+                onEditTrailer={handleEditTrailer}
+                editingTrailer={editingTrailer}
+              />
+            </DialogPanel>
+          </Dialog>
+        </Dropdown>
       </div>
 
       <div className="load-details-table">
