@@ -29,6 +29,9 @@ import {
   MultiSelect,
   MultiSelectItem,
   Grid,
+  Button,
+  Dialog,
+  DialogPanel,
 } from "@tremor/react";
 
 import _ from "lodash"; //Sorting Library
@@ -365,10 +368,21 @@ const Overview: React.FC = () => {
   }, [errors, loadDetails]);
 
   const isMobileView = window.innerWidth <= 767;
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, []);
 
   return (
     <div className="overview-container">
-      <Grid  numItems={isMobileView ? 1 : 2} numItemsMd={1} numItemsSm={1} numItemsLg={3} className="gap-4">
+      <Grid
+        numItems={isMobileView ? 1 : 2}
+        numItemsMd={1}
+        numItemsSm={1}
+        numItemsLg={3}
+        className="gap-4"
+      >
         <StatusBars
           toDoCount={toDoCount}
           inProgressCount={inProgressCount}
@@ -377,161 +391,162 @@ const Overview: React.FC = () => {
         <TotalPricePerDriverChart loadDetails={loadDetails} />
         {/* can add more components here within additional Col components */}
       </Grid>
-
-      {showForm ? (
-        <p className="closeButton" onClick={() => setShowForm(false)}>
-          X
-        </p>
-      ) : null}
-      <div>
-        {!showForm ? (
-          <div className="add-button">
-            <button onClick={toggleFormVisibility}>
-              <FontAwesomeIcon icon={faPlus} /> {/* Use the plus icon */}
-            </button>
-          </div>
-        ) : (
-          <form>
-            <div className="form">
-              {/* Input fields for adding new load details */}
-              <div className="field">
-                <input
-                  id="loadNumber"
-                  type="text"
-                  placeholder="Load #"
-                  value={newLoad.loadNumber}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, loadNumber: e.target.value })
-                  }
-                />
-                <br />
-                <div className="error">{errors.loadNumber}</div>
-              </div>
+      <>
+        <div className="main-button">
+          <Button onClick={() => setIsOpen(true)}>Add Load</Button>
+        </div>
+        <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
+          <DialogPanel>
+            <form>
               <div className="form">
-                {/* Use the DriverDropdown component to select a driver */}
-                <DriverDropdown
-                  driverList={drivers}
-                  selectedDriver={newLoad.driverObject}
-                  onSelectDriver={handleDriverSelect}
-                />
-                <div className="error">{errors.driverObject}</div>
-              </div>
+                {/* Input fields for adding new load details */}
+                <div className="field">
+                  <input
+                    id="loadNumber"
+                    type="text"
+                    placeholder="Load #"
+                    value={newLoad.loadNumber}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, loadNumber: e.target.value })
+                    }
+                  />
+                  <br />
+                  <div className="error">{errors.loadNumber}</div>
+                </div>
+                <div className="form">
+                  {/* Use the DriverDropdown component to select a driver */}
+                  <DriverDropdown
+                    driverList={drivers}
+                    selectedDriver={newLoad.driverObject}
+                    onSelectDriver={handleDriverSelect}
+                  />
+                  <div className="error">{errors.driverObject}</div>
+                </div>
 
-              <div className="form">
-                {/* Use the TruckDropdown component to select a truck */}
-                <TruckDropdown
-                  truckList={trucks}
-                  selectedTruck={newLoad.truckObject}
-                  onSelectTruck={handleTruckSelect}
-                />
-                <div className="error">{errors.truckObject}</div>
-              </div>
+                <div className="form">
+                  {/* Use the TruckDropdown component to select a truck */}
+                  <TruckDropdown
+                    truckList={trucks}
+                    selectedTruck={newLoad.truckObject}
+                    onSelectTruck={handleTruckSelect}
+                  />
+                  <div className="error">{errors.truckObject}</div>
+                </div>
 
-              <div className="form">
-                {/* Use the TrailerDropdown component to select a trailer */}
-                <TrailerDropdown
-                  trailerList={trailers}
-                  selectedTrailer={newLoad.trailerObject}
-                  onSelectTrailer={handleTrailerSelect}
-                />
-                <div className="error">{errors.trailerObject}</div>
-              </div>
+                <div className="form">
+                  {/* Use the TrailerDropdown component to select a trailer */}
+                  <TrailerDropdown
+                    trailerList={trailers}
+                    selectedTrailer={newLoad.trailerObject}
+                    onSelectTrailer={handleTrailerSelect}
+                  />
+                  <div className="error">{errors.trailerObject}</div>
+                </div>
 
-              <div className="field">
-                {/* Use the DriverForm component to add new drivers */}
-                {/* <DriverForm onAddDriver={handleAddDriver} /> */}
+                <div className="field">
+                  {/* Use the DriverForm component to add new drivers */}
+                  {/* <DriverForm onAddDriver={handleAddDriver} /> */}
+                </div>
+                <div className="field">
+                  <input
+                    id="pickupTime"
+                    type="datetime-local"
+                    placeholder="Pick-Up Time"
+                    value={newLoad.pickupTime}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, pickupTime: e.target.value })
+                    }
+                  />
+                  <br />
+                </div>
+                <div className="field">
+                  <input
+                    id="deliveryTime"
+                    type="datetime-local"
+                    placeholder="Delivery Time"
+                    value={newLoad.deliveryTime}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, deliveryTime: e.target.value })
+                    }
+                  />
+                  <br />
+                </div>
+                <div className="field">
+                  <input
+                    id="documents"
+                    type="file"
+                    placeholder="Documents"
+                    value={newLoad.documents}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, documents: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="field">
+                  <input
+                    id="price"
+                    type="number"
+                    placeholder="Price"
+                    value={newLoad.price}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, price: e.target.value })
+                    }
+                  />
+                  <br />
+                  <div className="error">{errors.price}</div>
+                </div>
+                <div className="field">
+                  <input
+                    id="detentionPrice"
+                    type="number"
+                    placeholder="Detention"
+                    value={newLoad.detentionPrice}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, detentionPrice: e.target.value })
+                    }
+                  />
+                  <br />
+                  <div className="error">{errors.detentionPrice}</div>
+                </div>
+                <div className="field">
+                  <input
+                    id="allMiles"
+                    type="number"
+                    placeholder="Miles"
+                    value={newLoad.allMiles}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, allMiles: e.target.value })
+                    }
+                  />
+                  <br />
+                  <div className="error">{errors.allMiles}</div>
+                </div>
+                <div className="field">
+                  <input
+                    id="fuelGallons"
+                    type="number"
+                    placeholder="Fuel"
+                    value={newLoad.fuelGallons}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, fuelGallons: e.target.value })
+                    }
+                  />
+                </div>
+                {/* Add similar input fields for the other columns */}
+                <button onClick={handleNewLoadSubmit}>Add</button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsOpen(false);
+                  }}
+                >
+                  Close
+                </button>
               </div>
-              <div className="field">
-                <input
-                  id="pickupTime"
-                  type="datetime-local"
-                  placeholder="Pick-Up Time"
-                  value={newLoad.pickupTime}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, pickupTime: e.target.value })
-                  }
-                />
-                <br />
-              </div>
-              <div className="field">
-                <input
-                  id="deliveryTime"
-                  type="datetime-local"
-                  placeholder="Delivery Time"
-                  value={newLoad.deliveryTime}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, deliveryTime: e.target.value })
-                  }
-                />
-                <br />
-              </div>
-              <div className="field">
-                <input
-                  id="documents"
-                  type="file"
-                  placeholder="Documents"
-                  value={newLoad.documents}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, documents: e.target.value })
-                  }
-                />
-              </div>
-              <div className="field">
-                <input
-                  id="price"
-                  type="number"
-                  placeholder="Price"
-                  value={newLoad.price}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, price: e.target.value })
-                  }
-                />
-                <br />
-                <div className="error">{errors.price}</div>
-              </div>
-              <div className="field">
-                <input
-                  id="detentionPrice"
-                  type="number"
-                  placeholder="Detention"
-                  value={newLoad.detentionPrice}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, detentionPrice: e.target.value })
-                  }
-                />
-                <br />
-                <div className="error">{errors.detentionPrice}</div>
-              </div>
-              <div className="field">
-                <input
-                  id="allMiles"
-                  type="number"
-                  placeholder="Miles"
-                  value={newLoad.allMiles}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, allMiles: e.target.value })
-                  }
-                />
-                <br />
-                <div className="error">{errors.allMiles}</div>
-              </div>
-              <div className="field">
-                <input
-                  id="fuelGallons"
-                  type="number"
-                  placeholder="Fuel"
-                  value={newLoad.fuelGallons}
-                  onChange={(e) =>
-                    setNewLoad({ ...newLoad, fuelGallons: e.target.value })
-                  }
-                />
-              </div>
-              {/* Add similar input fields for the other columns */}
-              <button onClick={handleNewLoadSubmit}>Add</button>
-            </div>
-          </form>
-        )}
-      </div>
+            </form>
+          </DialogPanel>
+        </Dialog>
+      </>
 
       <div>
         <p></p>
@@ -587,7 +602,6 @@ const Overview: React.FC = () => {
             </TableHead>
             {/* The table body */}
             <tbody>
-              
               {sortedData.map((load, index) => (
                 <TableRow key={index}>
                   <td>
