@@ -1,5 +1,12 @@
 import { SignIn } from "@clerk/clerk-react";
+import { dark } from "@clerk/themes";
 
-export default function SignInPage() {
-  return <SignIn />;
-}
+const SignInPage = () => (
+  <SignIn
+    appearance={{
+      baseTheme: dark,
+    }}
+  />
+);
+
+export default SignInPage;
