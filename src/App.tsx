@@ -19,6 +19,13 @@ import SignInPage from "./routes/sign-in";
 const App: React.FC = () => {
   return (
     <div className="App">
+      <SignedOut>
+        <Router>
+          <Routes>
+            <Route path="/sign-in" element={<SignInPage />} />
+          </Routes>
+        </Router>
+      </SignedOut>
       <SignedIn>
         <UserButton afterSignOutUrl="/sign-in" />
         <Router>
@@ -31,13 +38,6 @@ const App: React.FC = () => {
           </Routes>
         </Router>
       </SignedIn>
-      <SignedOut>
-        <Router>
-          <Routes>
-            <Route path="/sign-in" element={<SignInPage />} />
-          </Routes>
-        </Router>
-      </SignedOut>
     </div>
   );
 };
