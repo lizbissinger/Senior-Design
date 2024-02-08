@@ -72,7 +72,7 @@ h3 {
 .main-button {
   display: flex;
   justify-content: flex-end;
-  margin: 20px;
+  margin-left: auto;
 }
 
 /* .popup {

@@ -53,6 +53,7 @@ const TrailerForm: React.FC<TrailerFormProps> = ({
 
   return (
     <form className="trailer-form" onSubmit={handleSubmit}>
+      <div className="field">
       <input
         type="text"
         name="trailerNumber"
@@ -61,6 +62,8 @@ const TrailerForm: React.FC<TrailerFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
+      <div className="field">
       <input
         type="text"
         name="make"
@@ -69,6 +72,8 @@ const TrailerForm: React.FC<TrailerFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
+      <div className="field">
       <input
         type="text"
         name="model"
@@ -77,6 +82,8 @@ const TrailerForm: React.FC<TrailerFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
+      <div className="field">
       <input
         type="number"
         name="year"
@@ -85,6 +92,8 @@ const TrailerForm: React.FC<TrailerFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
+      <div className="field">
       <input
         type="text"
         name="vin"
@@ -93,6 +102,7 @@ const TrailerForm: React.FC<TrailerFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
       <Button className= "mt-3" type="submit">
         {editingTrailer ? "Update Trailer" : "Add Trailer"}
       </Button>
