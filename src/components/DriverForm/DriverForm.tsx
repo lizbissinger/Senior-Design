@@ -63,6 +63,7 @@ const DriverForm: React.FC<DriverFormProps> = ({
 
   return (
     <form className="driver-form" onSubmit={handleSubmit}>
+      <div className="field">
       <input
         type="text"
         name="name"
@@ -71,6 +72,8 @@ const DriverForm: React.FC<DriverFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
+      <div className="field">
       <input
         type="text"
         name="licenseNumber"
@@ -79,6 +82,8 @@ const DriverForm: React.FC<DriverFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
+      <div className="field">
       <input
         type="tel"
         name="phoneNumber"
@@ -87,6 +92,8 @@ const DriverForm: React.FC<DriverFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
+      <div className="field">
       <input
         type="email"
         name="email"
@@ -95,6 +102,7 @@ const DriverForm: React.FC<DriverFormProps> = ({
         onChange={handleInputChange}
         required
       />
+      </div>
       <Button className= "mt-3" type="submit">
         {editingDriver ? "Update Driver" : "Add Driver"}
       </Button>

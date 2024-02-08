@@ -425,7 +425,7 @@ const FleetManagement: React.FC = () => {
             onClose={() => setIsOpenTruckDialog(false)}
             static={true}
           >
-            <DialogPanel>
+            <DialogPanel className="form">
               <TruckForm
                 onAddTruck={handleAddTruck}
                 onEditTruck={handleEditTruck}
@@ -439,7 +439,7 @@ const FleetManagement: React.FC = () => {
             onClose={() => setIsOpenTrailerDialog(false)}
             static={true}
           >
-            <DialogPanel>
+            <DialogPanel className="form">
               <TrailerForm
                 onAddTrailer={handleAddTrailer}
                 onEditTrailer={handleEditTrailer}
