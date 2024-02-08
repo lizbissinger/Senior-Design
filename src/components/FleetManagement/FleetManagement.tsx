@@ -389,7 +389,7 @@ const FleetManagement: React.FC = () => {
   return (
     <div className="fleet-management-container">
       <div className="form">
-        <Dropdown>
+        <Dropdown className="main-button">
           <Dropdown.Toggle variant="primary" id="dropdown-basic">
             Add
           </Dropdown.Toggle>
