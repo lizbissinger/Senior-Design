@@ -22,12 +22,11 @@ const App: React.FC = () => {
       <SignedOut>
         <Router>
           <Routes>
-            <Route path="/sign-in" element={<SignInPage />} />
+            <Route path="/" element={<SignInPage />} />
           </Routes>
         </Router>
       </SignedOut>
       <SignedIn>
-        <UserButton afterSignOutUrl="/sign-in" />
         <Router>
           <Routes>
             <Route path="/dashboard/*" element={<Dashboard />} />
