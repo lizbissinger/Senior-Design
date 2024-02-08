@@ -80,6 +80,18 @@ const FleetManagement: React.FC = () => {
     null
   );
 
+  const [isOpenDriverDialog, setIsOpenDriverDialog] = useState(false);
+  const [isOpenTruckDialog, setIsOpenTruckDialog] = useState(false);
+  const [isOpenTrailerDialog, setIsOpenTrailerDialog] = useState(false);
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
+
+  useEffect(() => {
+    setIsOpenDriverDialog(false);
+    setIsOpenTruckDialog(false);
+    setIsOpenTrailerDialog(false);
+    setIsOpenDialog(false);
+  }, []);
+
   const fetchDriverDetails = async () => {
     try {
       const allDrivers = await GetAllDrivers();
@@ -270,20 +282,30 @@ const FleetManagement: React.FC = () => {
         setSelectedDriver(item as DriverDetail);
         setEditingDriver(item as DriverDetail);
         setShowDriverForm(true);
+        setShowTruckForm(false);
+        setShowTrailerForm(false);
+        setIsOpenDriverDialog(true);
         break;
       case "truck":
         setSelectedTruck(item as TruckDetail);
         setEditingTruck(item as TruckDetail);
+        setShowDriverForm(false);
         setShowTruckForm(true);
+        setShowTrailerForm(false);
+        setIsOpenTruckDialog(true);
         break;
       case "trailer":
         setSelectedTrailer(item as TrailerDetail);
         setEditingTrailer(item as TrailerDetail);
+        setShowDriverForm(false);
+        setShowTruckForm(false);
         setShowTrailerForm(true);
+        setIsOpenTrailerDialog(true);
         break;
       default:
         break;
     }
+    setIsOpenDialog(false);
   };
 
   const handleEditDriver = async (editedDriver: DriverDetail) => {
@@ -364,16 +386,6 @@ const FleetManagement: React.FC = () => {
     }
   };
 
-  const [isOpenLoadDialog, setIsOpenLoadDialog] = useState(false);
-  const [isOpenTruckDialog, setIsOpenTruckDialog] = useState(false);
-  const [isOpenTrailerDialog, setIsOpenTrailerDialog] = useState(false);
-
-  useEffect(() => {
-    setIsOpenLoadDialog(false);
-    setIsOpenTrailerDialog(false);
-    setIsOpenTrailerDialog(false);
-  }, []);
-
   return (
     <div className="fleet-management-container">
       <div className="form">
@@ -383,7 +395,7 @@ const FleetManagement: React.FC = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setIsOpenLoadDialog(true)}>
+            <Dropdown.Item onClick={() => setIsOpenDriverDialog(true)}>
               Add Load
             </Dropdown.Item>
             <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)}>
@@ -395,8 +407,8 @@ const FleetManagement: React.FC = () => {
           </Dropdown.Menu>
 
           <Dialog
-            open={isOpenLoadDialog}
-            onClose={() => setIsOpenLoadDialog(false)}
+            open={isOpenDriverDialog}
+            onClose={() => setIsOpenDriverDialog(false)}
             static={true}
           >
             <DialogPanel className="form">
