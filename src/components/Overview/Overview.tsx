@@ -192,6 +192,7 @@ const Overview: React.FC = () => {
       comments: "",
     });
     setShowForm(false);
+    setIsOpen(false);
   };
 
   const deleteLoad = async (id: string) => {
