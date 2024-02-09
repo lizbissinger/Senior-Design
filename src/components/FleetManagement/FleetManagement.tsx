@@ -390,6 +390,9 @@ const FleetManagement: React.FC = () => {
   const handleCloseDriverDialog = () => {
     setIsOpenDriverDialog(false);
   };
+  const handleCloseTruckDialog = () => {
+    setIsOpenTruckDialog(false);
+  };
 
   return (
     <div className="fleet-management-container">
@@ -434,7 +437,11 @@ const FleetManagement: React.FC = () => {
             onClose={() => setIsOpenTruckDialog(false)}
             static={true}
           >
-            <DialogPanel className="form">
+            <DialogPanel>
+              <CloseButton
+                onClick={handleCloseTruckDialog}
+                className="main-button"
+              ></CloseButton>
               <TruckForm
                 onAddTruck={handleAddTruck}
                 onEditTruck={handleEditTruck}
