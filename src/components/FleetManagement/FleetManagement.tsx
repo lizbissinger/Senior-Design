@@ -151,7 +151,7 @@ const FleetManagement: React.FC = () => {
         drivers: [...prevDetails.drivers, addedDriver],
       }));
     }
-    setShowDriverForm(false);
+    setIsOpenDriverDialog(false);
   };
 
   const handleAddTruck = async (truck: TruckDetail) => {
@@ -164,7 +164,7 @@ const FleetManagement: React.FC = () => {
         trucks: [...prevDetails.trucks, addedTruck],
       }));
     }
-    setShowTruckForm(false);
+    setIsOpenTruckDialog(false);
   };
 
   const handleAddTrailer = async (trailer: TrailerDetail) => {
@@ -177,7 +177,7 @@ const FleetManagement: React.FC = () => {
         trailers: [...prevDetails.trailers, addedTrailer],
       }));
     }
-    setShowTrailerForm(false);
+    setIsOpenTrailerDialog(false);
   };
 
   const handleDeleteDriver = async (driver: DriverDetail, index: number) => {
@@ -329,6 +329,7 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowDriverForm(false);
+      setIsOpenDriverDialog(false);
       setEditingDriver(null);
     } catch (error) {
       console.error("Error updating driver:", error);
@@ -355,6 +356,7 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowTruckForm(false);
+      setIsOpenTruckDialog(false);
       setEditingTruck(null);
     } catch (error) {
       console.error("Error updating truck:", error);
@@ -381,6 +383,7 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowTrailerForm(false);
+      setIsOpenTruckDialog(false);
       setEditingTrailer(null);
     } catch (error) {
       console.error("Error updating trailer:", error);
