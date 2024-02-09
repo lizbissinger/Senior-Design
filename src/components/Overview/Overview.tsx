@@ -192,6 +192,7 @@ const Overview: React.FC = () => {
       comments: "",
     });
     setShowForm(false);
+    setIsOpen(false);
   };
 
   const deleteLoad = async (id: string) => {
@@ -328,6 +329,9 @@ const Overview: React.FC = () => {
         </div>
         <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
           <DialogPanel>
+            <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              Load Information
+            </h3>
             <form className="mt-8">
               <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                 <div className="col-span-full">
@@ -335,7 +339,7 @@ const Overview: React.FC = () => {
                     htmlFor="loadNumber"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                   >
-                    Load #<span className="text-red-500">*</span>
+                    Load Number<span className="text-red-500">*</span>
                   </label>
                   <TextInput
                     type="text"
@@ -500,7 +504,7 @@ const Overview: React.FC = () => {
                     htmlFor="pickupTime"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                   >
-                    Pick-up Time
+                    Pick-up Date & Time
                     <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -519,7 +523,7 @@ const Overview: React.FC = () => {
                     htmlFor="deliveryTime"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                   >
-                    Delivery Time
+                    Delivery Date & Time
                     <span className="text-red-500">*</span>
                   </label>
                   <input

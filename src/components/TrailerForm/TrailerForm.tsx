@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TrailerDetail } from "../Types/types";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
+import { Divider, TextInput, NumberInput } from "@tremor/react";
 
 interface TrailerFormProps {
   onAddTrailer: (trailer: TrailerDetail) => void;
@@ -52,61 +53,115 @@ const TrailerForm: React.FC<TrailerFormProps> = ({
   };
 
   return (
-    <form className="trailer-form" onSubmit={handleSubmit}>
-      <div className="field">
-      <input
-        type="text"
-        name="trailerNumber"
-        placeholder="Trailer Number"
-        value={newTrailer.trailerNumber}
-        onChange={handleInputChange}
-        required
-      />
+    <>
+      <div className="sm:mx-auto sm:max-w-2xl">
+        <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+          Trailer Information
+        </h3>
+        <form onSubmit={handleSubmit}>
+          <Divider />
+          <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+            <div className="col-span-full sm:col-span-3">
+              <label
+                htmlFor="trailerNumber"
+                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+              >
+                Trailer Number
+                <span className="text-red-500">*</span>
+              </label>
+              <TextInput
+                type="text"
+                name="trailerNumber"
+                placeholder="Trailer Number"
+                value={newTrailer.trailerNumber}
+                onChange={handleInputChange}
+                className="mt-2"
+                required
+              />
+            </div>
+            <div className="col-span-full sm:col-span-3">
+              <label
+                htmlFor="year"
+                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+              >
+                Year
+                <span className="text-red-500">*</span>
+              </label>
+              <NumberInput
+                name="year"
+                placeholder="Year"
+                value={newTrailer.year}
+                onChange={handleInputChange}
+                className="mt-2"
+                required
+              />
+            </div>
+            <div className="col-span-full sm:col-span-3">
+              <label
+                htmlFor="make"
+                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+              >
+                Make
+                <span className="text-red-500">*</span>
+              </label>
+              <TextInput
+                type="text"
+                name="make"
+                placeholder="Make"
+                value={newTrailer.make}
+                onChange={handleInputChange}
+                className="mt-2"
+                required
+              />
+            </div>
+            <div className="col-span-full sm:col-span-3">
+              <label
+                htmlFor="model"
+                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+              >
+                Model
+                <span className="text-red-500">*</span>
+              </label>
+              <TextInput
+                type="text"
+                name="model"
+                placeholder="Model"
+                value={newTrailer.model}
+                onChange={handleInputChange}
+                className="mt-2"
+              />
+            </div>
+            <div className="col-span-full">
+              <label
+                htmlFor="VIN"
+                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+              >
+                VIN
+                <span className="text-red-500">*</span>
+              </label>
+              <TextInput
+                type="text"
+                name="vin"
+                placeholder="VIN"
+                value={newTrailer.vin}
+                onChange={handleInputChange}
+                className="mt-2"
+                required
+              />
+            </div>
+          </div>
+          <Divider />
+          <div className="flex items-center justify-end space-x-4">
+            <button
+              type="submit"
+              className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
+            >
+              {editingTrailer ? "Update Trailer" : "Add Trailer"}
+            </button>
+          </div>
+        </form>
       </div>
-      <div className="field">
-      <input
-        type="text"
-        name="make"
-        placeholder="Make"
-        value={newTrailer.make}
-        onChange={handleInputChange}
-        required
-      />
-      </div>
-      <div className="field">
-      <input
-        type="text"
-        name="model"
-        placeholder="Model"
-        value={newTrailer.model}
-        onChange={handleInputChange}
-        required
-      />
-      </div>
-      <div className="field">
-      <input
-        type="number"
-        name="year"
-        placeholder="Year"
-        value={newTrailer.year}
-        onChange={handleInputChange}
-        required
-      />
-      </div>
-      <div className="field">
-      <input
-        type="text"
-        name="vin"
-        placeholder="VIN"
-        value={newTrailer.vin}
-        onChange={handleInputChange}
-        required
-      />
-      </div>
-      <Button className= "mt-3" type="submit">
-        {editingTrailer ? "Update Trailer" : "Add Trailer"}
-      </Button>
-    </form>
+    </>
   );
 };
 
