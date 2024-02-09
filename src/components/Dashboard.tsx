@@ -85,7 +85,7 @@ const Dashboard: React.FC = () => {
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
-                      <UserButton afterSignOutUrl="/sign-in" />
+                      <UserButton afterSignOutUrl="/" />
                     </div>
                     <Transition
                       as={Fragment}
