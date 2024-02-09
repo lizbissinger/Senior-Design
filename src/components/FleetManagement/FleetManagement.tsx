@@ -396,7 +396,7 @@ const FleetManagement: React.FC = () => {
 
           <Dropdown.Menu>
             <Dropdown.Item onClick={() => setIsOpenDriverDialog(true)}>
-              Add Load
+              Add Driver
             </Dropdown.Item>
             <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)}>
               Add Truck

@@ -240,79 +240,8 @@ const Overview: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
-  const validateValues = (inputValues: LoadDetail) => {
-    let errorsObj: any = {
-      loadNumber: "",
-      truckObject: "",
-      trailerObject: "",
-      driverObject: "",
-      pickupTime: "",
-      deliveryTime: "",
-      documents: "",
-      price: "",
-      detentionPrice: "",
-      allMiles: "",
-      fuelGallons: "",
-    };
-
-    Object.entries(errorsObj).map(([key, value]) => {
-      const inputField = document.getElementById(key);
-      if (inputField) {
-        inputField.classList.remove("invalid");
-      }
-    });
-
-    if (inputValues.loadNumber.length == 0) {
-      errorsObj.loadNumber = "Load # is required";
-    }
-
-    if (inputValues.truckObject.length == 0) {
-      errorsObj.truckObject = "Truck # is required";
-    }
-
-    if (inputValues.trailerObject.length == 0) {
-      errorsObj.trailerObject = "Trailer # is required";
-    }
-
-    if (inputValues.price.length == 0) {
-      errorsObj.price = "Price is required";
-    } else if (isNaN(parseInt(inputValues.price))) {
-      errorsObj.price = "Price must be an amount";
-    }
-
-    if (inputValues.detentionPrice.length > 0) {
-      if (isNaN(parseInt(inputValues.detentionPrice))) {
-        errorsObj.detentionPrice = "Detention must be an amount";
-      }
-    }
-
-    if (inputValues.allMiles.length == 0) {
-      errorsObj.allMiles = "Miles are required";
-    } else if (isNaN(parseInt(inputValues.allMiles))) {
-      errorsObj.allMiles = "Miles must be a number";
-    }
-
-    if (inputValues.driverObject.length == 0) {
-      errorsObj.driverObject = "Please select a driver";
-    }
-
-    Object.entries(errorsObj).map(([key, value]) => {
-      if (typeof value === "string") {
-        if (value.length > 0) {
-          const inputField = document.getElementById(key);
-          if (inputField) {
-            inputField.classList.add("invalid");
-          }
-        }
-      }
-    });
-
-    return errorsObj;
-  };
-
   const handleNewLoadSubmit = (event: any) => {
     event.preventDefault();
-    setErrors(validateValues(newLoad));
     setSubmitting(true);
   };
 
@@ -392,7 +321,6 @@ const Overview: React.FC = () => {
           completedCount={completedCount}
         />
         <TotalPricePerDriverChart loadDetails={loadDetails} />
-        {/* can add more components here within additional Col components */}
       </Grid>
       <>
         <div className="main-button">
