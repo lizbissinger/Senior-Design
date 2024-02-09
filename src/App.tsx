@@ -9,7 +9,7 @@ import Reports from './components/Reports/Reports';
 import Finance from './components/Finance/Finance'
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div className="App h-max dark:bg-slate-900">
       <Router>
         <Routes>
           <Route path="/dashboard/*" element={<Dashboard />} />
