@@ -46,6 +46,7 @@ import {
   DialogPanel,
 } from "@tremor/react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
+import CloseButton from "react-bootstrap/CloseButton";
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -150,7 +151,7 @@ const FleetManagement: React.FC = () => {
         drivers: [...prevDetails.drivers, addedDriver],
       }));
     }
-    setShowDriverForm(false);
+    setIsOpenDriverDialog(false);
   };
 
   const handleAddTruck = async (truck: TruckDetail) => {
@@ -163,7 +164,7 @@ const FleetManagement: React.FC = () => {
         trucks: [...prevDetails.trucks, addedTruck],
       }));
     }
-    setShowTruckForm(false);
+    setIsOpenTruckDialog(false);
   };
 
   const handleAddTrailer = async (trailer: TrailerDetail) => {
@@ -176,7 +177,7 @@ const FleetManagement: React.FC = () => {
         trailers: [...prevDetails.trailers, addedTrailer],
       }));
     }
-    setShowTrailerForm(false);
+    setIsOpenTrailerDialog(false);
   };
 
   const handleDeleteDriver = async (driver: DriverDetail, index: number) => {
@@ -328,6 +329,7 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowDriverForm(false);
+      setIsOpenDriverDialog(false);
       setEditingDriver(null);
     } catch (error) {
       console.error("Error updating driver:", error);
@@ -354,6 +356,7 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowTruckForm(false);
+      setIsOpenTruckDialog(false);
       setEditingTruck(null);
     } catch (error) {
       console.error("Error updating truck:", error);
@@ -380,23 +383,34 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowTrailerForm(false);
+      setIsOpenTruckDialog(false);
       setEditingTrailer(null);
     } catch (error) {
       console.error("Error updating trailer:", error);
     }
   };
 
+  const handleCloseDriverDialog = () => {
+    setIsOpenDriverDialog(false);
+  };
+  const handleCloseTruckDialog = () => {
+    setIsOpenTruckDialog(false);
+  };
+  const handleCloseTrailerDialog = () => {
+    setIsOpenTrailerDialog(false);
+  };
+
   return (
     <div className="fleet-management-container">
-      <div className="form">
-        <Dropdown className="main-button">
+      <div>
+        <Dropdown className="main-button mb-3">
           <Dropdown.Toggle variant="primary" id="dropdown-basic">
             Add
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
             <Dropdown.Item onClick={() => setIsOpenDriverDialog(true)}>
-              Add Load
+              Add Driver
             </Dropdown.Item>
             <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)}>
               Add Truck
@@ -411,7 +425,11 @@ const FleetManagement: React.FC = () => {
             onClose={() => setIsOpenDriverDialog(false)}
             static={true}
           >
-            <DialogPanel className="form">
+            <DialogPanel>
+              <CloseButton
+                onClick={handleCloseDriverDialog}
+                className="main-button"
+              ></CloseButton>
               <DriverForm
                 onAddDriver={handleAddDriver}
                 onEditDriver={handleEditDriver}
@@ -425,7 +443,11 @@ const FleetManagement: React.FC = () => {
             onClose={() => setIsOpenTruckDialog(false)}
             static={true}
           >
-            <DialogPanel className="form">
+            <DialogPanel>
+              <CloseButton
+                onClick={handleCloseTruckDialog}
+                className="main-button"
+              ></CloseButton>
               <TruckForm
                 onAddTruck={handleAddTruck}
                 onEditTruck={handleEditTruck}
@@ -439,7 +461,11 @@ const FleetManagement: React.FC = () => {
             onClose={() => setIsOpenTrailerDialog(false)}
             static={true}
           >
-            <DialogPanel className="form">
+            <DialogPanel>
+              <CloseButton
+                onClick={handleCloseTrailerDialog}
+                className="main-button"
+              ></CloseButton>
               <TrailerForm
                 onAddTrailer={handleAddTrailer}
                 onEditTrailer={handleEditTrailer}
@@ -450,7 +476,7 @@ const FleetManagement: React.FC = () => {
         </Dropdown>
       </div>
 
-      <div className="load-details-table">
+      <div>
         <VehiclesDetailsTable
           drivers={vehiclesDetails.drivers}
           trucks={vehiclesDetails.trucks}
