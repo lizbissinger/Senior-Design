@@ -8,6 +8,7 @@ export default function SignUpPage() {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
+        backgroundColor: "#7392e9",
       }}
     >
       <SignUp
@@ -27,7 +28,6 @@ export default function SignUpPage() {
           },
         }}
       />
-      ;
     </div>
   );
 }
