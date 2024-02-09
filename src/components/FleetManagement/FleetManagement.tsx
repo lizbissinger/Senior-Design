@@ -393,6 +393,9 @@ const FleetManagement: React.FC = () => {
   const handleCloseTruckDialog = () => {
     setIsOpenTruckDialog(false);
   };
+  const handleCloseTrailerDialog = () => {
+    setIsOpenTrailerDialog(false);
+  };
 
   return (
     <div className="fleet-management-container">
@@ -455,7 +458,11 @@ const FleetManagement: React.FC = () => {
             onClose={() => setIsOpenTrailerDialog(false)}
             static={true}
           >
-            <DialogPanel className="form">
+            <DialogPanel>
+              <CloseButton
+                onClick={handleCloseTrailerDialog}
+                className="main-button"
+              ></CloseButton>
               <TrailerForm
                 onAddTrailer={handleAddTrailer}
                 onEditTrailer={handleEditTrailer}
