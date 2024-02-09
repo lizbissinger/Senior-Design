@@ -46,6 +46,7 @@ import {
   DialogPanel,
 } from "@tremor/react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
+import CloseButton from "react-bootstrap/CloseButton";
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -386,6 +387,10 @@ const FleetManagement: React.FC = () => {
     }
   };
 
+  const handleCloseDriverDialog = () => {
+    setIsOpenDriverDialog(false);
+  };
+
   return (
     <div className="fleet-management-container">
       <div className="form">
@@ -411,7 +416,11 @@ const FleetManagement: React.FC = () => {
             onClose={() => setIsOpenDriverDialog(false)}
             static={true}
           >
-            <DialogPanel className="form">
+            <DialogPanel>
+              <CloseButton
+                onClick={handleCloseDriverDialog}
+                className="main-button"
+              ></CloseButton>
               <DriverForm
                 onAddDriver={handleAddDriver}
                 onEditDriver={handleEditDriver}
