@@ -476,7 +476,7 @@ const FleetManagement: React.FC = () => {
         </Dropdown>
       </div>
 
-      <div className="load-details-table">
+      <div>
         <VehiclesDetailsTable
           drivers={vehiclesDetails.drivers}
           trucks={vehiclesDetails.trucks}
