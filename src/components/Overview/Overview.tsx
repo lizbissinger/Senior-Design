@@ -584,7 +584,7 @@ const Overview: React.FC = () => {
       <div>
         <p></p>
         <div className="table-container">
-          <Table className="">
+          <Table className="table">
             {/* The table headers */}
             <TableHead>
               <TableRow>
@@ -634,7 +634,7 @@ const Overview: React.FC = () => {
               </TableRow>
             </TableHead>
             {/* The table body */}
-            <tbody>
+            <TableBody>
               {sortedData.map((load, index) => (
                 <TableRow key={index}>
                   <td>
@@ -910,7 +910,7 @@ const Overview: React.FC = () => {
                   </td>
                 </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </div>
       </div>
