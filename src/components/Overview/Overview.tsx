@@ -516,6 +516,7 @@ const Overview: React.FC = () => {
                     }
                     className="mt-2"
                   />
+                  <Divider />
                 </div>
                 <div className="col-span-full sm:col-span-3">
                   <label
@@ -533,7 +534,41 @@ const Overview: React.FC = () => {
                     }
                     className="mt-2"
                   />
+                  <Divider />
                 </div>
+
+                <div className="col-span-full sm:col-span-3">
+                  <label
+                    htmlFor="pickupLocation"
+                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                  >
+                    Pick-up Location
+                  </label>
+                  <TextInput
+                    type="text"
+                    id="pickupLocation"
+                    autoComplete="address-level2"
+                    placeholder="Pick-up Location"
+                    className="mt-2"
+                  />
+                </div>
+
+                <div className="col-span-full sm:col-span-3">
+                  <label
+                    htmlFor="deliveryLocation"
+                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                  >
+                    Delivery Location
+                  </label>
+                  <TextInput
+                    type="text"
+                    id="deliveryLocation"
+                    autoComplete="address-level2"
+                    placeholder="Delivery Location"
+                    className="mt-2"
+                  />
+                </div>
+
                 <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="pickupTime"
