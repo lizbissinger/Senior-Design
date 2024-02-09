@@ -516,7 +516,6 @@ const Overview: React.FC = () => {
                     }
                     className="mt-2"
                   />
-                  <Divider />
                 </div>
                 <div className="col-span-full sm:col-span-3">
                   <label
@@ -534,7 +533,6 @@ const Overview: React.FC = () => {
                     }
                     className="mt-2"
                   />
-                  <Divider />
                 </div>
 
                 <div className="col-span-full sm:col-span-3">
