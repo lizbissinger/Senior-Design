@@ -46,6 +46,7 @@ const Overview: React.FC = () => {
   const [trucks, setTrucks] = useState<string[]>([]);
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   console.log("Driver", drivers);
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
@@ -173,8 +174,12 @@ const Overview: React.FC = () => {
 
   const [fetchingActive, setFetchingActive] = useState(false);
 
+  const filteredLoadDetails = selectedStatus
+    ? loadDetails.filter((load) => load.status === selectedStatus)
+    : loadDetails;
+
   const sortedData = _.orderBy(
-    loadDetails,
+    filteredLoadDetails,
     [sortConfig.key],
     [sortConfig.direction]
   );
@@ -195,6 +200,14 @@ const Overview: React.FC = () => {
 
   const handleTrailerSelect = (selectedTrailer: string) => {
     setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
+  };
+
+  const handleStatusClick = (status: string) => {
+    setSelectedStatus(status);
+  };
+
+  const handleShowAllClick = () => {
+    setSelectedStatus(null);
   };
 
   const addLoadDetail = async () => {
@@ -355,11 +368,13 @@ const Overview: React.FC = () => {
           toDoCount={toDoCount}
           inProgressCount={inProgressCount}
           completedCount={completedCount}
+          onStatusClick={handleStatusClick}
         />
         <TotalPricePerDriverChart loadDetails={loadDetails} />
       </Grid>
       <>
         <div className="main-button">
+          <Button onClick={handleShowAllClick}>Show All</Button>
           <Button onClick={() => setIsOpen(true)}>Add Load</Button>
         </div>
         <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
