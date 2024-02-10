@@ -5,16 +5,23 @@ interface StatusBarsProps {
   toDoCount: number;
   inProgressCount: number;
   completedCount: number;
+  onStatusClick: (status: string) => void;
 }
 
 const StatusBars: React.FC<StatusBarsProps> = ({
   toDoCount,
   inProgressCount,
   completedCount,
+  onStatusClick,
 }) => {
   return (
     <div className="status-boxes">
-      <Card className="max-w-xs" decoration="top" decorationColor="red">
+      <Card
+        className="max-w-xs"
+        decoration="top"
+        decorationColor="red"
+        onClick={() => onStatusClick("To-Do")}
+      >
         <Flex>
           <div>
             <Text>To Do</Text>
@@ -22,7 +29,12 @@ const StatusBars: React.FC<StatusBarsProps> = ({
           </div>
         </Flex>
       </Card>
-      <Card className="max-w-xs" decoration="top" decorationColor="yellow">
+      <Card
+        className="max-w-xs"
+        decoration="top"
+        decorationColor="yellow"
+        onClick={() => onStatusClick("In Progress")}
+      >
         <Flex>
           <div>
             <Text>In Progress</Text>
@@ -30,7 +42,12 @@ const StatusBars: React.FC<StatusBarsProps> = ({
           </div>
         </Flex>
       </Card>
-      <Card className="max-w-xs" decoration="top" decorationColor="green">
+      <Card
+        className="max-w-xs"
+        decoration="top"
+        decorationColor="green"
+        onClick={() => onStatusClick("Completed")}
+      >
         <Flex>
           <div>
             <Text>Completed</Text>
