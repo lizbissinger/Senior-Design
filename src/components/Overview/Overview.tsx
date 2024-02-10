@@ -26,8 +26,8 @@ import {
   TableHeaderCell,
   TableRow,
   Title,
-  MultiSelect,
-  MultiSelectItem,
+  SearchSelect,
+  SearchSelectItem,
   Grid,
   Button,
   Dialog,
@@ -40,6 +40,7 @@ import {
 import _ from "lodash"; //Sorting Library
 
 import { LoadDetail } from "../Types/types";
+import { load } from "mime";
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
@@ -182,6 +183,16 @@ const Overview: React.FC = () => {
     filteredLoadDetails,
     [sortConfig.key],
     [sortConfig.direction]
+  );
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchSelectChange = (selectedValue: any) => {
+    setSearchTerm(String(selectedValue));
+  };
+
+  const filteredLoads = sortedData.filter((load) =>
+    load.loadNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
@@ -373,7 +384,18 @@ const Overview: React.FC = () => {
         <TotalPricePerDriverChart loadDetails={loadDetails} />
       </Grid>
       <>
-        <div className="main-button">
+        <div className="main-button mt-3">
+          <SearchSelect
+            placeholder="Search Load..."
+            onValueChange={handleSearchSelectChange}
+            className="mx-1 max-w-xs"
+          >
+            {loadDetails.map((load) => (
+              <SearchSelectItem key={load.loadNumber} value={load.loadNumber}>
+                {load.loadNumber}
+              </SearchSelectItem>
+            ))}
+          </SearchSelect>
           <Button onClick={handleShowAllClick}>Show All</Button>
           <Button onClick={() => setIsOpen(true)}>Add Load</Button>
         </div>
@@ -688,7 +710,7 @@ const Overview: React.FC = () => {
             </TableHead>
             {/* The table body */}
             <TableBody>
-              {sortedData.map((load, index) => (
+              {filteredLoads.map((load, index) => (
                 <TableRow key={index}>
                   <td>
                     {editableIndex === index ? (
