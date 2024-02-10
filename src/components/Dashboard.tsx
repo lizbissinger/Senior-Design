@@ -31,7 +31,6 @@ const Dashboard: React.FC = () => {
             <div className="max-w-200xl px-2 sm:px-6 lg:px-8">
               <div className="relative flex h-16 items-center justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                  {/* Mobile menu button*/}
                   <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-neutral-950 hover:bg-[#6686DC] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <span className="absolute -inset-0.5" />
                     <span className="sr-only">Open main menu</span>
@@ -45,30 +44,29 @@ const Dashboard: React.FC = () => {
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
                     <h1 className="h-8 w-auto select-none ml-1 mb-3">
-                      <a
-                        href="/dashboard/overview"
+                      <Link
+                        to="/dashboard/overview"
                         className="no-underline text-neutral-900 hover:text-neutral-900 hover:no-underline"
                       >
                         FLEETWAVE
-                      </a>
+                      </Link>
                     </h1>
                   </div>
                   <div className="hidden sm:ml-6 sm:block mt-1">
                     <div className="flex space-x-4">
                       {navigation.map((item) => (
-                        <a
+                        <Link
                           key={item.name}
-                          href={item.href}
+                          to={item.href}
                           className={classNames(
                             item.current
                               ? "bg-[#6686DC] text-neutral-950 no-underline"
                               : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:text-neutral-950 hover:no-underline",
                             "rounded-md px-3 py-2 text-50 font-medium"
                           )}
-                          aria-current={item.current ? "page" : undefined}
                         >
                           {item.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>
@@ -83,7 +81,6 @@ const Dashboard: React.FC = () => {
                     <BellIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
 
-                  {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
                       <UserButton afterSignOutUrl="/" />
@@ -147,20 +144,18 @@ const Dashboard: React.FC = () => {
             <Disclosure.Panel className="sm:hidden">
               <div className="space-y-1 px-2 pb-3 pt-2">
                 {navigation.map((item) => (
-                  <Disclosure.Button
+                  <Link
                     key={item.name}
-                    as="a"
-                    href={item.href}
+                    to={item.href}
                     className={classNames(
                       item.current
                         ? "bg-[#6686DC] text-neutral-950"
                         : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950",
                       "block rounded-md px-3 py-2 text-base font-medium"
                     )}
-                    aria-current={item.current ? "page" : undefined}
                   >
                     {item.name}
-                  </Disclosure.Button>
+                  </Link>
                 ))}
               </div>
             </Disclosure.Panel>
@@ -173,7 +168,6 @@ const Dashboard: React.FC = () => {
           <Route path="fleet" element={<FleetManagement />} />
           <Route path="reports" element={<Reports />} />
           <Route path="finance" element={<Finance />} />
-          {/* Add more routes for other tabs */}
         </Routes>
       </div>
     </div>
