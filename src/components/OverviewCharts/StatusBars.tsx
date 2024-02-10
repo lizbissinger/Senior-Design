@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Flex, Metric, Text } from "@tremor/react";
+import "./StatusBars.css";
 
 interface StatusBarsProps {
   toDoCount: number;
@@ -14,13 +15,27 @@ const StatusBars: React.FC<StatusBarsProps> = ({
   completedCount,
   onStatusClick,
 }) => {
+  const [activeStatus, setActiveStatus] = useState<string | null>(null);
+
+  const handleStatusClick = (status: string) => {
+    if (activeStatus === status) {
+      setActiveStatus(null);
+      onStatusClick("");
+    } else {
+      setActiveStatus(status);
+      onStatusClick(status);
+    }
+  };
+
   return (
     <div className="status-boxes">
       <Card
-        className="max-w-xs"
+        className={`max-w-xs status-bar ${
+          activeStatus === "To-Do" ? "status-bar-active" : ""
+        }`}
         decoration="top"
         decorationColor="red"
-        onClick={() => onStatusClick("To-Do")}
+        onClick={() => handleStatusClick("To-Do")}
       >
         <Flex>
           <div>
@@ -30,10 +45,12 @@ const StatusBars: React.FC<StatusBarsProps> = ({
         </Flex>
       </Card>
       <Card
-        className="max-w-xs"
+        className={`max-w-xs status-bar ${
+          activeStatus === "In Progress" ? "status-bar-active" : ""
+        }`}
         decoration="top"
         decorationColor="yellow"
-        onClick={() => onStatusClick("In Progress")}
+        onClick={() => handleStatusClick("In Progress")}
       >
         <Flex>
           <div>
@@ -43,10 +60,12 @@ const StatusBars: React.FC<StatusBarsProps> = ({
         </Flex>
       </Card>
       <Card
-        className="max-w-xs"
+        className={`max-w-xs status-bar ${
+          activeStatus === "Completed" ? "status-bar-active" : ""
+        }`}
         decoration="top"
         decorationColor="green"
-        onClick={() => onStatusClick("Completed")}
+        onClick={() => handleStatusClick("Completed")}
       >
         <Flex>
           <div>

@@ -1,0 +1,16 @@
+.status-boxes {
+  display: flex;
+}
+
+.status-bar {
+  cursor: pointer;
+}
+
+.status-bar-active {
+  background-color: #f0f0f0;
+}
+
+.status-bar:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
