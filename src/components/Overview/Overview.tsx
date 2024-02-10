@@ -198,7 +198,8 @@ const Overview: React.FC = () => {
   };
 
   const addLoadDetail = async () => {
-    const returnedLoad = await CreateNewLoad(newLoad);
+    const loadWithToDoStatus = { ...newLoad, status: "To-Do" };
+    const returnedLoad = await CreateNewLoad(loadWithToDoStatus);
     if (returnedLoad) {
       setLoadDetails([...loadDetails, returnedLoad]);
     }
