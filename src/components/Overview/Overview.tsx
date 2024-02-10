@@ -72,6 +72,8 @@ const Overview: React.FC = () => {
     comments: "",
   });
 
+  const [assignedDrivers, setAssignedDrivers] = useState<string[]>([]);
+
   const fetchAllLoads = async () => {
     let allLoads: any = null;
     allLoads = await GetAllLoads();
@@ -85,6 +87,15 @@ const Overview: React.FC = () => {
       }
       setLoadDetails(loadsArr);
     }
+    let inProgressDrivers: string[] = [];
+    if (Array.isArray(allLoads)) {
+      allLoads.forEach((load) => {
+        if (load.status === "In Progress" && load.driverObject) {
+          inProgressDrivers.push(load.driverObject);
+        }
+      });
+    }
+    setAssignedDrivers(inProgressDrivers);
   };
 
   const fetchDrivers = async () => {
@@ -364,6 +375,7 @@ const Overview: React.FC = () => {
                   <DriverDropdown
                     driverList={drivers}
                     selectedDriver={newLoad.driverObject}
+                    assignedDrivers={assignedDrivers}
                     onSelectDriver={handleDriverSelect}
                   />
                 </div>
@@ -700,6 +712,7 @@ const Overview: React.FC = () => {
                       <DriverDropdown
                         driverList={drivers}
                         selectedDriver={load.driverObject}
+                        assignedDrivers={assignedDrivers}
                         onSelectDriver={(selectedDriver) => {
                           const updatedLoad = { ...load };
                           updatedLoad.driverObject = selectedDriver;
