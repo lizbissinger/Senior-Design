@@ -217,10 +217,6 @@ const Overview: React.FC = () => {
     setSelectedStatus(status);
   };
 
-  const handleShowAllClick = () => {
-    setSelectedStatus(null);
-  };
-
   const addLoadDetail = async () => {
     const loadWithToDoStatus = { ...newLoad, status: "To-Do" };
     const returnedLoad = await CreateNewLoad(loadWithToDoStatus);
@@ -383,12 +379,13 @@ const Overview: React.FC = () => {
         />
         <TotalPricePerDriverChart loadDetails={loadDetails} />
       </Grid>
+      <Divider />
       <>
         <div className="main-button mt-3">
           <SearchSelect
             placeholder="Search Load..."
             onValueChange={handleSearchSelectChange}
-            className="mx-1 max-w-xs"
+            className="mr-2 max-w-md"
           >
             {loadDetails.map((load) => (
               <SearchSelectItem key={load.loadNumber} value={load.loadNumber}>
@@ -396,7 +393,6 @@ const Overview: React.FC = () => {
               </SearchSelectItem>
             ))}
           </SearchSelect>
-          <Button onClick={handleShowAllClick}>Show All</Button>
           <Button onClick={() => setIsOpen(true)}>Add Load</Button>
         </div>
         <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
