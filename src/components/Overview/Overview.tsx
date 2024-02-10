@@ -74,6 +74,7 @@ const Overview: React.FC = () => {
 
   const [assignedDrivers, setAssignedDrivers] = useState<string[]>([]);
   const [assignedTrucks, setAssignedTrucks] = useState<string[]>([]);
+  const [assignedTrailers, setAssignedTrailers] = useState<string[]>([]);
 
   const fetchAllLoads = async () => {
     let allLoads: any = null;
@@ -108,7 +109,16 @@ const Overview: React.FC = () => {
       });
     }
     setAssignedTrucks(inProgressTrucks);
-    
+
+    let inProgressTrailers: string[] = [];
+    if (Array.isArray(allLoads)) {
+      allLoads.forEach((load) => {
+        if (load.status === "In Progress" && load.trailerObject) {
+          inProgressTrailers.push(load.trailerObject);
+        }
+      });
+    }
+    setAssignedTrailers(inProgressTrailers);
   };
 
   const fetchDrivers = async () => {
@@ -417,6 +427,7 @@ const Overview: React.FC = () => {
                   </label>
                   <TrailerDropdown
                     trailerList={trailers}
+                    assignedTrailers={assignedTrailers}
                     selectedTrailer={newLoad.trailerObject}
                     onSelectTrailer={handleTrailerSelect}
                   />
@@ -707,6 +718,7 @@ const Overview: React.FC = () => {
                     {editableIndex === index ? (
                       <TrailerDropdown
                         trailerList={trailers}
+                        assignedTrailers={assignedTrailers}
                         selectedTrailer={load.trailerObject}
                         onSelectTrailer={(selectedTrailer) => {
                           const updatedLoad = { ...load };
