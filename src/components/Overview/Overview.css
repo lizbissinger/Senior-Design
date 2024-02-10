@@ -72,6 +72,10 @@ h3 {
   border-radius: 8px;
 }
 
+table {
+  margin-top: 0 !important;
+}
+
 .load-details-table {
   width: 100%;
   white-space: nowrap;
