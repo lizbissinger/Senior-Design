@@ -3,6 +3,11 @@ body {
   margin: 0;
 }
 
+ul {
+  padding: 0 !important;
+  list-style-type: none;
+}
+
   /* .fleet-management-container {
     margin: 10px;
   } */
