@@ -73,6 +73,7 @@ const Overview: React.FC = () => {
   });
 
   const [assignedDrivers, setAssignedDrivers] = useState<string[]>([]);
+  const [assignedTrucks, setAssignedTrucks] = useState<string[]>([]);
 
   const fetchAllLoads = async () => {
     let allLoads: any = null;
@@ -87,6 +88,7 @@ const Overview: React.FC = () => {
       }
       setLoadDetails(loadsArr);
     }
+
     let inProgressDrivers: string[] = [];
     if (Array.isArray(allLoads)) {
       allLoads.forEach((load) => {
@@ -96,6 +98,17 @@ const Overview: React.FC = () => {
       });
     }
     setAssignedDrivers(inProgressDrivers);
+
+    let inProgressTrucks: string[] = [];
+    if (Array.isArray(allLoads)) {
+      allLoads.forEach((load) => {
+        if (load.status === "In Progress" && load.truckObject) {
+          inProgressTrucks.push(load.truckObject);
+        }
+      });
+    }
+    setAssignedTrucks(inProgressTrucks);
+    
   };
 
   const fetchDrivers = async () => {
@@ -389,6 +402,7 @@ const Overview: React.FC = () => {
                   </label>
                   <TruckDropdown
                     truckList={trucks}
+                    assignedTrucks={assignedTrucks}
                     selectedTruck={newLoad.truckObject}
                     onSelectTruck={handleTruckSelect}
                   />
@@ -673,6 +687,7 @@ const Overview: React.FC = () => {
                     {editableIndex === index ? (
                       <TruckDropdown
                         truckList={trucks}
+                        assignedTrucks={assignedTrucks}
                         selectedTruck={load.truckObject}
                         onSelectTruck={(selectedTruck) => {
                           const updatedLoad = { ...load };
