@@ -654,7 +654,7 @@ const Overview: React.FC = () => {
 
       <div>
         <p></p>
-        <div className="table-container">
+        <div className="overflow-height-container">
           <Table className="table">
             {/* The table headers */}
             <TableHead className="sticky-header">
@@ -978,9 +978,9 @@ const Overview: React.FC = () => {
                           className="w-6 mb-1 cursor-pointer"
                           onClick={() => handleDeleteClick(index)}
                         />
+                        <InvoiceGenerator loadDetails={[loadDetails[index]]} />
                       </div>
                     )}
-                    <InvoiceGenerator loadDetails={[loadDetails[index]]} />
                   </td>
                 </TableRow>
               ))}
