@@ -657,7 +657,7 @@ const Overview: React.FC = () => {
         <div className="table-container">
           <Table className="table">
             {/* The table headers */}
-            <TableHead>
+            <TableHead className="sticky-header">
               <TableRow>
                 <th className="sort" onClick={() => requestSort("loadNumber")}>
                   {" "}
@@ -958,7 +958,7 @@ const Overview: React.FC = () => {
                   </td>
                   <td>
                     {editableIndex === index ? (
-                      <div className="relative flex items-center">
+                      <div className="flex items-center">
                         <PencilIcon
                           className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
                           onClick={() => handleSaveClick(index)}
@@ -969,7 +969,7 @@ const Overview: React.FC = () => {
                         />
                       </div>
                     ) : (
-                      <div className="relative flex items-center">
+                      <div className="flex items-center">
                         <PencilIcon
                           className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
                           onClick={() => handleEditClick(index)}
