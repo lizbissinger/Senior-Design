@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Routes, Route } from "react-router-dom";
+import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import Overview from "./Overview/Overview";
 import FleetManagement from "./FleetManagement/FleetManagement";
 import UserInfo from "./UserInfo/UserInfo";
@@ -12,11 +12,30 @@ import Finance from "./Finance/Finance";
 import { UserButton } from "@clerk/clerk-react";
 
 const Dashboard: React.FC = () => {
+  const [activeTab, setActiveTab] = useState("Overview");
+  const navigate = useNavigate();
+
   const navigation = [
-    { name: "Overview", href: "/dashboard/overview", current: false },
-    { name: "Fleet Management", href: "/dashboard/fleet", current: false },
-    { name: "Reports", href: "/dashboard/reports", current: false },
-    { name: "Finance", href: "/dashboard/finance", current: false },
+    {
+      name: "Overview",
+      href: "/dashboard/overview",
+      current: activeTab === "Overview",
+    },
+    {
+      name: "Fleet Management",
+      href: "/dashboard/fleet",
+      current: activeTab === "Fleet Management",
+    },
+    {
+      name: "Reports",
+      href: "/dashboard/reports",
+      current: activeTab === "Reports",
+    },
+    {
+      name: "Finance",
+      href: "/dashboard/finance",
+      current: activeTab === "Finance",
+    },
   ];
 
   function classNames(...classes: any) {
@@ -58,6 +77,10 @@ const Dashboard: React.FC = () => {
                         <Link
                           key={item.name}
                           to={item.href}
+                          onClick={() => {
+                            setActiveTab(item.name);
+                            navigate(item.href);
+                          }}
                           className={classNames(
                             item.current
                               ? "bg-[#6686DC] text-neutral-950 no-underline"
@@ -86,7 +109,7 @@ const Dashboard: React.FC = () => {
                       <UserButton afterSignOutUrl="/" />
                     </div>
                     <Transition
-                      as={Fragment}
+                      as={React.Fragment}
                       enter="transition ease-out duration-100"
                       enterFrom="transform opacity-0 scale-95"
                       enterTo="transform opacity-100 scale-100"
@@ -147,9 +170,13 @@ const Dashboard: React.FC = () => {
                   <Link
                     key={item.name}
                     to={item.href}
+                    onClick={() => {
+                      setActiveTab(item.name);
+                      navigate(item.href);
+                    }}
                     className={classNames(
                       item.current
-                        ? "bg-[#6686DC] text-neutral-950"
+                        ? "bg-[#6686DC] text-neutral-950 no-underline"
                         : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950",
                       "block rounded-md px-3 py-2 text-base font-medium"
                     )}
