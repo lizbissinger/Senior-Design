@@ -152,7 +152,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
             onClick={() => generateInvoice(load)}
             style={{ cursor: "pointer" }}
           >
-            <div className="relative flex items-center">
+            <div className="flex items-center">
               <DocumentArrowDownIcon className="w-6 ml-1 cursor-pointer" />
               <span className="text-xs mt-1">Invoice</span>
             </div>
