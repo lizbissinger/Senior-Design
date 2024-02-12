@@ -58,6 +58,8 @@ const Overview: React.FC = () => {
     driverObject: "",
     pickupTime: "",
     deliveryTime: "",
+    pickupLocation: "",
+    deliveryLocation: "",
     documents: "",
     price: "",
     detention: "",
@@ -231,6 +233,8 @@ const Overview: React.FC = () => {
       driverObject: "",
       pickupTime: "",
       deliveryTime: "",
+      pickupLocation: "",
+      deliveryLocation: "",
       documents: "",
       price: "",
       detention: "",
@@ -535,9 +539,10 @@ const Overview: React.FC = () => {
                       setNewLoad({ ...newLoad, fuelGallons: e.target.value })
                     }
                     className="mt-2"
+                    required
                   />
                 </div>
-
+                
                 <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="pickupLocation"
@@ -548,9 +553,10 @@ const Overview: React.FC = () => {
                   <TextInput
                     type="text"
                     id="pickupLocation"
-                    autoComplete="address-level2"
                     placeholder="Pick-up Location"
-                    className="mt-2"
+                    autoComplete="address-level2"
+                    value={newLoad.pickupLocation}
+                    onChange={(e) => setNewLoad({ ...newLoad, pickupLocation: e.target.value })}
                   />
                 </div>
 
@@ -566,6 +572,9 @@ const Overview: React.FC = () => {
                     id="deliveryLocation"
                     autoComplete="address-level2"
                     placeholder="Delivery Location"
+                    value={newLoad.deliveryLocation}
+                    onChange={(e) => setNewLoad({ ...newLoad, deliveryLocation: e.target.value })}
+
                     className="mt-2"
                   />
                 </div>
