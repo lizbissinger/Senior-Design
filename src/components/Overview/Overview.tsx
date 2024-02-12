@@ -680,7 +680,9 @@ const Overview: React.FC = () => {
                 <th>Trailer #</th>
                 <th>Driver Name</th>
                 <th>Pick-up Time</th>
+                <th>Pick-up Location</th>
                 <th>Delivery Time</th>
+                <th>Delivery Location</th>
                 <th>Documents</th>
                 <th className="sort" onClick={() => requestSort("price")}>
                   {" "}
@@ -835,6 +837,46 @@ const Overview: React.FC = () => {
                       />
                     ) : (
                       load.deliveryTime
+                    )}
+                  </td>
+                  <td>
+                    {editableIndex === index ? (
+                      <input
+                        className="load-details-table"
+                        type="datetime-local"
+                        value={load.pickupLocation}
+                        onChange={(e) => {
+                          const updatedLoad = { ...load };
+                          updatedLoad.pickupLocation = e.target.value;
+                          setLoadDetails((prevLoadDetails) => {
+                            const updatedDetails = [...prevLoadDetails];
+                            updatedDetails[index] = updatedLoad;
+                            return updatedDetails;
+                          });
+                        }}
+                      />
+                    ) : (
+                      load.pickupLocation
+                    )}
+                  </td>
+                  <td>
+                    {editableIndex === index ? (
+                      <input
+                        className="load-details-table"
+                        type="datetime-local"
+                        value={load.deliveryLocation}
+                        onChange={(e) => {
+                          const updatedLoad = { ...load };
+                          updatedLoad.deliveryLocation = e.target.value;
+                          setLoadDetails((prevLoadDetails) => {
+                            const updatedDetails = [...prevLoadDetails];
+                            updatedDetails[index] = updatedLoad;
+                            return updatedDetails;
+                          });
+                        }}
+                      />
+                    ) : (
+                      load.deliveryLocation
                     )}
                   </td>
                   <td>
