@@ -9,6 +9,8 @@ import Reports from "./components/Reports/Reports";
 import Finance from "./components/Finance/Finance";
 import SignInPage from "./routes/sign-in";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import LandingPage from "./components/Common/LandingPage";
+import AboutPage from "./components/Common/AboutPage";
 
 const App: React.FC = () => {
   return (
@@ -16,7 +18,9 @@ const App: React.FC = () => {
       <SignedOut>
         <Router>
           <Routes>
-            <Route path="/" element={<SignInPage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/login" element={<SignInPage />} />
           </Routes>
         </Router>
       </SignedOut>
