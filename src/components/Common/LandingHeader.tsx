@@ -55,11 +55,9 @@ const Header = () => {
                   sticky ? "py-5 lg:py-2" : "py-8"
                 } `}
               >
-                <Link>
-                  <h1 className="font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text md:leading-tight">
-                    FLEETWAVE
-                  </h1>
-                </Link>
+                <h1 className="font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text md:leading-tight">
+                  FLEETWAVE
+                </h1>
               </Link>
             </div>
             <div className="flex w-full items-center justify-between px-4">
