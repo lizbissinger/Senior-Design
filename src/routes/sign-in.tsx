@@ -6,7 +6,7 @@ import {
 } from "@clerk/clerk-react";
 import Overview from "../components/Overview/Overview";
 
-const Hero = () => {
+export default function SignInPage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
@@ -301,5 +301,3 @@ const Hero = () => {
     </>
   );
 };
-
-export default Hero;
