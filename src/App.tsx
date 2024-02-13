@@ -1,6 +1,11 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Outlet,
+} from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import Overview from "./components/Overview/Overview";
 import FleetManagement from "./components/FleetManagement/FleetManagement";
@@ -11,6 +16,8 @@ import SignInPage from "./routes/sign-in";
 import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import LandingPage from "./components/Common/LandingPage";
 import AboutPage from "./components/Common/AboutPage";
+import DashboardLayout from "./layouts/dashboard-layout";
+import { Navigate } from "react-router-dom";
 
 const App: React.FC = () => {
   return (
@@ -21,6 +28,7 @@ const App: React.FC = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/login" element={<SignInPage />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>
       </SignedOut>
