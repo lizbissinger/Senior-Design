@@ -16,7 +16,6 @@ import SignInPage from "./routes/sign-in";
 import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import LandingPage from "./components/Common/LandingPage";
 import AboutPage from "./components/Common/AboutPage";
-import DashboardLayout from "./layouts/dashboard-layout";
 import { Navigate } from "react-router-dom";
 
 const App: React.FC = () => {
