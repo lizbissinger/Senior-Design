@@ -14,7 +14,7 @@ import AboutPage from "./components/Common/AboutPage";
 
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div className="App dark:bg-slate-900">
       <SignedOut>
         <Router>
           <Routes>

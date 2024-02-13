@@ -6,6 +6,8 @@ export type LoadDetail = {
   driverObject: string;
   pickupTime: string;
   deliveryTime: string;
+  pickupLocation: string;
+  deliveryLocation: string;
   documents: string;
   price: string;
   detention: string;

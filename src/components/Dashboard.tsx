@@ -66,6 +66,9 @@ const Dashboard: React.FC = () => {
                       <Link
                         to="/dashboard/overview"
                         className="no-underline text-neutral-900 hover:text-neutral-900 hover:no-underline"
+                        onClick={() => {
+                          setActiveTab("Overview");
+                        }}
                       >
                         FLEETWAVE
                       </Link>
@@ -83,7 +86,7 @@ const Dashboard: React.FC = () => {
                           }}
                           className={classNames(
                             item.current
-                              ? "bg-[#6686DC] text-neutral-950 no-underline"
+                              ? "bg-[#6686DC] text-neutral-950 no-underline hover:text-neutral-950"
                               : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:text-neutral-950 hover:no-underline",
                             "rounded-md px-3 py-2 text-50 font-medium"
                           )}
