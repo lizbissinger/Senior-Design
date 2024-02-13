@@ -1,4 +1,5 @@
 import { SignIn } from "@clerk/clerk-react";
+import Overview from "../components/Overview/Overview";
 
 export default function SignInPage() {
   return (
@@ -12,6 +13,10 @@ export default function SignInPage() {
       }}
     >
       <SignIn
+        path="/login"
+        routing="path"
+        signUpUrl="/sign-up"
+        afterSignInUrl={"dashboard/Overview"}
         appearance={{
           elements: {
             formButtonPrimary: {
