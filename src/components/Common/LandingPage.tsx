@@ -1,9 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Image } from "react-bootstrap";
-import { usePathname } from "next/navigation";
-import ThemeToggler from "./ThemeToggler";
-import menuData from "./menuData";
-import Link from "@mui/material/Link";
 import Header from "./LandingHeader";
 import Hero from "./Hero";
 import Features from "./Features";
@@ -25,8 +20,6 @@ const LandingPage: React.FC = () => {
       window.removeEventListener("scroll", handleStickyNavbar);
     };
   }, []);
-
-  const usePathName = usePathname();
 
   return (
     <>
