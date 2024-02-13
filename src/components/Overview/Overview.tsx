@@ -557,6 +557,7 @@ const Overview: React.FC = () => {
                     autoComplete="address-level2"
                     value={newLoad.pickupLocation}
                     onChange={(e) => setNewLoad({ ...newLoad, pickupLocation: e.target.value })}
+                    className="mt-2"
                   />
                 </div>
 
@@ -574,7 +575,6 @@ const Overview: React.FC = () => {
                     placeholder="Delivery Location"
                     value={newLoad.deliveryLocation}
                     onChange={(e) => setNewLoad({ ...newLoad, deliveryLocation: e.target.value })}
-
                     className="mt-2"
                   />
                 </div>
@@ -680,8 +680,8 @@ const Overview: React.FC = () => {
                 <th>Trailer #</th>
                 <th>Driver Name</th>
                 <th>Pick-up Time</th>
-                <th>Pick-up Location</th>
                 <th>Delivery Time</th>
+                <th>Pick-up Location</th>
                 <th>Delivery Location</th>
                 <th>Documents</th>
                 <th className="sort" onClick={() => requestSort("price")}>
