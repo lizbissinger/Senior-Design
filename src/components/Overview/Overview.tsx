@@ -366,6 +366,19 @@ const Overview: React.FC = () => {
     setIsOpen(false);
   }, []);
 
+  const getBadgeClass = (status: string) => {
+    switch (status) {
+      case "To-Do":
+        return "badge-primary";
+      case "In Progress":
+        return "badge-warning";
+      case "Completed":
+        return "badge-success";
+      default:
+        return "badge-secondary";
+    }
+  };
+
   return (
     <div className="overview-container">
       <Grid
@@ -542,7 +555,7 @@ const Overview: React.FC = () => {
                     required
                   />
                 </div>
-                
+
                 <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="pickupLocation"
@@ -556,7 +569,9 @@ const Overview: React.FC = () => {
                     placeholder="Pick-up Location"
                     autoComplete="address-level2"
                     value={newLoad.pickupLocation}
-                    onChange={(e) => setNewLoad({ ...newLoad, pickupLocation: e.target.value })}
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, pickupLocation: e.target.value })
+                    }
                     className="mt-2"
                   />
                 </div>
@@ -574,7 +589,12 @@ const Overview: React.FC = () => {
                     autoComplete="address-level2"
                     placeholder="Delivery Location"
                     value={newLoad.deliveryLocation}
-                    onChange={(e) => setNewLoad({ ...newLoad, deliveryLocation: e.target.value })}
+                    onChange={(e) =>
+                      setNewLoad({
+                        ...newLoad,
+                        deliveryLocation: e.target.value,
+                      })
+                    }
                     className="mt-2"
                   />
                 </div>
@@ -985,7 +1005,7 @@ const Overview: React.FC = () => {
                   <td>
                     {editableIndex === index ? (
                       <select
-                        className="load-details-table"
+                        className="select-custom load-details-table"
                         value={load.status}
                         onChange={(e) => {
                           const newStatus = e.target.value;
@@ -999,12 +1019,26 @@ const Overview: React.FC = () => {
                           updateLoad(updatedLoad);
                         }}
                       >
-                        <option value="To-Do">To Do</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
+                        <option
+                          className={`badge ${getBadgeClass(load.status)}`}
+                        >
+                          To Do
+                        </option>
+                        <option
+                          className={`badge ${getBadgeClass(load.status)}`}
+                        >
+                          In Progress
+                        </option>
+                        <option
+                          className={`badge ${getBadgeClass(load.status)}`}
+                        >
+                          Completed
+                        </option>
                       </select>
                     ) : (
-                      load.status
+                      <span className={`badge ${getBadgeClass(load.status)}`}>
+                        {load.status}
+                      </span>
                     )}
                   </td>
                   <td>
