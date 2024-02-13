@@ -58,6 +58,8 @@ const Overview: React.FC = () => {
     driverObject: "",
     pickupTime: "",
     deliveryTime: "",
+    pickupLocation: "",
+    deliveryLocation: "",
     documents: "",
     price: "",
     detention: "",
@@ -231,6 +233,8 @@ const Overview: React.FC = () => {
       driverObject: "",
       pickupTime: "",
       deliveryTime: "",
+      pickupLocation: "",
+      deliveryLocation: "",
       documents: "",
       price: "",
       detention: "",
@@ -535,9 +539,10 @@ const Overview: React.FC = () => {
                       setNewLoad({ ...newLoad, fuelGallons: e.target.value })
                     }
                     className="mt-2"
+                    required
                   />
                 </div>
-
+                
                 <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="pickupLocation"
@@ -548,8 +553,10 @@ const Overview: React.FC = () => {
                   <TextInput
                     type="text"
                     id="pickupLocation"
-                    autoComplete="address-level2"
                     placeholder="Pick-up Location"
+                    autoComplete="address-level2"
+                    value={newLoad.pickupLocation}
+                    onChange={(e) => setNewLoad({ ...newLoad, pickupLocation: e.target.value })}
                     className="mt-2"
                   />
                 </div>
@@ -566,6 +573,8 @@ const Overview: React.FC = () => {
                     id="deliveryLocation"
                     autoComplete="address-level2"
                     placeholder="Delivery Location"
+                    value={newLoad.deliveryLocation}
+                    onChange={(e) => setNewLoad({ ...newLoad, deliveryLocation: e.target.value })}
                     className="mt-2"
                   />
                 </div>
@@ -672,6 +681,8 @@ const Overview: React.FC = () => {
                 <th>Driver Name</th>
                 <th>Pick-up Time</th>
                 <th>Delivery Time</th>
+                <th>Pick-up Location</th>
+                <th>Delivery Location</th>
                 <th>Documents</th>
                 <th className="sort" onClick={() => requestSort("price")}>
                   {" "}
@@ -826,6 +837,46 @@ const Overview: React.FC = () => {
                       />
                     ) : (
                       load.deliveryTime
+                    )}
+                  </td>
+                  <td>
+                    {editableIndex === index ? (
+                      <input
+                        className="load-details-table"
+                        type="datetime-local"
+                        value={load.pickupLocation}
+                        onChange={(e) => {
+                          const updatedLoad = { ...load };
+                          updatedLoad.pickupLocation = e.target.value;
+                          setLoadDetails((prevLoadDetails) => {
+                            const updatedDetails = [...prevLoadDetails];
+                            updatedDetails[index] = updatedLoad;
+                            return updatedDetails;
+                          });
+                        }}
+                      />
+                    ) : (
+                      load.pickupLocation
+                    )}
+                  </td>
+                  <td>
+                    {editableIndex === index ? (
+                      <input
+                        className="load-details-table"
+                        type="datetime-local"
+                        value={load.deliveryLocation}
+                        onChange={(e) => {
+                          const updatedLoad = { ...load };
+                          updatedLoad.deliveryLocation = e.target.value;
+                          setLoadDetails((prevLoadDetails) => {
+                            const updatedDetails = [...prevLoadDetails];
+                            updatedDetails[index] = updatedLoad;
+                            return updatedDetails;
+                          });
+                        }}
+                      />
+                    ) : (
+                      load.deliveryLocation
                     )}
                   </td>
                   <td>
