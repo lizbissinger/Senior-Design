@@ -4,6 +4,7 @@ import {
   SignInButton,
   SignUp,
 } from "@clerk/clerk-react";
+import Overview from "../components/Overview/Overview";
 
 const Hero = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -30,7 +31,11 @@ const Hero = () => {
           }}
         >
           <SignIn
-            appearance={{
+            path="/login"
+        routing="path"
+        signUpUrl="/sign-up"
+        afterSignInUrl={"dashboard/Overview"}
+        appearance={{
               elements: {
                 formButtonPrimary: {
                   backgroundColor: "#7392e9",

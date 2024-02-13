@@ -8,7 +8,7 @@ import LoadDetails from "./components/LoadDetails/LoadDetails";
 import Reports from "./components/Reports/Reports";
 import Finance from "./components/Finance/Finance";
 import SignInPage from "./routes/sign-in";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import LandingPage from "./components/Common/LandingPage";
 import AboutPage from "./components/Common/AboutPage";
 
@@ -24,11 +24,13 @@ const App: React.FC = () => {
           </Routes>
         </Router>
       </SignedOut>
+
       <SignedIn>
         <Router>
           <Routes>
-            <Route path="/dashboard/*" element={<Dashboard />} />
             <Route index element={<Dashboard />} />
+            <Route index element={<Overview />} />
+            <Route path="/dashboard/*" element={<Dashboard />} />
             <Route path="/overview" element={<Overview />} />
             <Route path="/fleet" element={<FleetManagement />} />
             <Route path="/reports" element={<Reports />} />
