@@ -12,8 +12,7 @@ import {
 import { useState } from "react";
 import{ UserIcon, PresentationChartLineIcon, ChartBarIcon } from "@heroicons/react/24/solid";
 import GetAllDrivers from "../../routes/driverDetails";
-import GetAllRevenueReports from '../../routes/reports';
-import { GetDriverRevenueReports } from '../../routes/reports';
+import GetAllRevenueData from '../../routes/reports';
 
 const Reports: React.FC = () => {
   const [driver, setDriver] = useState("");
@@ -39,51 +38,25 @@ const Reports: React.FC = () => {
     } catch (error) {}
   };
 
-  const fetchAllRevenueData = async () => {
+  const fetchAllRevenueAreaChartData= async () => {
     try {
-      const allRevenueData = await GetAllRevenueReports();
-
-      if (allRevenueData) {
-        setAreaChartData(allRevenueData);
-        setCategories(["Cumulative"]);
-      }
-    } catch (error) {}
-  };
-
-  const fetchDriverRevenueData = async () => {
-    try {
-      const driverRevenueData = await GetDriverRevenueReports(driver);
+      const driverRevenueData = await GetAllRevenueData(driver, date);
 
       if (driverRevenueData) {
         setAreaChartData(driverRevenueData);
-        setCategories([driver]);
+        if (driver.length > 0) {
+          setCategories([driver]);
+        } else {
+          setCategories(["Cumulative"]);
+        }
       }
     } catch (error) {}
   };
 
-  // handle driver filter change
   useEffect(() => {
-    if (driver.length > 0) {
-      fetchDriverRevenueData();
-    } else {
-      fetchAllDrivers();
-      fetchAllRevenueData();
-      setBarChartToolTip(null);
-    }
-  }, [driver]);
-
-  // handle date picker change
-  useEffect(() => {
-    if (date?.from != null && date?.to != null) {
-      const from = new Date(date.from);
-      const to = new Date(date.to);
-      const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-      const from_utc = Date.UTC(from.getFullYear(), from.getMonth(), from.getDate());
-      const to_utc = Date.UTC(to.getFullYear(), to.getMonth(), to.getDate());
-      const difference = Math.floor((to_utc - from_utc) / _MS_PER_DAY);
-      console.log(difference);
-    }
-  }, [date]);
+    fetchAllDrivers();
+    fetchAllRevenueAreaChartData();
+  }, [driver, date]);
 
   const cities = [
     {
@@ -114,8 +87,7 @@ const Reports: React.FC = () => {
 
   return (
     <div>
-      <h2 className="dark:text-neutral-200">Reports</h2>
-      <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
+      <Grid numItemsMd={2} numItemsLg={2} className="gap-6 mt-6">
         <DateRangePicker className="max-w-sm" value={date} onValueChange={setDate}/>
         <div className="max-w-sm mx-auto space-y-6">
           <SearchSelect value={driver} onValueChange={setDriver} placeholder="Filter by driver" icon={UserIcon}>
@@ -124,9 +96,7 @@ const Reports: React.FC = () => {
             ))}
           </SearchSelect>
         </div>
-        {/* <DateRangePicker className="max-w-sm" /> */}
       </Grid>
-      <Divider>Charts</Divider>
       <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-6 mt-6">
         <Col numColSpan={1} numColSpanLg={2}>
           <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl">
@@ -174,12 +144,13 @@ const Reports: React.FC = () => {
         <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl">
           <Card className="rounded-md min-h-full">
             <Title>Expenses</Title>
-            {/* <Divider></Divider> */}
             <DonutChart
               data={cities}
               category="sales"
               index="name"
               onValueChange={(v) => setValue(v)}
+              showAnimation={true}
+              animationDuration={1500}
               variant="pie"
             />
           </Card>
