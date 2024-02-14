@@ -11,6 +11,7 @@ import GetAllLoads, {
   UpdateLoad,
 } from "../../routes/loadDetails";
 import GetAllDrivers from "../../routes/driverDetails";
+import PlacesAutocomplete from "../Overview/PlacesAutocomplete"; // Import the PlacesAutocomplete component
 import GetAllTrucks from "../../routes/truckDetails";
 import GetAllTrailers from "../../routes/trailerDetails";
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
@@ -79,6 +80,11 @@ const Overview: React.FC = () => {
   const [assignedDrivers, setAssignedDrivers] = useState<string[]>([]);
   const [assignedTrucks, setAssignedTrucks] = useState<string[]>([]);
   const [assignedTrailers, setAssignedTrailers] = useState<string[]>([]);
+
+  const [selectedPlace, setSelectedPlace] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null); // State for storing selected place coordinates
 
   const fetchAllLoads = async () => {
     let allLoads: any = null;
@@ -349,6 +355,10 @@ const Overview: React.FC = () => {
       setIsOpen(false);
       setIsDeleteDialogOpen(false);
     }
+  };
+
+  const handlePlaceSelected = (lat: number, lng: number) => {
+    setSelectedPlace({ lat, lng }); // Update selected place coordinates
   };
 
   const handleFormSubmit = async (event: any) => {
@@ -654,6 +664,10 @@ const Overview: React.FC = () => {
                       setNewLoad({ ...newLoad, pickupLocation: e.target.value })
                     }
                   />
+
+                  <Divider />
+                  <PlacesAutocomplete onPlaceSelected={handlePlaceSelected} />
+                  <Divider />
                 </div>
 
                 <div className="col-span-full sm:col-span-3">
@@ -761,7 +775,11 @@ const Overview: React.FC = () => {
                 </DialogPanel>
               </Dialog>
 
-              <div className={`flex items-center ${formMode === 'edit' ? 'justify-between' : 'justify-end'} space-x-4`}>
+              <div
+                className={`flex items-center ${
+                  formMode === "edit" ? "justify-between" : "justify-end"
+                } space-x-4`}
+              >
                 {formMode === "edit" && (
                   <Button
                     onClick={openDeleteDialog}
