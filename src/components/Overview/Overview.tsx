@@ -507,7 +507,7 @@ const Overview: React.FC = () => {
             </h3>
             <form className="mt-8">
               <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-                <div className="col-span-full">
+                <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="loadNumber"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -522,11 +522,10 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, loadNumber: e.target.value })
                     }
-                    className="mt-2"
                     required
                   />
                 </div>
-                <div className="col-span-full sm:col-span-2">
+                <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="driverDropdown"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -540,7 +539,7 @@ const Overview: React.FC = () => {
                     onSelectDriver={handleDriverSelect}
                   />
                 </div>
-                <div className="col-span-full sm:col-span-2">
+                <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="truckDropdown"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -554,7 +553,7 @@ const Overview: React.FC = () => {
                     onSelectTruck={handleTruckSelect}
                   />
                 </div>
-                <div className="col-span-full sm:col-span-2">
+                <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="trailerDropdown"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -583,7 +582,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, price: e.target.value })
                     }
-                    className="mt-2"
                     required
                   />
                 </div>
@@ -601,7 +599,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, detentionPrice: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
                 <div className="col-span-full sm:col-span-3">
@@ -619,7 +616,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, allMiles: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
                 <div className="col-span-full sm:col-span-3">
@@ -636,7 +632,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, fuelGallons: e.target.value })
                     }
-                    className="mt-2"
                     required
                   />
                 </div>
@@ -647,6 +642,7 @@ const Overview: React.FC = () => {
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                   >
                     Pick-up Location
+                    <span className="text-red-500">*</span>
                   </label>
                   <TextInput
                     type="text"
@@ -657,7 +653,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, pickupLocation: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
 
@@ -667,6 +662,7 @@ const Overview: React.FC = () => {
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                   >
                     Delivery Location
+                    <span className="text-red-500">*</span>
                   </label>
                   <TextInput
                     type="text"
@@ -680,7 +676,6 @@ const Overview: React.FC = () => {
                         deliveryLocation: e.target.value,
                       })
                     }
-                    className="mt-2"
                   />
                 </div>
 
@@ -700,7 +695,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, pickupTime: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
                 <div className="col-span-full sm:col-span-3">
@@ -719,7 +713,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, deliveryTime: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
                 <div className="col-span-full sm:col-span-3">
@@ -737,7 +730,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, documents: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
               </div>
