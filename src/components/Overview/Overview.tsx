@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Overview.css";
+import Autocomplete from "react-google-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Bars3Icon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -644,6 +645,16 @@ const Overview: React.FC = () => {
                     Pick-up Location
                     <span className="text-red-500">*</span>
                   </label>
+
+                
+
+                    <Autocomplete
+                    onPlaceSelected={(place) => {
+                      console.log(place);
+                    }}
+                  />
+              
+
                   <TextInput
                     type="text"
                     id="pickupLocation"
@@ -761,7 +772,11 @@ const Overview: React.FC = () => {
                 </DialogPanel>
               </Dialog>
 
-              <div className={`flex items-center ${formMode === 'edit' ? 'justify-between' : 'justify-end'} space-x-4`}>
+              <div
+                className={`flex items-center ${
+                  formMode === "edit" ? "justify-between" : "justify-end"
+                } space-x-4`}
+              >
                 {formMode === "edit" && (
                   <Button
                     onClick={openDeleteDialog}
