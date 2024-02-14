@@ -1,4 +1,5 @@
 import React from "react";
+import { SearchSelect, SearchSelectItem } from "@tremor/react";
 
 interface TrailerDropdownProps {
   trailerList: string[];
@@ -11,19 +12,23 @@ const TrailerDropdown: React.FC<TrailerDropdownProps> = ({
   selectedTrailer,
   onSelectTrailer,
 }) => {
+  const handleSelectChange = (selectedValue: string) => {
+    onSelectTrailer(selectedValue);
+  };
 
   return (
-    <select
+    <SearchSelect
       value={selectedTrailer}
-      onChange={(e) => onSelectTrailer(e.target.value)}
+      onValueChange={handleSelectChange}
+      placeholder="Select a trailer"
     >
-      <option value="">Select a trailer</option>
+      <SearchSelectItem value="" />
       {trailerList.map((trailer) => (
-        <option key={trailer} value={trailer}>
+        <SearchSelectItem key={trailer} value={trailer}>
           {trailer}
-        </option>
+        </SearchSelectItem>
       ))}
-    </select>
+    </SearchSelect>
   );
 };
 
