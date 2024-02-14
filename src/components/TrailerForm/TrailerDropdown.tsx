@@ -3,19 +3,14 @@ import React from "react";
 interface TrailerDropdownProps {
   trailerList: string[];
   selectedTrailer: string;
-  assignedTrailers: string[];
   onSelectTrailer: (selectedTrailer: string) => void;
 }
 
 const TrailerDropdown: React.FC<TrailerDropdownProps> = ({
   trailerList,
   selectedTrailer,
-  assignedTrailers,
   onSelectTrailer,
 }) => {
-  const filteredTrailers = trailerList.filter(
-    (trailer) => !assignedTrailers.includes(trailer)
-  );
 
   return (
     <select
@@ -23,7 +18,7 @@ const TrailerDropdown: React.FC<TrailerDropdownProps> = ({
       onChange={(e) => onSelectTrailer(e.target.value)}
     >
       <option value="">Select a trailer</option>
-      {filteredTrailers.map((trailer) => (
+      {trailerList.map((trailer) => (
         <option key={trailer} value={trailer}>
           {trailer}
         </option>

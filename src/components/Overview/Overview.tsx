@@ -537,7 +537,6 @@ const Overview: React.FC = () => {
                   <DriverDropdown
                     driverList={drivers}
                     selectedDriver={newLoad.driverObject}
-                    assignedDrivers={assignedDrivers}
                     onSelectDriver={handleDriverSelect}
                   />
                 </div>
@@ -551,7 +550,6 @@ const Overview: React.FC = () => {
                   </label>
                   <TruckDropdown
                     truckList={trucks}
-                    assignedTrucks={assignedTrucks}
                     selectedTruck={newLoad.truckObject}
                     onSelectTruck={handleTruckSelect}
                   />
@@ -566,7 +564,6 @@ const Overview: React.FC = () => {
                   </label>
                   <TrailerDropdown
                     trailerList={trailers}
-                    assignedTrailers={assignedTrailers}
                     selectedTrailer={newLoad.trailerObject}
                     onSelectTrailer={handleTrailerSelect}
                   />
@@ -772,7 +769,7 @@ const Overview: React.FC = () => {
                 </DialogPanel>
               </Dialog>
 
-              <div className="flex items-center justify-between space-x-4">
+              <div className={`flex items-center ${formMode === 'edit' ? 'justify-between' : 'justify-end'} space-x-4`}>
                 {formMode === "edit" && (
                   <Button
                     onClick={openDeleteDialog}
