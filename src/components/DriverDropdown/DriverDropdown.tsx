@@ -1,34 +1,32 @@
 import React from "react";
+import { SearchSelect, SearchSelectItem } from "@tremor/react";
 
 interface DriverDropdownProps {
   driverList: string[];
   selectedDriver: string;
-  assignedDrivers: string[];
   onSelectDriver: (selectedDriver: string) => void;
 }
 
 const DriverDropdown: React.FC<DriverDropdownProps> = ({
   driverList,
   selectedDriver,
-  assignedDrivers,
   onSelectDriver,
 }) => {
-  const filteredDrivers = driverList.filter(
-    (driver) => !assignedDrivers.includes(driver)
-  );
+  const handleSelectChange = (selectedValue: string) => {
+    onSelectDriver(selectedValue);
+  };
 
   return (
-    <select
+    <SearchSelect
       value={selectedDriver}
-      onChange={(e) => onSelectDriver(e.target.value)}
+      onValueChange={handleSelectChange}
+      placeholder="Select a driver"
     >
-      <option value="">Select a driver</option>
-      {filteredDrivers.map((driver) => (
-        <option key={driver} value={driver}>
-          {driver}
-        </option>
+      <SearchSelectItem value="" />
+      {driverList.map((driver) => (
+        <SearchSelectItem key={driver} value={driver} />
       ))}
-    </select>
+    </SearchSelect>
   );
 };
 

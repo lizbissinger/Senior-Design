@@ -1,34 +1,34 @@
 import React from "react";
+import { SearchSelect, SearchSelectItem } from "@tremor/react";
 
 interface TruckDropdownProps {
   truckList: string[];
   selectedTruck: string;
-  assignedTrucks: string[];
   onSelectTruck: (selectedTruck: string) => void;
 }
 
 const TruckDropdown: React.FC<TruckDropdownProps> = ({
   truckList,
   selectedTruck,
-  assignedTrucks,
   onSelectTruck,
 }) => {
-  const filteredTrucks = truckList.filter(
-    (truck) => !assignedTrucks.includes(truck)
-  );
+  const handleSelectChange = (selectedValue: string) => {
+    onSelectTruck(selectedValue);
+  };
 
   return (
-    <select
+    <SearchSelect
       value={selectedTruck}
-      onChange={(e) => onSelectTruck(e.target.value)}
+      onValueChange={handleSelectChange}
+      placeholder="Select a truck"
     >
-      <option value="">Select a truck</option>
-      {filteredTrucks.map((truck) => (
-        <option key={truck} value={truck}>
+      <SearchSelectItem value="" />
+      {truckList.map((truck) => (
+        <SearchSelectItem key={truck} value={truck}>
           {truck}
-        </option>
+        </SearchSelectItem>
       ))}
-    </select>
+    </SearchSelect>
   );
 };
 
