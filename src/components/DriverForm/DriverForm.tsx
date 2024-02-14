@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DriverDetail } from "../Types/types";
 import { Divider, TextInput } from "@tremor/react";
+import PlacesAutocomplete from "../Overview/PlacesAutocomplete"; // Import the PlacesAutocomplete component
 
 interface DriverFormProps {
   onAddDriver: (driver: DriverDetail) => void;
@@ -20,6 +21,8 @@ const DriverForm: React.FC<DriverFormProps> = ({
     phoneNumber: "",
     email: "",
   });
+
+  const [selectedPlace, setSelectedPlace] = useState<{ lat: number, lng: number } | null>(null); // State for storing selected place coordinates
 
   useEffect(() => {
     console.log("editingDriver:", editingDriver);
@@ -42,6 +45,10 @@ const DriverForm: React.FC<DriverFormProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewDriver((prevDriver) => ({ ...prevDriver, [name]: value }));
+  };
+
+  const handlePlaceSelected = (lat: number, lng: number) => {
+    setSelectedPlace({ lat, lng }); // Update selected place coordinates
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -68,6 +75,9 @@ const DriverForm: React.FC<DriverFormProps> = ({
           Driver Information
         </h3>
         <form onSubmit={handleSubmit}>
+          <Divider />
+          {/* Add the PlacesAutocomplete component */}
+          <PlacesAutocomplete onPlaceSelected={handlePlaceSelected} />
           <Divider />
           <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
             <div className="col-span-full sm:col-span-3">
