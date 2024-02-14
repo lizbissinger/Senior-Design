@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Overview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
@@ -37,7 +37,7 @@ import {
   NumberInput,
 } from "@tremor/react";
 
-import _ from "lodash"; //Sorting Library
+import _ from "lodash";
 
 import { LoadDetail } from "../Types/types";
 import { load } from "mime";
@@ -171,8 +171,8 @@ const Overview: React.FC = () => {
     key: string;
     direction: "asc" | "desc";
   }>({
-    key: "", // Initialize with an empty key
-    direction: "asc", // Set the initial direction to "asc"
+    key: "",
+    direction: "asc",
   });
 
   const [fetchingActive, setFetchingActive] = useState(false);
@@ -198,6 +198,9 @@ const Overview: React.FC = () => {
   );
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
+  const [deletableIndex, setDeletableIndex] = useState<number | null>(null);
+  const [formMode, setFormMode] = useState<"add" | "edit" | "delete">("add");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [showForm, setShowForm] = useState(false);
 
   const [errors, setErrors] = useState<any>({});
@@ -258,6 +261,14 @@ const Overview: React.FC = () => {
     await DeleteLoad(id);
   };
 
+  const openDeleteDialog = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
   const updateLoad = async (load: LoadDetail) => {
     await UpdateLoad(load);
   };
@@ -268,6 +279,11 @@ const Overview: React.FC = () => {
 
   const handleEditClick = (index: number) => {
     setEditableIndex(index);
+    setFormMode("edit");
+
+    const selectedLoad = loadDetails[index];
+    setNewLoad({ ...selectedLoad });
+    setIsOpen(true);
   };
 
   const handleSaveClick = (index: number) => {
@@ -278,11 +294,84 @@ const Overview: React.FC = () => {
     setEditableIndex(null);
   };
 
-  const handleDeleteClick = (index: number) => {
-    deleteLoad(loadDetails[index]._id);
-    const updatedLoadDetails = [...loadDetails];
-    updatedLoadDetails.splice(index, 1);
-    setLoadDetails(updatedLoadDetails);
+  const handleCancelClick = () => {
+    resetForm();
+    setFormMode("add");
+    setEditableIndex(null);
+    setShowForm(false);
+    setIsOpen(false);
+  };
+
+  const resetForm = () => {
+    setNewLoad({
+      _id: "",
+      loadNumber: "",
+      truckObject: "",
+      trailerObject: "",
+      driverObject: "",
+      pickupTime: "",
+      deliveryTime: "",
+      pickupLocation: "",
+      deliveryLocation: "",
+      documents: "",
+      price: "",
+      detention: "",
+      detentionPrice: "",
+      allMiles: "",
+      fuelGallons: "",
+      status: "",
+      brokerInfo: {
+        name: "",
+        phoneNumber: "",
+        email: "",
+        company: "",
+      },
+      comments: "",
+    });
+    setFormMode("add");
+    setEditableIndex(null);
+    setDeletableIndex(null);
+    setShowForm(false);
+    setIsOpen(false);
+  };
+
+  const handleDeleteClick = () => {
+    if (editableIndex !== null) {
+      deleteLoad(loadDetails[editableIndex]._id);
+      const updatedLoadDetails = [...loadDetails];
+      updatedLoadDetails.splice(editableIndex, 1);
+      setLoadDetails(updatedLoadDetails);
+
+      resetForm();
+      setFormMode("add");
+      setEditableIndex(null);
+      setShowForm(false);
+      setIsOpen(false);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
+  const handleFormSubmit = async (event: any) => {
+    event.preventDefault();
+    setSubmitting(true);
+
+    if (formMode === "add") {
+      addLoadDetail();
+    } else if (formMode === "edit" && editableIndex !== null) {
+      updateLoad(newLoad);
+
+      const updatedLoadDetails = [...loadDetails];
+      updatedLoadDetails[editableIndex] = newLoad;
+      setLoadDetails(updatedLoadDetails);
+
+      resetForm();
+      setFormMode("add");
+      setEditableIndex(null);
+      setShowForm(false);
+      setIsOpen(false);
+    }
+
+    setSubmitting(false);
   };
 
   const renderSortArrow = (column: string) => {
@@ -326,7 +415,6 @@ const Overview: React.FC = () => {
 
   useEffect(() => {
     fetchAllLoads().then(() => {
-      // Calculate the counts for each status after data is fetched
       const inProgressCount = loadDetails.filter(
         (load) => load.status === "In Progress"
       ).length;
@@ -337,10 +425,8 @@ const Overview: React.FC = () => {
         (load) => load.status === "To-Do"
       ).length;
 
-      // total price
       calculateTotalPrice();
 
-      // Update the counts
       setInProgressCount(inProgressCount);
       setCompletedCount(completedCount);
       setToDoCount(toDoCount);
@@ -365,6 +451,19 @@ const Overview: React.FC = () => {
   useEffect(() => {
     setIsOpen(false);
   }, []);
+
+  const getBadgeClass = (status: string) => {
+    switch (status) {
+      case "To-Do":
+        return "badge-primary";
+      case "In Progress":
+        return "badge-warning";
+      case "Completed":
+        return "badge-success";
+      default:
+        return "badge-secondary";
+    }
+  };
 
   return (
     <div className="overview-container">
@@ -397,7 +496,9 @@ const Overview: React.FC = () => {
               </SearchSelectItem>
             ))}
           </SearchSelect>
-          <Button onClick={() => setIsOpen(true)}>Add Load</Button>
+          <Button onClick={() => setIsOpen(true)}>
+            {formMode === "add" ? "Add Load" : "Update Load"}
+          </Button>{" "}
         </div>
         <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
           <DialogPanel>
@@ -406,7 +507,7 @@ const Overview: React.FC = () => {
             </h3>
             <form className="mt-8">
               <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-                <div className="col-span-full">
+                <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="loadNumber"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -421,11 +522,10 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, loadNumber: e.target.value })
                     }
-                    className="mt-2"
                     required
                   />
                 </div>
-                <div className="col-span-full sm:col-span-2">
+                <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="driverDropdown"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -436,11 +536,10 @@ const Overview: React.FC = () => {
                   <DriverDropdown
                     driverList={drivers}
                     selectedDriver={newLoad.driverObject}
-                    assignedDrivers={assignedDrivers}
                     onSelectDriver={handleDriverSelect}
                   />
                 </div>
-                <div className="col-span-full sm:col-span-2">
+                <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="truckDropdown"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -450,12 +549,11 @@ const Overview: React.FC = () => {
                   </label>
                   <TruckDropdown
                     truckList={trucks}
-                    assignedTrucks={assignedTrucks}
                     selectedTruck={newLoad.truckObject}
                     onSelectTruck={handleTruckSelect}
                   />
                 </div>
-                <div className="col-span-full sm:col-span-2">
+                <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="trailerDropdown"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -465,7 +563,6 @@ const Overview: React.FC = () => {
                   </label>
                   <TrailerDropdown
                     trailerList={trailers}
-                    assignedTrailers={assignedTrailers}
                     selectedTrailer={newLoad.trailerObject}
                     onSelectTrailer={handleTrailerSelect}
                   />
@@ -485,7 +582,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, price: e.target.value })
                     }
-                    className="mt-2"
                     required
                   />
                 </div>
@@ -503,7 +599,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, detentionPrice: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
                 <div className="col-span-full sm:col-span-3">
@@ -521,7 +616,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, allMiles: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
                 <div className="col-span-full sm:col-span-3">
@@ -538,17 +632,17 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, fuelGallons: e.target.value })
                     }
-                    className="mt-2"
                     required
                   />
                 </div>
-                
+
                 <div className="col-span-full sm:col-span-3">
                   <label
                     htmlFor="pickupLocation"
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                   >
                     Pick-up Location
+                    <span className="text-red-500">*</span>
                   </label>
                   <TextInput
                     type="text"
@@ -556,8 +650,9 @@ const Overview: React.FC = () => {
                     placeholder="Pick-up Location"
                     autoComplete="address-level2"
                     value={newLoad.pickupLocation}
-                    onChange={(e) => setNewLoad({ ...newLoad, pickupLocation: e.target.value })}
-                    className="mt-2"
+                    onChange={(e) =>
+                      setNewLoad({ ...newLoad, pickupLocation: e.target.value })
+                    }
                   />
                 </div>
 
@@ -567,6 +662,7 @@ const Overview: React.FC = () => {
                     className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                   >
                     Delivery Location
+                    <span className="text-red-500">*</span>
                   </label>
                   <TextInput
                     type="text"
@@ -574,8 +670,12 @@ const Overview: React.FC = () => {
                     autoComplete="address-level2"
                     placeholder="Delivery Location"
                     value={newLoad.deliveryLocation}
-                    onChange={(e) => setNewLoad({ ...newLoad, deliveryLocation: e.target.value })}
-                    className="mt-2"
+                    onChange={(e) =>
+                      setNewLoad({
+                        ...newLoad,
+                        deliveryLocation: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
@@ -595,7 +695,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, pickupTime: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
                 <div className="col-span-full sm:col-span-3">
@@ -614,7 +713,6 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, deliveryTime: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
                 <div className="col-span-full sm:col-span-3">
@@ -632,29 +730,66 @@ const Overview: React.FC = () => {
                     onChange={(e) =>
                       setNewLoad({ ...newLoad, documents: e.target.value })
                     }
-                    className="mt-2"
                   />
                 </div>
               </div>
               <Divider />
-              <div className="flex items-center justify-end space-x-4">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsOpen(false);
-                  }}
-                  type="button"
-                  className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleNewLoadSubmit}
-                  type="submit"
-                  className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
-                >
-                  Add
-                </button>
+              <Dialog
+                open={isDeleteDialogOpen}
+                onClose={closeDeleteDialog}
+                static={true}
+              >
+                <DialogPanel>
+                  <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                    Confirm Deletion
+                  </h3>
+                  <p>Are you sure you want to delete this load?</p>
+                  <div className="flex items-center justify-end space-x-4">
+                    <button
+                      onClick={handleCancelClick}
+                      className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                    >
+                      Cancel
+                    </button>
+                    <Button
+                      onClick={handleDeleteClick}
+                      className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </DialogPanel>
+              </Dialog>
+
+              <div className={`flex items-center ${formMode === 'edit' ? 'justify-between' : 'justify-end'} space-x-4`}>
+                {formMode === "edit" && (
+                  <Button
+                    onClick={openDeleteDialog}
+                    className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+                  >
+                    Delete
+                  </Button>
+                )}
+                {formMode === "edit" && editableIndex !== null && (
+                  <InvoiceGenerator
+                    loadDetails={[loadDetails[editableIndex]]}
+                  />
+                )}
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={handleCancelClick}
+                    className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleFormSubmit}
+                    type="submit"
+                    className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
+                  >
+                    {formMode === "add" ? "Add" : "Update"}
+                  </button>
+                </div>
               </div>
             </form>
           </DialogPanel>
@@ -712,280 +847,55 @@ const Overview: React.FC = () => {
               <th>Name</th>
               <th>Phone number</th>
               <th>Email</th> */}
-                <th>Action</th>
+                <th></th>
               </TableRow>
             </TableHead>
-            {/* The table body */}
             <TableBody>
               {filteredLoads.map((load, index) => (
                 <TableRow key={index}>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="text"
-                        value={load.loadNumber}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.loadNumber = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      load.loadNumber
-                    )}
+                    <div>{load.loadNumber}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <TruckDropdown
-                        truckList={trucks}
-                        assignedTrucks={assignedTrucks}
-                        selectedTruck={load.truckObject}
-                        onSelectTruck={(selectedTruck) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.truckObject = selectedTruck;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      <div>{load.truckObject}</div>
-                    )}
+                    <div>{load.truckObject}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <TrailerDropdown
-                        trailerList={trailers}
-                        assignedTrailers={assignedTrailers}
-                        selectedTrailer={load.trailerObject}
-                        onSelectTrailer={(selectedTrailer) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.trailerObject = selectedTrailer;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      <div>{load.trailerObject}</div>
-                    )}
+                    <div>{load.trailerObject}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <DriverDropdown
-                        driverList={drivers}
-                        selectedDriver={load.driverObject}
-                        assignedDrivers={assignedDrivers}
-                        onSelectDriver={(selectedDriver) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.driverObject = selectedDriver;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      <div>{load.driverObject}</div>
-                    )}
+                    <div>{load.driverObject}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="datetime-local"
-                        value={load.pickupTime}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.pickupTime = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      load.pickupTime
-                    )}
+                    <div>{load.pickupTime}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="datetime-local"
-                        value={load.deliveryTime}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.deliveryTime = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      load.deliveryTime
-                    )}
+                    <div>{load.deliveryTime}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="datetime-local"
-                        value={load.pickupLocation}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.pickupLocation = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      load.pickupLocation
-                    )}
+                    <div>{load.pickupLocation}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="datetime-local"
-                        value={load.deliveryLocation}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.deliveryLocation = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      load.deliveryLocation
-                    )}
+                    <div>{load.deliveryLocation}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="text"
-                        value={load.documents}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.documents = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      load.documents
-                    )}
+                    <div>{load.documents}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="number"
-                        value={load.price}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.price = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      `$${parseFloat(load.price).toFixed(2)}`
-                    )}
+                    <div>{load.price}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="number"
-                        value={load.detentionPrice}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.detentionPrice = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : load.detentionPrice ||
-                      parseInt(load.detentionPrice) >= 0 ? (
-                      `$${parseFloat(load.detentionPrice).toFixed(2)}`
-                    ) : (
-                      ``
-                    )}
+                    <div>{load.detention}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="number"
-                        value={load.allMiles}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.allMiles = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      load.allMiles
-                    )}
+                    <div>{load.allMiles}</div>
                   </td>
                   <td>
-                    {editableIndex === index ? (
-                      <input
-                        className="load-details-table"
-                        type="number"
-                        value={load.fuelGallons}
-                        onChange={(e) => {
-                          const updatedLoad = { ...load };
-                          updatedLoad.fuelGallons = e.target.value;
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-                        }}
-                      />
-                    ) : (
-                      load.fuelGallons
-                    )}
+                    <div>{load.fuelGallons}</div>
                   </td>
                   <td>
                     {editableIndex === index ? (
                       <select
-                        className="load-details-table"
+                        className="select-custom load-details-table"
                         value={load.status}
                         onChange={(e) => {
                           const newStatus = e.target.value;
@@ -995,41 +905,46 @@ const Overview: React.FC = () => {
                             updatedDetails[index] = updatedLoad;
                             return updatedDetails;
                           });
-                          // Updating load details with status immediately here upon selection of the status
+
                           updateLoad(updatedLoad);
                         }}
                       >
-                        <option value="To-Do">To Do</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
+                        <option
+                          className={`badge ${getBadgeClass(load.status)}`}
+                        >
+                          To Do
+                        </option>
+                        <option
+                          className={`badge ${getBadgeClass(load.status)}`}
+                        >
+                          In Progress
+                        </option>
+                        <option
+                          className={`badge ${getBadgeClass(load.status)}`}
+                        >
+                          Completed
+                        </option>
                       </select>
                     ) : (
-                      load.status
+                      <span className={`badge ${getBadgeClass(load.status)}`}>
+                        {load.status}
+                      </span>
                     )}
                   </td>
                   <td>
                     {editableIndex === index ? (
                       <div className="flex items-center">
-                        <PencilIcon
+                        <Bars3Icon
                           className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
                           onClick={() => handleSaveClick(index)}
-                        />
-                        <TrashIcon
-                          className="w-6 mb-1 cursor-pointer"
-                          onClick={() => handleDeleteClick(index)}
                         />
                       </div>
                     ) : (
                       <div className="flex items-center">
-                        <PencilIcon
+                        <Bars3Icon
                           className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
                           onClick={() => handleEditClick(index)}
                         />
-                        <TrashIcon
-                          className="w-6 mb-1 cursor-pointer"
-                          onClick={() => handleDeleteClick(index)}
-                        />
-                        <InvoiceGenerator loadDetails={[loadDetails[index]]} />
                       </div>
                     )}
                   </td>

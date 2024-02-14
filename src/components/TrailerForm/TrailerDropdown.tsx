@@ -1,34 +1,34 @@
 import React from "react";
+import { SearchSelect, SearchSelectItem } from "@tremor/react";
 
 interface TrailerDropdownProps {
   trailerList: string[];
   selectedTrailer: string;
-  assignedTrailers: string[];
   onSelectTrailer: (selectedTrailer: string) => void;
 }
 
 const TrailerDropdown: React.FC<TrailerDropdownProps> = ({
   trailerList,
   selectedTrailer,
-  assignedTrailers,
   onSelectTrailer,
 }) => {
-  const filteredTrailers = trailerList.filter(
-    (trailer) => !assignedTrailers.includes(trailer)
-  );
+  const handleSelectChange = (selectedValue: string) => {
+    onSelectTrailer(selectedValue);
+  };
 
   return (
-    <select
+    <SearchSelect
       value={selectedTrailer}
-      onChange={(e) => onSelectTrailer(e.target.value)}
+      onValueChange={handleSelectChange}
+      placeholder="Select a trailer"
     >
-      <option value="">Select a trailer</option>
-      {filteredTrailers.map((trailer) => (
-        <option key={trailer} value={trailer}>
+      <SearchSelectItem value="" />
+      {trailerList.map((trailer) => (
+        <SearchSelectItem key={trailer} value={trailer}>
           {trailer}
-        </option>
+        </SearchSelectItem>
       ))}
-    </select>
+    </SearchSelect>
   );
 };
 
