@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
+import "./Reports.css";
 import {
-  Card,
-  Grid,
-  AreaChart,
+  Card, Grid, Col,
+  AreaChart, BarChart, DonutChart,
   Title,
   DateRangePicker,
-  SearchSelect,
-  SearchSelectItem,
-  Divider
+  SearchSelect, SearchSelectItem,
+  Divider,
+  Tab, TabGroup, TabList, TabPanel, TabPanels
 } from "@tremor/react";
 import { useState } from "react";
-import{ UserIcon } from "@heroicons/react/24/solid";
+import{ UserIcon, PresentationChartLineIcon, ChartBarIcon } from "@heroicons/react/24/solid";
 import GetAllDrivers from "../../routes/driverDetails";
 import GetAllRevenueReports from '../../routes/reports';
 import { GetDriverRevenueReports } from '../../routes/reports';
@@ -18,8 +18,11 @@ import { GetDriverRevenueReports } from '../../routes/reports';
 const Reports: React.FC = () => {
   const [driver, setDriver] = useState("");
   const [drivers, setDrivers] = useState<string[]>([]);
+  const [date, setDate] = useState<any>(null);
   const [areaChartData, setAreaChartData] = useState([]);
   const [categories, setCategories] = useState<string[]>(["Cumulative"]);
+  const [barChartToolTip, setBarChartToolTip] = useState(null);
+  const [value, setValue] = useState(null);
   
   const valueFormatter = function (number:number) {
     return "$ " + new Intl.NumberFormat("us").format(number).toString();
@@ -52,7 +55,6 @@ const Reports: React.FC = () => {
       const driverRevenueData = await GetDriverRevenueReports(driver);
 
       if (driverRevenueData) {
-        console.log(driverRevenueData);
         setAreaChartData(driverRevenueData);
         setCategories([driver]);
       }
@@ -66,76 +68,158 @@ const Reports: React.FC = () => {
     } else {
       fetchAllDrivers();
       fetchAllRevenueData();
+      setBarChartToolTip(null);
     }
   }, [driver]);
 
+  // handle date picker change
+  useEffect(() => {
+    if (date?.from != null && date?.to != null) {
+      const from = new Date(date.from);
+      const to = new Date(date.to);
+      const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+      const from_utc = Date.UTC(from.getFullYear(), from.getMonth(), from.getDate());
+      const to_utc = Date.UTC(to.getFullYear(), to.getMonth(), to.getDate());
+      const difference = Math.floor((to_utc - from_utc) / _MS_PER_DAY);
+      console.log(difference);
+    }
+  }, [date]);
+
+  const cities = [
+    {
+      name: "New York",
+      sales: 9800,
+    },
+    {
+      name: "London",
+      sales: 4567,
+    },
+    {
+      name: "Hong Kong",
+      sales: 3908,
+    },
+    {
+      name: "San Francisco",
+      sales: 2400,
+    },
+    {
+      name: "Singapore",
+      sales: 1908,
+    },
+    {
+      name: "Zurich",
+      sales: 1398,
+    },
+  ];
+
   return (
     <div>
-      <h2>Reports</h2>
+      <h2 className="dark:text-neutral-200">Reports</h2>
       <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
-        <DateRangePicker className="max-w-sm mx-auto" enableSelect={false} />
+        <DateRangePicker className="max-w-sm" value={date} onValueChange={setDate}/>
         <div className="max-w-sm mx-auto space-y-6">
           <SearchSelect value={driver} onValueChange={setDriver} placeholder="Filter by driver" icon={UserIcon}>
             {drivers.map((d) => (
-              <SearchSelectItem key={d} value={d} icon={UserIcon} />
+              <SearchSelectItem className="cursor-pointer" key={d} value={d} icon={UserIcon} />
             ))}
           </SearchSelect>
         </div>
-        <DateRangePicker className="max-w-sm mx-auto" enableSelect={false} />
+        {/* <DateRangePicker className="max-w-sm" /> */}
       </Grid>
       <Divider>Charts</Divider>
-      <Grid numItemsMd={2} numItemsLg={2} className="gap-6 mt-6">
-        <Card>
-            <Title>Revenue Over Time</Title>
-            <AreaChart
-              className="h-72 mt-4"
-              data={areaChartData}
-              index="date"
-              yAxisWidth={65}
-              categories={categories}
-              colors={["indigo"]}
-              valueFormatter={valueFormatter}
-              showAnimation={true}
-              animationDuration={1500}
-              curveType="monotone"
+      <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-6 mt-6">
+        <Col numColSpan={1} numColSpanLg={2}>
+          <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl">
+            <Card className="rounded-md">
+              <Title>Revenue Over Time</Title>
+              <TabGroup>
+                <TabList>
+                  <Tab icon={PresentationChartLineIcon}></Tab>
+                  <Tab icon={ChartBarIcon}></Tab>
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
+                    <AreaChart
+                      className="h-80 mt-4"
+                      data={areaChartData}
+                      index="date"
+                      yAxisWidth={65}
+                      categories={categories}
+                      colors={["indigo-400"]}
+                      valueFormatter={valueFormatter}
+                      showAnimation={true}
+                      animationDuration={1500}
+                      curveType="monotone"
+                    />
+                  </TabPanel>
+                  <TabPanel>
+                    <BarChart
+                      className="h-80 mt-4"
+                      data={areaChartData}
+                      index="date"
+                      yAxisWidth={65}
+                      categories={categories}
+                      colors={["indigo-400"]}
+                      valueFormatter={valueFormatter}
+                      showAnimation={true}
+                      animationDuration={1500}
+                      onValueChange={(v:any) => setBarChartToolTip(v)}
+                    />
+                  </TabPanel>
+                </TabPanels>
+              </TabGroup>
+            </Card>
+          </Card>
+        </Col>
+        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl">
+          <Card className="rounded-md min-h-full">
+            <Title>Expenses</Title>
+            {/* <Divider></Divider> */}
+            <DonutChart
+              data={cities}
+              category="sales"
+              index="name"
+              onValueChange={(v) => setValue(v)}
+              variant="pie"
             />
           </Card>
-          <Card>
-            <Title>Newsletter revenue over time (USD)</Title>
-            <AreaChart
-              className="h-72 mt-4"
-              data={areaChartData}
-              index="date"
-              yAxisWidth={65}
-              categories={["SemiAnalysis", "The Pragmatic Engineer"]}
-              colors={["indigo", "cyan"]}
-              valueFormatter={valueFormatter}
+        </Card>
+        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl">
+          <Card className="rounded-md">
+            <Title>Expenses</Title>
+            {/* <Divider></Divider> */}
+            <DonutChart
+              data={cities}
+              category="sales"
+              index="name"
+              onValueChange={(v) => setValue(v)}
             />
           </Card>
-          <Card>
-            <Title>Newsletter revenue over time (USD)</Title>
-            <AreaChart
-              className="h-72 mt-4"
-              data={areaChartData}
-              index="date"
-              yAxisWidth={65}
-              categories={["SemiAnalysis", "The Pragmatic Engineer"]}
-              colors={["indigo", "cyan"]}
-              valueFormatter={valueFormatter}
+        </Card>
+        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl">
+          <Card className="rounded-md">
+            <Title>Expenses</Title>
+            {/* <Divider></Divider> */}
+            <DonutChart
+              data={cities}
+              category="sales"
+              index="name"
+              onValueChange={(v) => setValue(v)}
             />
           </Card>
-          <Card>
-            <Title>Newsletter revenue over time (USD)</Title>
-            <AreaChart
-              className="h-72 mt-4"
-              data={areaChartData}
-              index="date"
-              yAxisWidth={65}
-              categories={["SemiAnalysis", "The Pragmatic Engineer"]}
-              colors={["indigo", "cyan"]}
-              valueFormatter={valueFormatter}
+        </Card>
+        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl">
+          <Card className="rounded-md">
+            <Title>Expenses</Title>
+            {/* <Divider></Divider> */}
+            <DonutChart
+              data={cities}
+              category="sales"
+              index="name"
+              onValueChange={(v) => setValue(v)}
             />
           </Card>
+        </Card>
       </Grid>
     </div>
   );

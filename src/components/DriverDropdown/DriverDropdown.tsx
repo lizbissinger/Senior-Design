@@ -1,4 +1,5 @@
 import React from "react";
+import { SearchSelect, SearchSelectItem } from "@tremor/react";
 
 interface DriverDropdownProps {
   driverList: string[];
@@ -11,18 +12,21 @@ const DriverDropdown: React.FC<DriverDropdownProps> = ({
   selectedDriver,
   onSelectDriver,
 }) => {
+  const handleSelectChange = (selectedValue: string) => {
+    onSelectDriver(selectedValue);
+  };
+
   return (
-    <select
+    <SearchSelect
       value={selectedDriver}
-      onChange={(e) => onSelectDriver(e.target.value)}
+      onValueChange={handleSelectChange}
+      placeholder="Select a driver"
     >
-      <option value="">Select a driver</option>
+      <SearchSelectItem value="" />
       {driverList.map((driver) => (
-        <option key={driver} value={driver}>
-          {driver}
-        </option>
+        <SearchSelectItem key={driver} value={driver} />
       ))}
-    </select>
+    </SearchSelect>
   );
 };
 

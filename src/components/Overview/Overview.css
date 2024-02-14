@@ -3,6 +3,12 @@
   margin: 20px;
 }
 
+.sticky-header th {
+  position: sticky;
+  top: 0;
+ 
+}
+
 h2 {
   font-size: 24px;
   margin-bottom: 20px;
@@ -66,10 +72,18 @@ h3 {
 }
 
 .table-container {
-  max-height: 480px !important;
+  max-height: 500px !important;
   overflow-y: auto;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+ 
+}
+
+.overflow-height-container {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+table {
+  margin-top: 0 !important;
 }
 
 .load-details-table {
@@ -115,13 +129,18 @@ h3 {
 
 .status-boxes {
   display: flex;
-  justify-content: flex-start; /* Align items to the start of the flex container */
- ; /* Ensure the status boxes take up the full width */
-  gap: 20px; /* Add some space between cards */
+  justify-content: flex-start;
+ ;
+  gap: 20px;
+}
+
+.select-custom {
+  font-size: 17px;
+  padding: 0px;
 }
 
 .card {
-  margin-right: 10px; /* Adjust the margin as needed */
+  margin-right: 10px;
 }
 
 @media screen and (max-width: 768px) {

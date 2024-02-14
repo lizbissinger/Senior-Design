@@ -1,4 +1,5 @@
 import React from "react";
+import { SearchSelect, SearchSelectItem } from "@tremor/react";
 
 interface TruckDropdownProps {
   truckList: string[];
@@ -11,18 +12,23 @@ const TruckDropdown: React.FC<TruckDropdownProps> = ({
   selectedTruck,
   onSelectTruck,
 }) => {
+  const handleSelectChange = (selectedValue: string) => {
+    onSelectTruck(selectedValue);
+  };
+
   return (
-    <select
+    <SearchSelect
       value={selectedTruck}
-      onChange={(e) => onSelectTruck(e.target.value)}
+      onValueChange={handleSelectChange}
+      placeholder="Select a truck"
     >
-      <option value="">Select a truck</option>
+      <SearchSelectItem value="" />
       {truckList.map((truck) => (
-        <option key={truck} value={truck}>
+        <SearchSelectItem key={truck} value={truck}>
           {truck}
-        </option>
+        </SearchSelectItem>
       ))}
-    </select>
+    </SearchSelect>
   );
 };
 
