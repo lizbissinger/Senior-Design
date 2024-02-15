@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Overview.css";
 import Autocomplete from "react-google-autocomplete";
-const Google_Maps_Api_Key = import.meta.env.GOOGLE_MAPS_API_KEY;
+const Google_Maps_Api_Key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Bars3Icon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -667,7 +667,7 @@ const Overview: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <Autocomplete
-                    apiKey="AIzaSyCGylTS64QlW8c1eGxcBtDbcgsa8roUPuM"
+                    apiKey={Google_Maps_Api_Key}
                     onPlaceSelected={(place) => {
                       setNewLoad((newLoad) => ({
                         ...newLoad,
