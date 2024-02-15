@@ -87,8 +87,8 @@ const Reports: React.FC = () => {
 
   return (
     <div>
-      <Grid numItemsMd={2} numItemsLg={2} className="gap-6 mt-6">
-        <DateRangePicker className="max-w-sm" value={date} onValueChange={setDate}/>
+      <Grid numItemsMd={5} numItemsLg={4} className="gap-6 mt-6">
+        <DateRangePicker className="DateRangePicker min-w-sm" value={date} onValueChange={setDate}/>
         <div className="max-w-sm mx-auto space-y-6">
           <SearchSelect value={driver} onValueChange={setDriver} placeholder="Filter by driver" icon={UserIcon}>
             {drivers.map((d) => (
