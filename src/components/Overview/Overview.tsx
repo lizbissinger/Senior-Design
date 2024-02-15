@@ -649,11 +649,17 @@ const Overview: React.FC = () => {
 
                   <Autocomplete
                     apiKey={Google_Maps_Api_Key}
+                    defaultValue={newLoad.pickupLocation}
+                    inputAutocompleteValue={newLoad.pickupLocation}
                     onPlaceSelected={(place) => {
                       setNewLoad((newLoad) => ({
                         ...newLoad,
                         pickupLocation: place.formatted_address,
                       }));
+                    }}
+                    options={{
+                      types: ["address"],
+                      componentRestrictions: { country: "us" },
                     }}
                   />
                 </div>
@@ -668,13 +674,20 @@ const Overview: React.FC = () => {
                   </label>
                   <Autocomplete
                     apiKey={Google_Maps_Api_Key}
+                    defaultValue={newLoad.deliveryLocation} // Shows the current value
+                    inputAutocompleteValue={newLoad.deliveryLocation} // Controls the value dynamically - as the state changes - Jas
                     onPlaceSelected={(place) => {
                       setNewLoad((newLoad) => ({
                         ...newLoad,
                         deliveryLocation: place.formatted_address,
                       }));
                     }}
+                    options={{
+                      types: ["address"],
+                      componentRestrictions: { country: "us" },
+                    }}
                   />
+                  ;
                 </div>
 
                 <div className="col-span-full sm:col-span-3">
