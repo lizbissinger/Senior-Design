@@ -183,6 +183,44 @@ const Overview: React.FC = () => {
     fetchAllLoads();
   }, []);
 
+  useEffect(() => {
+    if (newLoad.pickupLocation && newLoad.deliveryLocation) {
+      calculateDistance();
+    }
+  }, [newLoad.pickupLocation, newLoad.deliveryLocation]);
+
+  const calculateDistance = async () => {
+    if (newLoad.pickupLocation && newLoad.deliveryLocation) {
+      const service = new google.maps.DistanceMatrixService();
+      service.getDistanceMatrix(
+        {
+          origins: [newLoad.pickupLocation],
+          destinations: [newLoad.deliveryLocation],
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (
+          response: google.maps.DistanceMatrixResponse,
+          status: google.maps.DistanceMatrixStatus
+        ) => {
+          if (status === "OK" && response.rows[0].elements[0].status === "OK") {
+            const distanceMeters = response.rows[0].elements[0].distance.value;
+            const distanceMiles = Math.round(distanceMeters * 0.000621371);
+            setNewLoad((prevState) => ({
+              ...prevState,
+              allMiles: distanceMiles.toString(),
+            }));
+          } else {
+            console.error("Failed to fetch distance:", status);
+            setNewLoad((prevState) => ({
+              ...prevState,
+              allMiles: "",
+            }));
+          }
+        }
+      );
+    }
+  };
+
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -724,7 +762,7 @@ const Overview: React.FC = () => {
                     onPlaceSelected={(place) => {
                       setNewLoad((newLoad) => ({
                         ...newLoad,
-                        pickupLocation: place.formatted_address,
+                        pickupLocation: place.formatted_address || "",
                       }));
                     }}
                     options={{
@@ -744,12 +782,12 @@ const Overview: React.FC = () => {
                   </label>
                   <Autocomplete
                     apiKey={Google_Maps_Api_Key}
-                    defaultValue={newLoad.deliveryLocation} // Shows the current value
-                    inputAutocompleteValue={newLoad.deliveryLocation} // Controls the value dynamically - as the state changes - Jas
+                    defaultValue={newLoad.deliveryLocation} 
+                    inputAutocompleteValue={newLoad.deliveryLocation}
                     onPlaceSelected={(place) => {
                       setNewLoad((newLoad) => ({
                         ...newLoad,
-                        deliveryLocation: place.formatted_address,
+                        deliveryLocation: place.formatted_address || "",
                       }));
                     }}
                     options={{
