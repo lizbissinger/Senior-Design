@@ -1,17 +1,29 @@
 import React from "react";
 import { LoadDetail } from "../Types/types";
 import { Card, List, ListItem } from "@tremor/react";
+import CloseButton from "react-bootstrap/CloseButton";
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
+  onClose: () => void;
 }
 
-const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load }) => {
+const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   return (
     <Card>
+      <CloseButton onClick={onClose} className="main-button"></CloseButton>
       <List className="table">
         <ListItem>
           <strong>Load Number:</strong> {load?.loadNumber}
+        </ListItem>
+        <ListItem>
+          <strong>Status:</strong> {load?.status}
+        </ListItem>
+        <ListItem>
+          <strong>Price:</strong> {load?.price}
+        </ListItem>
+        <ListItem>
+          <strong>Loaded Miles:</strong> {load?.allMiles}
         </ListItem>
         <ListItem>
           <strong>Truck:</strong> {load?.truckObject}
@@ -38,19 +50,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load }) => {
           <strong>Documents:</strong> {load?.documents}
         </ListItem>
         <ListItem>
-          <strong>Price:</strong> {load?.price}
-        </ListItem>
-        <ListItem>
           <strong>Detention Price:</strong> {load?.detentionPrice}
         </ListItem>
         <ListItem>
-          <strong>All Miles:</strong> {load?.allMiles}
-        </ListItem>
-        <ListItem>
-          <strong>Fuel Gallons:</strong> {load?.fuelGallons}
-        </ListItem>
-        <ListItem>
-          <strong>Status:</strong> {load?.status}
+          <strong>Fuel (Gallons):</strong> {load?.fuelGallons}
         </ListItem>
       </List>
     </Card>
