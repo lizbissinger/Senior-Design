@@ -213,30 +213,33 @@ const Overview: React.FC = () => {
 
   useEffect(() => {
     const filterLoads = () => {
-      if (selectedDate && selectedDate.from && selectedDate.to) {
-        const startDate = new Date(selectedDate.from);
-        const endDate = new Date(selectedDate.to);
-
-        const filteredByDateRange = loadDetails.filter((load) => {
+      const filteredLoads = loadDetails.filter((load) => {
+        const matchesStatus = !selectedStatus || load.status === selectedStatus;
+        const matchesSearchTerm = load.loadNumber
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+  
+        if (selectedDate && selectedDate.from && selectedDate.to) {
+          const startDate = new Date(selectedDate.from);
+          const endDate = new Date(selectedDate.to);
           const deliveryDate = new Date(load.deliveryTime);
+  
           return (
+            matchesStatus &&
+            matchesSearchTerm &&
             deliveryDate >= startDate &&
-            deliveryDate <= endDate &&
-            (!selectedStatus || load.status === selectedStatus)
+            deliveryDate <= endDate
           );
-        });
-
-        setFilteredLoads(filteredByDateRange);
-      } else {
-        const filteredByStatus = loadDetails.filter(
-          (load) => !selectedStatus || load.status === selectedStatus
-        );
-        setFilteredLoads(filteredByStatus);
-      }
+        } else {
+          return matchesStatus && matchesSearchTerm;
+        }
+      });
+  
+      setFilteredLoads(filteredLoads);
     };
-
+  
     filterLoads();
-  }, [selectedDate, selectedStatus, loadDetails]);
+  }, [selectedDate, selectedStatus, loadDetails, searchTerm]);
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [deletableIndex, setDeletableIndex] = useState<number | null>(null);
@@ -548,7 +551,7 @@ const Overview: React.FC = () => {
             ))}
           </SearchSelect>
           <DateRangePicker
-            className="DateRangePicker max-w-md"
+            className="DateRangePicker mr-2 max-w-md"
             onValueChange={handleDateRangeChange}
           />
           <Button className="main-button" onClick={() => setIsOpen(true)}>
