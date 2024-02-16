@@ -205,7 +205,7 @@ const Overview: React.FC = () => {
         ) => {
           if (status === "OK" && response.rows[0].elements[0].status === "OK") {
             const distanceMeters = response.rows[0].elements[0].distance.value;
-            const distanceMiles = Math.round(distanceMeters * 0.000621371);
+            const distanceMiles = (distanceMeters * 0.000621371).toFixed(1);
             setNewLoad((prevState) => ({
               ...prevState,
               allMiles: distanceMiles.toString(),
