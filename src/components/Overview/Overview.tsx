@@ -593,7 +593,7 @@ const Overview: React.FC = () => {
       </Grid>
       <Divider />
       <>
-        <div className="main-button">
+        <div className="main-buttons">
           <SearchSelect
             placeholder="Search Load..."
             onValueChange={handleSearchSelectChange}
