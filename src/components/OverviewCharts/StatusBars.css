@@ -1,5 +1,6 @@
 .status-boxes {
   display: flex;
+  gap: 20px;
 }
 
 .status-bar {

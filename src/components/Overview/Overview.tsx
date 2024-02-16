@@ -636,6 +636,10 @@ const Overview: React.FC = () => {
       <Divider />
       <>
         <div className="main-buttons">
+          <DateRangePicker
+            className="DateRangePicker mr-2 max-w-md"
+            onValueChange={handleDateRangeChange}
+          />
           <SearchSelect
             placeholder="Search Load..."
             onValueChange={handleSearchSelectChange}
@@ -647,10 +651,6 @@ const Overview: React.FC = () => {
               </SearchSelectItem>
             ))}
           </SearchSelect>
-          <DateRangePicker
-            className="DateRangePicker mr-2 max-w-md"
-            onValueChange={handleDateRangeChange}
-          />
           <Button className="main-button" onClick={() => setIsOpen(true)}>
             {formMode === "add" ? "Add Load" : "Update Load"}
           </Button>{" "}
