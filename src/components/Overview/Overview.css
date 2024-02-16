@@ -86,6 +86,14 @@ table {
   margin-top: 0 !important;
 }
 
+.DateRangePicker {
+  margin-right: 8px;
+}
+
+.DateRangePicker p {
+  margin-bottom: 0;
+}
+
 .load-details-table {
   width: 100%;
   white-space: nowrap;

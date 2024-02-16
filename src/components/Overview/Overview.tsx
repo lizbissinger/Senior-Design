@@ -37,6 +37,8 @@ import {
   Divider,
   TextInput,
   NumberInput,
+  DateRangePicker,
+  DateRangePickerValue,
 } from "@tremor/react";
 
 import _ from "lodash";
@@ -50,7 +52,13 @@ const Overview: React.FC = () => {
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  console.log("Driver", drivers);
+  const [originalLoadDetails, setOriginalLoadDetails] = useState<LoadDetail[]>(
+    []
+  );
+  const [filteredLoads, setFilteredLoads] = useState<LoadDetail[]>([]);
+  const [selectedDate, setSelectedDate] = useState<DateRangePickerValue | null>(
+    null
+  );
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
     _id: "",
@@ -195,9 +203,40 @@ const Overview: React.FC = () => {
     setSearchTerm(String(selectedValue));
   };
 
-  const filteredLoads = sortedData.filter((load) =>
-    load.loadNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleDateRangeChange = (value: DateRangePickerValue) => {
+    setSelectedDate(value);
+  };
+
+  const handleStatusClick = (status: string) => {
+    setSelectedStatus(status);
+  };
+
+  useEffect(() => {
+    const filterLoads = () => {
+      if (selectedDate && selectedDate.from && selectedDate.to) {
+        const startDate = new Date(selectedDate.from);
+        const endDate = new Date(selectedDate.to);
+
+        const filteredByDateRange = loadDetails.filter((load) => {
+          const deliveryDate = new Date(load.deliveryTime);
+          return (
+            deliveryDate >= startDate &&
+            deliveryDate <= endDate &&
+            (!selectedStatus || load.status === selectedStatus)
+          );
+        });
+
+        setFilteredLoads(filteredByDateRange);
+      } else {
+        const filteredByStatus = loadDetails.filter(
+          (load) => !selectedStatus || load.status === selectedStatus
+        );
+        setFilteredLoads(filteredByStatus);
+      }
+    };
+
+    filterLoads();
+  }, [selectedDate, selectedStatus, loadDetails]);
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [deletableIndex, setDeletableIndex] = useState<number | null>(null);
@@ -218,10 +257,6 @@ const Overview: React.FC = () => {
 
   const handleTrailerSelect = (selectedTrailer: string) => {
     setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
-  };
-
-  const handleStatusClick = (status: string) => {
-    setSelectedStatus(status);
   };
 
   const addLoadDetail = async () => {
@@ -467,6 +502,16 @@ const Overview: React.FC = () => {
     }
   };
 
+  const filteredToDoCount = filteredLoads.filter(
+    (load) => load.status === "To-Do"
+  ).length;
+  const filteredInProgressCount = filteredLoads.filter(
+    (load) => load.status === "In Progress"
+  ).length;
+  const filteredCompletedCount = filteredLoads.filter(
+    (load) => load.status === "Completed"
+  ).length;
+
   return (
     <div className="overview-container">
       <Grid
@@ -480,17 +525,21 @@ const Overview: React.FC = () => {
           toDoCount={toDoCount}
           inProgressCount={inProgressCount}
           completedCount={completedCount}
+          filteredToDoCount={filteredToDoCount}
+          filteredInProgressCount={filteredInProgressCount}
+          filteredCompletedCount={filteredCompletedCount}
           onStatusClick={handleStatusClick}
+          onDateRangeChange={handleDateRangeChange}
         />
         <TotalPricePerDriverChart loadDetails={loadDetails} />
       </Grid>
       <Divider />
       <>
-        <div className="main-button mt-3">
+        <div className="main-button">
           <SearchSelect
             placeholder="Search Load..."
             onValueChange={handleSearchSelectChange}
-            className="mr-2 max-w-md"
+            className="mr-2 max-w-sm"
           >
             {loadDetails.map((load) => (
               <SearchSelectItem key={load.loadNumber} value={load.loadNumber}>
@@ -498,7 +547,11 @@ const Overview: React.FC = () => {
               </SearchSelectItem>
             ))}
           </SearchSelect>
-          <Button onClick={() => setIsOpen(true)}>
+          <DateRangePicker
+            className="DateRangePicker max-w-md"
+            onValueChange={handleDateRangeChange}
+          />
+          <Button className="main-button" onClick={() => setIsOpen(true)}>
             {formMode === "add" ? "Add Load" : "Update Load"}
           </Button>{" "}
         </div>
