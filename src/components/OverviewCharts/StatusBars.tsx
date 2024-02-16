@@ -1,19 +1,35 @@
-import React, { useState } from "react";
-import { Card, Flex, Metric, Text } from "@tremor/react";
+import React, { useState, useEffect } from "react";
+import { Card, DateRangePickerValue, Flex, Metric, Text } from "@tremor/react";
 import "./StatusBars.css";
 
 interface StatusBarsProps {
   toDoCount: number;
   inProgressCount: number;
   completedCount: number;
+  filteredToDoCount: number;
+  filteredInProgressCount: number;
+  filteredCompletedCount: number;
   onStatusClick: (status: string) => void;
 }
 
-const StatusBars: React.FC<StatusBarsProps> = ({
+const StatusBars: React.FC<{
+  toDoCount: number;
+  inProgressCount: number;
+  completedCount: number;
+  filteredToDoCount: number;
+  filteredInProgressCount: number;
+  filteredCompletedCount: number;
+  onStatusClick: (status: string) => void;
+  onDateRangeChange: (value: DateRangePickerValue) => void;
+}> = ({
   toDoCount,
   inProgressCount,
   completedCount,
+  filteredToDoCount,
+  filteredInProgressCount,
+  filteredCompletedCount,
   onStatusClick,
+  onDateRangeChange,
 }) => {
   const [activeStatus, setActiveStatus] = useState<string | null>(null);
 
@@ -26,6 +42,14 @@ const StatusBars: React.FC<StatusBarsProps> = ({
       onStatusClick(status);
     }
   };
+
+  const handleDateRangeChange = (value: DateRangePickerValue) => {
+    onDateRangeChange(value);
+  };
+
+  useEffect(() => {
+    setActiveStatus(null);
+  }, [toDoCount, inProgressCount, completedCount]);
 
   return (
     <div className="status-boxes">
@@ -40,7 +64,7 @@ const StatusBars: React.FC<StatusBarsProps> = ({
         <Flex>
           <div>
             <Text>To Do</Text>
-            <Metric>{toDoCount}</Metric>
+            <Metric>{filteredToDoCount}</Metric>
           </div>
         </Flex>
       </Card>
@@ -55,7 +79,7 @@ const StatusBars: React.FC<StatusBarsProps> = ({
         <Flex>
           <div>
             <Text>In Progress</Text>
-            <Metric>{inProgressCount}</Metric>
+            <Metric>{filteredInProgressCount}</Metric>
           </div>
         </Flex>
       </Card>
@@ -70,7 +94,7 @@ const StatusBars: React.FC<StatusBarsProps> = ({
         <Flex>
           <div>
             <Text>Completed</Text>
-            <Metric>{completedCount}</Metric>
+            <Metric>{filteredCompletedCount}</Metric>
           </div>
         </Flex>
       </Card>
