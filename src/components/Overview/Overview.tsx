@@ -362,18 +362,17 @@ const Overview: React.FC = () => {
   };
 
   const handleEditClick = (index: number) => {
+    const selectedLoad = filteredLoads[index];
     setEditableIndex(index);
     setFormMode("edit");
-
-    const selectedLoad = loadDetails[index];
     setNewLoad({ ...selectedLoad });
     setIsOpen(true);
   };
-
+  
   const handleSaveClick = (index: number) => {
-    updateLoad(loadDetails[index]);
+    updateLoad(filteredLoads[index]);
     const updatedLoadDetails = [...loadDetails];
-    updatedLoadDetails[index] = loadDetails[index];
+    updatedLoadDetails[index] = filteredLoads[index];
     setLoadDetails(updatedLoadDetails);
     setEditableIndex(null);
   };
@@ -421,11 +420,15 @@ const Overview: React.FC = () => {
 
   const handleDeleteClick = () => {
     if (editableIndex !== null) {
-      deleteLoad(loadDetails[editableIndex]._id);
+      deleteLoad(filteredLoads[editableIndex]._id);
       const updatedLoadDetails = [...loadDetails];
-      updatedLoadDetails.splice(editableIndex, 1);
-      setLoadDetails(updatedLoadDetails);
-
+      const filteredLoadIndex = loadDetails.findIndex(load => load._id === filteredLoads[editableIndex]._id);
+      
+      if (filteredLoadIndex !== -1) {
+        updatedLoadDetails.splice(filteredLoadIndex, 1);
+        setLoadDetails(updatedLoadDetails);
+      }
+  
       resetForm();
       setFormMode("add");
       setEditableIndex(null);
@@ -433,7 +436,7 @@ const Overview: React.FC = () => {
       setIsOpen(false);
       setIsDeleteDialogOpen(false);
     }
-  };
+  };  
 
   const handleFormSubmit = async (event: any) => {
     event.preventDefault();
@@ -895,7 +898,7 @@ const Overview: React.FC = () => {
                 )}
                 {formMode === "edit" && editableIndex !== null && (
                   <InvoiceGenerator
-                    loadDetails={[loadDetails[editableIndex]]}
+                    loadDetails={[filteredLoads[editableIndex]]}
                   />
                 )}
                 <div className="flex items-center space-x-4">

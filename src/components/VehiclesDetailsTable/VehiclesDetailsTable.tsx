@@ -15,7 +15,11 @@ import {
   MultiSelect,
   MultiSelectItem,
   Grid,
+  TabPanels,
+  TabPanel,
+  Button,
 } from "@tremor/react";
+import { Tab, TabGroup, TabList } from "@tremor/react";
 
 type VehiclesDetailsTableProps = {
   drivers: DriverDetail[];
@@ -128,167 +132,188 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
 
   return (
     <Grid className="vehicles-details-container">
-      <div className="drivers-table">
-        <Card>
-          <Title>Drivers</Title>
-          <MultiSelect
-            onValueChange={handleDriverSelectionChange}
-            placeholder="Select Driver..."
-            className="max-w-xs"
-          >
-            {drivers.map((driver, index) => (
-              <MultiSelectItem key={index} value={driver.name}>
-                {driver.name}
-              </MultiSelectItem>
-            ))}
-          </MultiSelect>
-          <Table className="mt-2">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>License #</TableHeaderCell>
-                <TableHeaderCell>Phone #</TableHeaderCell>
-                <TableHeaderCell>Email</TableHeaderCell>
-                <TableHeaderCell>Action</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredDrivers.map((driver, index) => (
-                <TableRow key={index}>
-                  <TableCell>{driver.name}</TableCell>
-                  <TableCell>{driver.licenseNumber}</TableCell>
-                  <TableCell>{driver.phoneNumber}</TableCell>
-                  <TableCell>{driver.email}</TableCell>
-                  <TableCell>
-                    <button
-                      onClick={() => onEdit("driver", driver)}
-                      className="edit-button"
-                    >
-                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
-                    </button>
-                    <button
-                      onClick={() => onDeleteDriver(driver, index)}
-                      className="delete-button"
-                    >
-                      <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
-                    </button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Card>
-      </div>
-
-      <div className="trucks-trailers-table">
-        <div className="trucks-table">
-          <Card>
-            <Title>Trucks</Title>
-            <MultiSelect
-              onValueChange={handleTruckSelectionChange}
-              placeholder="Select Truck..."
-              className="max-w-xs"
-            >
-              {trucks.map((truck, index) => (
-                <MultiSelectItem key={index} value={truck.truckNumber}>
-                  {truck.truckNumber}
-                </MultiSelectItem>
-              ))}
-            </MultiSelect>
-            <Table className="mt-2">
-              <TableHead>
-                <TableRow>
-                  <TableHeaderCell>Number</TableHeaderCell>
-                  <TableHeaderCell>Make</TableHeaderCell>
-                  <TableHeaderCell>Model</TableHeaderCell>
-                  <TableHeaderCell>Year</TableHeaderCell>
-                  <TableHeaderCell>VIN</TableHeaderCell>
-                  <TableHeaderCell>Action</TableHeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredTrucks.map((truck, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{truck.truckNumber}</TableCell>
-                    <TableCell>{truck.make}</TableCell>
-                    <TableCell>{truck.model}</TableCell>
-                    <TableCell>{truck.year}</TableCell>
-                    <TableCell>{truck.vin}</TableCell>
-                    <TableCell>
-                      <button
-                        onClick={() => onEdit("truck", truck)}
-                        className="edit-button"
-                      >
-                        <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
-                      </button>
-                      <button
-                        onClick={() => onDeleteTruck(truck, index)}
-                        className="delete-button"
-                      >
-                        <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Card>
-        </div>
-
-        <div className="trailers-table">
-          <Card>
-            <Title>Trailers</Title>
-            <MultiSelect
-              onValueChange={handleTrailerSelectionChange}
-              placeholder="Select Trailer..."
-              className="max-w-xs"
-            >
-              {trailers.map((trailer, index) => (
-                <MultiSelectItem key={index} value={trailer.trailerNumber}>
-                  {trailer.trailerNumber}
-                </MultiSelectItem>
-              ))}
-            </MultiSelect>
-            <Table className="mt-2">
-              <TableHead>
-                <TableRow>
-                  <TableHeaderCell>Number</TableHeaderCell>
-                  <TableHeaderCell>Make</TableHeaderCell>
-                  <TableHeaderCell>Model</TableHeaderCell>
-                  <TableHeaderCell>Year</TableHeaderCell>
-                  <TableHeaderCell>VIN</TableHeaderCell>
-                  <TableHeaderCell>Action</TableHeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredTrailers.map((trailer, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{trailer.trailerNumber}</TableCell>
-                    <TableCell>{trailer.make}</TableCell>
-                    <TableCell>{trailer.model}</TableCell>
-                    <TableCell>{trailer.year}</TableCell>
-                    <TableCell>{trailer.vin}</TableCell>
-                    <TableCell>
-                      <button
-                        onClick={() => onEdit("trailer", trailer)}
-                        className="edit-button"
-                      >
-                        <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
-                      </button>
-                      <button
-                        onClick={() => onDeleteTrailer(trailer, index)}
-                        className="delete-button"
-                      >
-                        <FontAwesomeIcon icon={faTrash} /> {/* Delete Icon */}
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Card>
-        </div>
-      </div>
+      <TabGroup>
+        <TabList variant="line" defaultValue="1">
+          <Tab value="1">Drivers</Tab>
+          <Tab value="2">Trucks</Tab>
+          <Tab value="3">Trailers</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <div className="table">
+              <Card>
+                <Title>Drivers</Title>
+                <MultiSelect
+                  onValueChange={handleDriverSelectionChange}
+                  placeholder="Select Driver..."
+                  className="max-w-xs"
+                >
+                  {drivers.map((driver, index) => (
+                    <MultiSelectItem key={index} value={driver.name}>
+                      {driver.name}
+                    </MultiSelectItem>
+                  ))}
+                </MultiSelect>
+                <Table className="mt-2">
+                  <TableHead>
+                    <TableRow>
+                      <TableHeaderCell>Name</TableHeaderCell>
+                      <TableHeaderCell>License #</TableHeaderCell>
+                      <TableHeaderCell>Phone #</TableHeaderCell>
+                      <TableHeaderCell>Email</TableHeaderCell>
+                      <TableHeaderCell>Action</TableHeaderCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredDrivers.map((driver, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{driver.name}</TableCell>
+                        <TableCell>{driver.licenseNumber}</TableCell>
+                        <TableCell>{driver.phoneNumber}</TableCell>
+                        <TableCell>{driver.email}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="light"
+                            color="blue"
+                            onClick={() => onEdit("driver", driver)}
+                            className="edit-button"
+                          >
+                            <FontAwesomeIcon icon={faPenAlt} />{" "}
+                            {/* Edit Icon */}
+                          </Button>
+                          <Button
+                            variant="light"
+                            color="pink"
+                            onClick={() => onDeleteDriver(driver, index)}
+                            className="delete-button"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />{" "}
+                            {/* Delete Icon */}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            </div>
+          </TabPanel>
+          <TabPanel>
+            <div className="table">
+              <Card>
+                <Title>Trucks</Title>
+                <MultiSelect
+                  onValueChange={handleTruckSelectionChange}
+                  placeholder="Select Truck..."
+                  className="max-w-xs"
+                >
+                  {trucks.map((truck, index) => (
+                    <MultiSelectItem key={index} value={truck.truckNumber}>
+                      {truck.truckNumber}
+                    </MultiSelectItem>
+                  ))}
+                </MultiSelect>
+                <Table className="mt-2">
+                  <TableHead>
+                    <TableRow>
+                      <TableHeaderCell>Number</TableHeaderCell>
+                      <TableHeaderCell>Make</TableHeaderCell>
+                      <TableHeaderCell>Model</TableHeaderCell>
+                      <TableHeaderCell>Year</TableHeaderCell>
+                      <TableHeaderCell>VIN</TableHeaderCell>
+                      <TableHeaderCell>Action</TableHeaderCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredTrucks.map((truck, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{truck.truckNumber}</TableCell>
+                        <TableCell>{truck.make}</TableCell>
+                        <TableCell>{truck.model}</TableCell>
+                        <TableCell>{truck.year}</TableCell>
+                        <TableCell>{truck.vin}</TableCell>
+                        <TableCell>
+                          <button
+                            onClick={() => onEdit("truck", truck)}
+                            className="edit-button"
+                          >
+                            <FontAwesomeIcon icon={faPenAlt} />{" "}
+                            {/* Edit Icon */}
+                          </button>
+                          <button
+                            onClick={() => onDeleteTruck(truck, index)}
+                            className="delete-button"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />{" "}
+                            {/* Delete Icon */}
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            </div>
+          </TabPanel>
+          <TabPanel>
+            <div className="table">
+              <Card>
+                <Title>Trailers</Title>
+                <MultiSelect
+                  onValueChange={handleTrailerSelectionChange}
+                  placeholder="Select Trailer..."
+                  className="max-w-xs"
+                >
+                  {trailers.map((trailer, index) => (
+                    <MultiSelectItem key={index} value={trailer.trailerNumber}>
+                      {trailer.trailerNumber}
+                    </MultiSelectItem>
+                  ))}
+                </MultiSelect>
+                <Table className="mt-2">
+                  <TableHead>
+                    <TableRow>
+                      <TableHeaderCell>Number</TableHeaderCell>
+                      <TableHeaderCell>Make</TableHeaderCell>
+                      <TableHeaderCell>Model</TableHeaderCell>
+                      <TableHeaderCell>Year</TableHeaderCell>
+                      <TableHeaderCell>VIN</TableHeaderCell>
+                      <TableHeaderCell>Action</TableHeaderCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredTrailers.map((trailer, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{trailer.trailerNumber}</TableCell>
+                        <TableCell>{trailer.make}</TableCell>
+                        <TableCell>{trailer.model}</TableCell>
+                        <TableCell>{trailer.year}</TableCell>
+                        <TableCell>{trailer.vin}</TableCell>
+                        <TableCell>
+                          <button
+                            onClick={() => onEdit("trailer", trailer)}
+                            className="edit-button"
+                          >
+                            <FontAwesomeIcon icon={faPenAlt} />{" "}
+                            {/* Edit Icon */}
+                          </button>
+                          <button
+                            onClick={() => onDeleteTrailer(trailer, index)}
+                            className="delete-button"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />{" "}
+                            {/* Delete Icon */}
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            </div>
+          </TabPanel>
+        </TabPanels>
+      </TabGroup>
     </Grid>
   );
 };
