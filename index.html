@@ -24,6 +24,17 @@
       integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
       crossorigin="anonymous"
     ></script>
+
+    <script type="module">
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const scriptTag = document.createElement("script");
+        scriptTag.type = "module";
+        scriptTag.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        document.head.appendChild(scriptTag);
+      });
+    </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         var tableContainer = document.querySelector(".table-container");

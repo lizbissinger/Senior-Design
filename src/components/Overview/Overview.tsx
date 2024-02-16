@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Overview.css";
+import Autocomplete from "react-google-autocomplete";
+const Google_Maps_Api_Key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Bars3Icon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -697,15 +699,21 @@ const Overview: React.FC = () => {
                     Pick-up Location
                     <span className="text-red-500">*</span>
                   </label>
-                  <TextInput
-                    type="text"
-                    id="pickupLocation"
-                    placeholder="Pick-up Location"
-                    autoComplete="address-level2"
-                    value={newLoad.pickupLocation}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, pickupLocation: e.target.value })
-                    }
+
+                  <Autocomplete
+                    apiKey={Google_Maps_Api_Key}
+                    defaultValue={newLoad.pickupLocation}
+                    inputAutocompleteValue={newLoad.pickupLocation}
+                    onPlaceSelected={(place) => {
+                      setNewLoad((newLoad) => ({
+                        ...newLoad,
+                        pickupLocation: place.formatted_address,
+                      }));
+                    }}
+                    options={{
+                      types: ["address"],
+                      componentRestrictions: { country: "us" },
+                    }}
                   />
                 </div>
 
@@ -717,19 +725,22 @@ const Overview: React.FC = () => {
                     Delivery Location
                     <span className="text-red-500">*</span>
                   </label>
-                  <TextInput
-                    type="text"
-                    id="deliveryLocation"
-                    autoComplete="address-level2"
-                    placeholder="Delivery Location"
-                    value={newLoad.deliveryLocation}
-                    onChange={(e) =>
-                      setNewLoad({
+                  <Autocomplete
+                    apiKey={Google_Maps_Api_Key}
+                    defaultValue={newLoad.deliveryLocation} // Shows the current value
+                    inputAutocompleteValue={newLoad.deliveryLocation} // Controls the value dynamically - as the state changes - Jas
+                    onPlaceSelected={(place) => {
+                      setNewLoad((newLoad) => ({
                         ...newLoad,
-                        deliveryLocation: e.target.value,
-                      })
-                    }
+                        deliveryLocation: place.formatted_address,
+                      }));
+                    }}
+                    options={{
+                      types: ["address"],
+                      componentRestrictions: { country: "us" },
+                    }}
                   />
+                  ;
                 </div>
 
                 <div className="col-span-full sm:col-span-3">
