@@ -37,6 +37,10 @@
   width: 100%;
 }
 
+.table {
+  overflow: auto;
+}
+
 @media (max-width: 767px) {
   .vehicles-details-container {
     display: block;
