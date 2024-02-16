@@ -19,6 +19,7 @@ import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
 import LoadDetailsView from "./LoadDetailsView";
+import Tooltip from "./Tooltip";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
 import {
   Card,
@@ -61,7 +62,9 @@ const Overview: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<DateRangePickerValue | null>(
     null
   );
-  const [selectedLoadNumber, setSelectedLoadNumber] = useState<string | null>(null);
+  const [selectedLoadNumber, setSelectedLoadNumber] = useState<string | null>(
+    null
+  );
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
     _id: "",
@@ -221,12 +224,12 @@ const Overview: React.FC = () => {
         const matchesSearchTerm = load.loadNumber
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
-  
+
         if (selectedDate && selectedDate.from && selectedDate.to) {
           const startDate = new Date(selectedDate.from);
           const endDate = new Date(selectedDate.to);
           const deliveryDate = new Date(load.deliveryTime);
-  
+
           return (
             matchesStatus &&
             matchesSearchTerm &&
@@ -237,10 +240,10 @@ const Overview: React.FC = () => {
           return matchesStatus && matchesSearchTerm;
         }
       });
-  
+
       setFilteredLoads(filteredLoads);
     };
-  
+
     filterLoads();
   }, [selectedDate, selectedStatus, loadDetails, searchTerm]);
 
@@ -566,7 +569,7 @@ const Overview: React.FC = () => {
             onValueChange={handleDateRangeChange}
           />
           <Button className="main-button" onClick={() => setIsOpen(true)}>
-            {formMode === "add" ? "Add Load" : "Update Load"} 
+            {formMode === "add" ? "Add Load" : "Update Load"}
           </Button>{" "}
         </div>
         <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
@@ -880,11 +883,12 @@ const Overview: React.FC = () => {
 
       <Grid
         numItems={isMobileView ? 1 : 2}
-       
         numItemsLg={2}
-        className={`gap-4 pt-3 load-details-container ${!selectedLoadNumber ? 'hidden' : ''}`}
-        >
-      <div className="details-table">
+        className={`gap-4 pt-3 load-details-container ${
+          !selectedLoadNumber ? "hidden" : ""
+        }`}
+      >
+        <div className="details-table">
           <Table className="table">
             {/* The table headers */}
             <TableHead className="sticky-header">
@@ -930,12 +934,14 @@ const Overview: React.FC = () => {
               {filteredLoads.map((load, index) => (
                 <TableRow key={index}>
                   <td>
-                  <div
-                    onClick={() => handleLoadNumberClick(load.loadNumber)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {load.loadNumber}
-                  </div>
+                    <Tooltip text="Show more details">
+                      <div
+                        onClick={() => handleLoadNumberClick(load.loadNumber)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {load.loadNumber}
+                      </div>
+                    </Tooltip>
                   </td>
                   <td>
                     <div>{load.truckObject}</div>
@@ -1025,13 +1031,23 @@ const Overview: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        <div className="load-table table" style={{ display: selectedLoadNumber ? 'block' : 'none', width: '37%'  }}>
-                  {selectedLoadNumber && (
-          <LoadDetailsView
-            load={loadDetails.find((load) => load.loadNumber === selectedLoadNumber) || null}
-            onClose={handleCloseDetailsView}
-          />
-        )}
+        <div
+          className="load-table table"
+          style={{
+            display: selectedLoadNumber ? "block" : "none",
+            width: "37%",
+          }}
+        >
+          {selectedLoadNumber && (
+            <LoadDetailsView
+              load={
+                loadDetails.find(
+                  (load) => load.loadNumber === selectedLoadNumber
+                ) || null
+              }
+              onClose={handleCloseDetailsView}
+            />
+          )}
         </div>
       </Grid>
     </div>
