@@ -18,6 +18,7 @@ import GetAllTrailers from "../../routes/trailerDetails";
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
+import LoadDetailsView from "./LoadDetailsView";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
 import {
   Card,
@@ -39,6 +40,7 @@ import {
   NumberInput,
   DateRangePicker,
   DateRangePickerValue,
+  Select,
 } from "@tremor/react";
 
 import _ from "lodash";
@@ -515,6 +517,12 @@ const Overview: React.FC = () => {
     (load) => load.status === "Completed"
   ).length;
 
+  const [selectedLoadNumber, setSelectedLoadNumber] = useState<string | null>(null);
+
+  const handleLoadNumberClick = (loadNumber: string) => {
+    setSelectedLoadNumber(loadNumber);
+  };
+
   return (
     <div className="overview-container">
       <Grid
@@ -555,7 +563,7 @@ const Overview: React.FC = () => {
             onValueChange={handleDateRangeChange}
           />
           <Button className="main-button" onClick={() => setIsOpen(true)}>
-            {formMode === "add" ? "Add Load" : "Update Load"}
+            {formMode === "add" ? "Add Load" : "Update Load"} 
           </Button>{" "}
         </div>
         <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
@@ -867,9 +875,13 @@ const Overview: React.FC = () => {
         </Dialog>
       </>
 
-      <div>
-        <p></p>
-        <div className="overflow-height-container">
+      <Grid
+        numItems={isMobileView ? 1 : 2}
+       
+        numItemsLg={2}
+        className={`gap-4 pt-3 load-details-container ${!selectedLoadNumber ? 'hidden' : ''}`}
+        >
+      <div className="details-table">
           <Table className="table">
             {/* The table headers */}
             <TableHead className="sticky-header">
@@ -925,7 +937,19 @@ const Overview: React.FC = () => {
               {filteredLoads.map((load, index) => (
                 <TableRow key={index}>
                   <td>
-                    <div>{load.loadNumber}</div>
+                    <div onClick={() => handleLoadNumberClick(load.loadNumber)}>
+                    {/* {loadDetails.map((load) => (
+                      <Select
+                        key={load.loadNumber}
+                        value={load.loadNumber}
+                        onClick={() => handleLoadNumberClick(load.loadNumber)}
+                      >
+                        {load.loadNumber}
+                      </Select>
+                    ))} */}
+                      {
+                    load.loadNumber}
+                    </div>
                   </td>
                   <td>
                     <div>{load.truckObject}</div>
@@ -1024,7 +1048,14 @@ const Overview: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-      </div>
+        <div className="load-table">
+                  {selectedLoadNumber && (
+          <LoadDetailsView
+            load={loadDetails.find((load) => load.loadNumber === selectedLoadNumber) || null}
+          />
+        )}
+        </div>
+      </Grid>
     </div>
   );
 };
