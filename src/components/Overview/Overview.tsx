@@ -19,8 +19,8 @@ import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
 import LoadDetailsView from "./LoadDetailsView";
-import Tooltip from "./Tooltip";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
+import { Tooltip } from "@mui/material";
 import {
   Card,
   Table,
@@ -975,7 +975,7 @@ const Overview: React.FC = () => {
               {filteredLoads.map((load, index) => (
                 <TableRow key={index}>
                   <td>
-                    <Tooltip text="Show more details">
+                    <Tooltip title="Show details">
                       <div
                         onClick={() => handleLoadNumberClick(load.loadNumber)}
                         style={{ cursor: "pointer" }}
