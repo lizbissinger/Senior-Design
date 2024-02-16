@@ -19,6 +19,7 @@ import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
 import LoadDetailsView from "./LoadDetailsView";
+import Tooltip from "./Tooltip";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
 import {
   Card,
@@ -59,6 +60,9 @@ const Overview: React.FC = () => {
   );
   const [filteredLoads, setFilteredLoads] = useState<LoadDetail[]>([]);
   const [selectedDate, setSelectedDate] = useState<DateRangePickerValue | null>(
+    null
+  );
+  const [selectedLoadNumber, setSelectedLoadNumber] = useState<string | null>(
     null
   );
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
@@ -220,12 +224,12 @@ const Overview: React.FC = () => {
         const matchesSearchTerm = load.loadNumber
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
-  
+
         if (selectedDate && selectedDate.from && selectedDate.to) {
           const startDate = new Date(selectedDate.from);
           const endDate = new Date(selectedDate.to);
           const deliveryDate = new Date(load.deliveryTime);
-  
+
           return (
             matchesStatus &&
             matchesSearchTerm &&
@@ -236,10 +240,10 @@ const Overview: React.FC = () => {
           return matchesStatus && matchesSearchTerm;
         }
       });
-  
+
       setFilteredLoads(filteredLoads);
     };
-  
+
     filterLoads();
   }, [selectedDate, selectedStatus, loadDetails, searchTerm]);
 
@@ -517,10 +521,12 @@ const Overview: React.FC = () => {
     (load) => load.status === "Completed"
   ).length;
 
-  const [selectedLoadNumber, setSelectedLoadNumber] = useState<string | null>(null);
-
   const handleLoadNumberClick = (loadNumber: string) => {
     setSelectedLoadNumber(loadNumber);
+  };
+
+  const handleCloseDetailsView = () => {
+    setSelectedLoadNumber(null);
   };
 
   return (
@@ -563,7 +569,7 @@ const Overview: React.FC = () => {
             onValueChange={handleDateRangeChange}
           />
           <Button className="main-button" onClick={() => setIsOpen(true)}>
-            {formMode === "add" ? "Add Load" : "Update Load"} 
+            {formMode === "add" ? "Add Load" : "Update Load"}
           </Button>{" "}
         </div>
         <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
@@ -877,11 +883,12 @@ const Overview: React.FC = () => {
 
       <Grid
         numItems={isMobileView ? 1 : 2}
-       
         numItemsLg={2}
-        className={`gap-4 pt-3 load-details-container ${!selectedLoadNumber ? 'hidden' : ''}`}
-        >
-      <div className="details-table">
+        className={`gap-4 pt-3 load-details-container ${
+          !selectedLoadNumber ? "hidden" : ""
+        }`}
+      >
+        <div className="details-table">
           <Table className="table">
             {/* The table headers */}
             <TableHead className="sticky-header">
@@ -901,7 +908,6 @@ const Overview: React.FC = () => {
                 <th>Delivery Time</th>
                 <th>Pick-up Location</th>
                 <th>Delivery Location</th>
-                <th>Documents</th>
                 <th className="sort" onClick={() => requestSort("price")}>
                   {" "}
                   Price{" "}
@@ -909,16 +915,7 @@ const Overview: React.FC = () => {
                     ? "▲"
                     : "▼"}
                 </th>
-                <th>Detention</th>
-                <th>All miles</th>
-                <th className="sort" onClick={() => requestSort("fuelGallons")}>
-                  {" "}
-                  Gallons{" "}
-                  {sortConfig.key === "fuelGallons" &&
-                  sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"}
-                </th>
+                <th>Loaded miles</th>
                 <th className="sort" onClick={() => requestSort("status")}>
                   {" "}
                   Status{" "}
@@ -937,19 +934,14 @@ const Overview: React.FC = () => {
               {filteredLoads.map((load, index) => (
                 <TableRow key={index}>
                   <td>
-                    <div onClick={() => handleLoadNumberClick(load.loadNumber)}>
-                    {/* {loadDetails.map((load) => (
-                      <Select
-                        key={load.loadNumber}
-                        value={load.loadNumber}
+                    <Tooltip text="Show more details">
+                      <div
                         onClick={() => handleLoadNumberClick(load.loadNumber)}
+                        style={{ cursor: "pointer" }}
                       >
                         {load.loadNumber}
-                      </Select>
-                    ))} */}
-                      {
-                    load.loadNumber}
-                    </div>
+                      </div>
+                    </Tooltip>
                   </td>
                   <td>
                     <div>{load.truckObject}</div>
@@ -973,19 +965,10 @@ const Overview: React.FC = () => {
                     <div>{load.deliveryLocation}</div>
                   </td>
                   <td>
-                    <div>{load.documents}</div>
-                  </td>
-                  <td>
                     <div>{load.price}</div>
                   </td>
                   <td>
-                    <div>{load.detention}</div>
-                  </td>
-                  <td>
                     <div>{load.allMiles}</div>
-                  </td>
-                  <td>
-                    <div>{load.fuelGallons}</div>
                   </td>
                   <td>
                     {editableIndex === index ? (
@@ -1048,12 +1031,23 @@ const Overview: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        <div className="load-table">
-                  {selectedLoadNumber && (
-          <LoadDetailsView
-            load={loadDetails.find((load) => load.loadNumber === selectedLoadNumber) || null}
-          />
-        )}
+        <div
+          className="load-table table"
+          style={{
+            display: selectedLoadNumber ? "block" : "none",
+            width: "37%",
+          }}
+        >
+          {selectedLoadNumber && (
+            <LoadDetailsView
+              load={
+                loadDetails.find(
+                  (load) => load.loadNumber === selectedLoadNumber
+                ) || null
+              }
+              onClose={handleCloseDetailsView}
+            />
+          )}
         </div>
       </Grid>
     </div>
