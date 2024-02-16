@@ -28,14 +28,7 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
     const { name, value } = e.target;
     setRepairDetail((prevDetail) => ({ ...prevDetail, [name]: value }));
   };
-  const handleDateChangeWrapper: React.FormEventHandler<HTMLDivElement> = (event) => {
-    const date = (event.target as HTMLInputElement).valueAsDate;
-    handleDateChange(date !== null ? date : undefined);
-  };
 
-  const handleDateChange = (date: Date | undefined) => {
-    setRepairDetail((prevDetail) => ({ ...prevDetail, repairDate: date?.toISOString() || "" }));
-  };
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -110,10 +103,18 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
           required
         />
         <Divider></Divider>
-        <DatePicker className="max-w-sm mx-auto"
+        <input 
+        id="pickupTime"
+        name="repairDate"
+        type="datetime-local"
+        placeholder="Repair Date"
+        value={repairDetail.repairDate}
+        onChange={handleInputChange}
+        />
+        {/* <DatePicker className="max-w-sm mx-auto"
          value={repairDetail.repairDate ? new Date(repairDetail.repairDate) : undefined}
          onChange={handleDateChangeWrapper}
-         />
+         /> */}
          <Divider></Divider>
         <TextInput
           placeholder="Select Truck (Make This deopdown)"

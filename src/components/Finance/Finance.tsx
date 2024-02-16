@@ -24,7 +24,7 @@ const Finance: React.FC= () =>{
   const handleAddRepair = async (newRepairDetail: RepairDetail) => {
     try {
       // Call your backend API to create a new repair
-      const newRepair = await CreateNewRepair(newRepairDetail);
+      const newRepair = (newRepairDetail);
 
       if (newRepair) {
         // Add the new repair detail to the existing list
