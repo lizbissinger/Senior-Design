@@ -18,6 +18,7 @@ import GetAllTrailers from "../../routes/trailerDetails";
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
+import BillingStatusBars from "../OverviewCharts/BillingStatusBars";
 import LoadDetailsView from "./LoadDetailsView";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
 import { Tooltip } from "@mui/material";
@@ -368,7 +369,7 @@ const Overview: React.FC = () => {
     setNewLoad({ ...selectedLoad });
     setIsOpen(true);
   };
-  
+
   const handleSaveClick = (index: number) => {
     updateLoad(filteredLoads[index]);
     const updatedLoadDetails = [...loadDetails];
@@ -422,13 +423,15 @@ const Overview: React.FC = () => {
     if (editableIndex !== null) {
       deleteLoad(filteredLoads[editableIndex]._id);
       const updatedLoadDetails = [...loadDetails];
-      const filteredLoadIndex = loadDetails.findIndex(load => load._id === filteredLoads[editableIndex]._id);
-      
+      const filteredLoadIndex = loadDetails.findIndex(
+        (load) => load._id === filteredLoads[editableIndex]._id
+      );
+
       if (filteredLoadIndex !== -1) {
         updatedLoadDetails.splice(filteredLoadIndex, 1);
         setLoadDetails(updatedLoadDetails);
       }
-  
+
       resetForm();
       setFormMode("add");
       setEditableIndex(null);
@@ -436,7 +439,7 @@ const Overview: React.FC = () => {
       setIsOpen(false);
       setIsDeleteDialogOpen(false);
     }
-  };  
+  };
 
   const handleFormSubmit = async (event: any) => {
     event.preventDefault();
@@ -499,6 +502,9 @@ const Overview: React.FC = () => {
   const [inProgressCount, setInProgressCount] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
   const [toDoCount, setToDoCount] = useState(0);
+  const [notInvoicedCount, setNotInvoicedCount] = useState(0);
+  const [invoicedCount, setInvoicedCount] = useState(0);
+  const [receivedPaymentCount, setReceivedPaymentCount] = useState(0);
 
   useEffect(() => {
     fetchAllLoads().then(() => {
@@ -511,12 +517,24 @@ const Overview: React.FC = () => {
       const toDoCount = loadDetails.filter(
         (load) => load.status === "To-Do"
       ).length;
+      const notInvoicedCount = loadDetails.filter(
+        (load) => load.status === "Not Invoiced"
+      ).length;
+      const invoicedCount = loadDetails.filter(
+        (load) => load.status === "Invoiced"
+      ).length;
+      const receivedPaymentCount = loadDetails.filter(
+        (load) => load.status === "Received Payment"
+      ).length;
 
       calculateTotalPrice();
 
       setInProgressCount(inProgressCount);
       setCompletedCount(completedCount);
       setToDoCount(toDoCount);
+      setNotInvoicedCount(notInvoicedCount);
+      setInvoicedCount(invoicedCount);
+      setReceivedPaymentCount(receivedPaymentCount);
     });
     let errorsArr: string[] = [];
     Object.entries(errors).map(([key, value]) => {
@@ -542,11 +560,17 @@ const Overview: React.FC = () => {
   const getBadgeClass = (status: string) => {
     switch (status) {
       case "To-Do":
-        return "badge-primary";
+        return "badge-primary bg-red-500";
       case "In Progress":
         return "badge-warning";
       case "Completed":
         return "badge-success";
+      case "Not Invoiced":
+        return "badge-primary bg-orange-500";
+      case "Invoiced":
+        return "badge-warning bg-cyan-500";
+      case "Received Payment":
+        return "badge-success bg-purple-500";
       default:
         return "badge-secondary";
     }
@@ -590,6 +614,24 @@ const Overview: React.FC = () => {
           onDateRangeChange={handleDateRangeChange}
         />
         <TotalPricePerDriverChart loadDetails={loadDetails} />
+        <BillingStatusBars
+          notInvoicedCount={notInvoicedCount}
+          invoicedCount={invoicedCount}
+          receivedPaymentCount={receivedPaymentCount}
+          filteredNotInvoicedCount={
+            filteredLoads.filter((load) => load.status === "Not Invoiced")
+              .length
+          }
+          filteredInvoicedCount={
+            filteredLoads.filter((load) => load.status === "Invoiced").length
+          }
+          filteredReceivedPaymentCount={
+            filteredLoads.filter((load) => load.status === "Received Payment")
+              .length
+          }
+          onStatusClick={handleStatusClick}
+          onDateRangeChange={handleDateRangeChange}
+        />
       </Grid>
       <Divider />
       <>
@@ -599,7 +641,7 @@ const Overview: React.FC = () => {
             onValueChange={handleSearchSelectChange}
             className="mr-2 max-w-sm"
           >
-            {loadDetails.map((load) => (
+            {filteredLoads.map((load) => (
               <SearchSelectItem key={load.loadNumber} value={load.loadNumber}>
                 {load.loadNumber}
               </SearchSelectItem>
@@ -785,7 +827,7 @@ const Overview: React.FC = () => {
                   </label>
                   <Autocomplete
                     apiKey={Google_Maps_Api_Key}
-                    defaultValue={newLoad.deliveryLocation} 
+                    defaultValue={newLoad.deliveryLocation}
                     inputAutocompleteValue={newLoad.deliveryLocation}
                     onPlaceSelected={(place) => {
                       setNewLoad((newLoad) => ({
@@ -1029,19 +1071,34 @@ const Overview: React.FC = () => {
                         }}
                       >
                         <option
-                          className={`badge ${getBadgeClass(load.status)}`}
+                          className={`badge bg-red-500`}
                         >
                           To Do
                         </option>
                         <option
-                          className={`badge ${getBadgeClass(load.status)}`}
+                          className={`badge bg-yellow-500`}
                         >
                           In Progress
                         </option>
                         <option
-                          className={`badge ${getBadgeClass(load.status)}`}
+                          className={`badge bg-green-500`}
                         >
                           Completed
+                        </option>
+                        <option
+                          className={`badge bg-orange-500`}
+                        >
+                          Not Invoiced
+                        </option>
+                        <option
+                          className={`badge bg-cyan-500`}
+                        >
+                          Invoiced
+                        </option>
+                        <option
+                          className={`badge bg-purple-500`}
+                        >
+                          Received Payment
                         </option>
                       </select>
                     ) : (
