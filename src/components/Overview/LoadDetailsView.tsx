@@ -56,6 +56,9 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
           <strong>Fuel (Gallons):</strong> {load?.fuelGallons}
         </ListItem>
       </List>
+      <Card>
+        DIRECTIONS
+      </Card>
     </Card>
   );
 };
