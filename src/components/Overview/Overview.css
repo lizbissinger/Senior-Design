@@ -161,13 +161,6 @@ table {
   cursor: pointer;
 }
 
-.status-boxes {
-  display: flex;
-  justify-content: flex-start;
- ;
-  gap: 20px;
-}
-
 .select-custom {
   font-size: 17px;
   padding: 0px;
@@ -251,13 +244,6 @@ table {
   .add-button button {
     font-size: 14px;
     padding: 4px 8px;
-  }
-
-  .status-boxes {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: auto;
   }
   
   .card {
