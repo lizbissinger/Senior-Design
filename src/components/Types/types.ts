@@ -65,3 +65,12 @@ export type RepairDetail = {
   repairCost: string;
   repairComments: string;
 };
+
+
+export type PayrollDetail = {
+  _id: string;
+  driver: string;
+  payrollDate: string;
+  payrollCost: string;
+ 
+};
