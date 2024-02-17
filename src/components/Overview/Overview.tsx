@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Overview.css";
 import Autocomplete from "react-google-autocomplete";
 const Google_Maps_Api_Key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { Bars3Icon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
@@ -23,14 +21,10 @@ import LoadDetailsView from "./LoadDetailsView";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
 import { Tooltip } from "@mui/material";
 import {
-  Card,
   Table,
   TableBody,
-  TableCell,
   TableHead,
-  TableHeaderCell,
   TableRow,
-  Title,
   SearchSelect,
   SearchSelectItem,
   Grid,
@@ -42,13 +36,11 @@ import {
   NumberInput,
   DateRangePicker,
   DateRangePickerValue,
-  Select,
 } from "@tremor/react";
 
 import _ from "lodash";
 
 import { LoadDetail } from "../Types/types";
-import { load } from "mime";
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
@@ -56,9 +48,6 @@ const Overview: React.FC = () => {
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const [originalLoadDetails, setOriginalLoadDetails] = useState<LoadDetail[]>(
-    []
-  );
   const [filteredLoads, setFilteredLoads] = useState<LoadDetail[]>([]);
   const [selectedDate, setSelectedDate] = useState<DateRangePickerValue | null>(
     null
@@ -263,12 +252,12 @@ const Overview: React.FC = () => {
         const matchesSearchTerm = load.loadNumber
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
-  
+
         if (selectedDate && selectedDate.from && selectedDate.to) {
           const startDate = new Date(selectedDate.from);
           const endDate = new Date(selectedDate.to);
           const deliveryDate = new Date(load.deliveryTime);
-  
+
           return (
             matchesStatus &&
             matchesSearchTerm &&
@@ -279,19 +268,18 @@ const Overview: React.FC = () => {
           return matchesStatus && matchesSearchTerm;
         }
       });
-  
+
       const sortedData = _.orderBy(
         filteredLoads,
         [sortConfig.key],
         [sortConfig.direction]
       );
-  
+
       setFilteredLoads(sortedData);
     };
-  
+
     filterAndSortLoads();
   }, [selectedDate, selectedStatus, loadDetails, searchTerm, sortConfig]);
-  
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [deletableIndex, setDeletableIndex] = useState<number | null>(null);
@@ -980,7 +968,6 @@ const Overview: React.FC = () => {
       >
         <div className="details-table">
           <Table className="table">
-            {/* The table headers */}
             <TableHead className="sticky-header">
               <TableRow>
                 <th className="sort" onClick={() => requestSort("loadNumber")}>
@@ -1013,10 +1000,6 @@ const Overview: React.FC = () => {
                     ? "▲"
                     : "▼"}
                 </th>
-                {/* <th>Broker info</th>
-              <th>Name</th>
-              <th>Phone number</th>
-              <th>Email</th> */}
                 <th></th>
               </TableRow>
             </TableHead>
@@ -1077,34 +1060,20 @@ const Overview: React.FC = () => {
                           updateLoad(updatedLoad);
                         }}
                       >
-                        <option
-                          className={`badge bg-red-500`}
-                        >
-                          To Do
-                        </option>
-                        <option
-                          className={`badge bg-yellow-500`}
-                        >
+                        <option className={`badge bg-red-500`}>To Do</option>
+                        <option className={`badge bg-yellow-500`}>
                           In Progress
                         </option>
-                        <option
-                          className={`badge bg-green-500`}
-                        >
+                        <option className={`badge bg-green-500`}>
                           Completed
                         </option>
-                        <option
-                          className={`badge bg-orange-500`}
-                        >
+                        <option className={`badge bg-orange-500`}>
                           Not Invoiced
                         </option>
-                        <option
-                          className={`badge bg-cyan-500`}
-                        >
+                        <option className={`badge bg-cyan-500`}>
                           Invoiced
                         </option>
-                        <option
-                          className={`badge bg-purple-500`}
-                        >
+                        <option className={`badge bg-purple-500`}>
                           Received Payment
                         </option>
                       </select>

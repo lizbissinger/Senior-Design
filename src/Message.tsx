@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 
-function Message(){
-    return <h1>Hello World</h1>;
-}
-
 function GetAPI() {
   const [message, setMessage] = useState(null);
   useEffect(() => {
-    fetch('http://localhost:3000/api', {
-      method: "GET"
+    fetch("http://localhost:3000/api", {
+      method: "GET",
     })
       .then((response) => response.json())
       .then((data) => {
