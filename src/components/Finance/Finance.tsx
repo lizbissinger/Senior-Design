@@ -66,7 +66,7 @@ const Finance: React.FC= () =>{
   };
 
   useEffect(() => {
-    fetchRepairs();
+    fetchRepairs(); fetchPayroll();
   }, []);
 
 

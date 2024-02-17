@@ -33,7 +33,7 @@ import { PayrollDetail } from '../Types/types';
                 {item.payrollCost}
               </TableCell>
             <TableCell>
-              {item.payrollDate}
+              {item.payrollDate.substring(0,10)}
             </TableCell>
              
             </TableRow>
