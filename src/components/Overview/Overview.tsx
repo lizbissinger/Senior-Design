@@ -20,6 +20,7 @@ import BillingStatusBars from "../OverviewCharts/BillingStatusBars";
 import LoadDetailsView from "./LoadDetailsView";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
 import { Tooltip } from "@mui/material";
+import LinearWithValueLabel from "./LinearWithValueLabel";
 import {
   Table,
   TableBody,
@@ -171,6 +172,24 @@ const Overview: React.FC = () => {
     fetchTrailers();
     fetchDrivers();
     fetchAllLoads();
+  }, []);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
+  useEffect(() => {
+    const loadingInterval = setInterval(() => {
+      setLoadingProgress((prevProgress) => {
+        const newProgress = prevProgress + 10;
+        if (newProgress >= 100) {
+          clearInterval(loadingInterval);
+          setIsLoading(false);
+        }
+        return newProgress;
+      });
+    }, 60);
+
+    return () => clearInterval(loadingInterval);
   }, []);
 
   useEffect(() => {
@@ -568,539 +587,581 @@ const Overview: React.FC = () => {
 
   return (
     <div className="overview-container">
-      <Grid
-        numItems={isMobileView ? 1 : 2}
-        numItemsMd={1}
-        numItemsSm={1}
-        numItemsLg={3}
-        className="gap-4"
-      >
-        <StatusBars
-          toDoCount={toDoCount}
-          inProgressCount={inProgressCount}
-          completedCount={completedCount}
-          filteredToDoCount={filteredToDoCount}
-          filteredInProgressCount={filteredInProgressCount}
-          filteredCompletedCount={filteredCompletedCount}
-          onStatusClick={handleStatusClick}
-          onDateRangeChange={handleDateRangeChange}
-        />
-        <TotalPricePerDriverChart loadDetails={loadDetails} />
-        <BillingStatusBars
-          notInvoicedCount={notInvoicedCount}
-          invoicedCount={invoicedCount}
-          receivedPaymentCount={receivedPaymentCount}
-          filteredNotInvoicedCount={
-            filteredLoads.filter((load) => load.status === "Not Invoiced")
-              .length
-          }
-          filteredInvoicedCount={
-            filteredLoads.filter((load) => load.status === "Invoiced").length
-          }
-          filteredReceivedPaymentCount={
-            filteredLoads.filter((load) => load.status === "Received Payment")
-              .length
-          }
-          onStatusClick={handleStatusClick}
-          onDateRangeChange={handleDateRangeChange}
-        />
-      </Grid>
-      <Divider />
-      <>
-        <div className="main-buttons">
-          <DateRangePicker
-            className="DateRangePicker mr-2 max-w-md"
-            onValueChange={handleDateRangeChange}
-          />
-          <SearchSelect
-            placeholder="Search Load..."
-            onValueChange={handleSearchSelectChange}
-            className="mr-2"
+      {isLoading ? (
+        <LinearWithValueLabel value={loadingProgress} />
+      ) : (
+        <div>
+          <Grid
+            numItems={isMobileView ? 1 : 2}
+            numItemsMd={1}
+            numItemsSm={1}
+            numItemsLg={3}
+            className="gap-4"
           >
-            {filteredLoads.map((load) => (
-              <SearchSelectItem key={load.loadNumber} value={load.loadNumber}>
-                {load.loadNumber}
-              </SearchSelectItem>
-            ))}
-          </SearchSelect>
-          <Button className="main-button" onClick={() => setIsOpen(true)}>
-            {formMode === "add" ? "Add Load" : "Update Load"}
-          </Button>{" "}
-        </div>
-        <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
-          <DialogPanel>
-            <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              Load Information
-            </h3>
-            <form className="mt-8">
-              <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="loadNumber"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Load Number<span className="text-red-500">*</span>
-                  </label>
-                  <TextInput
-                    type="text"
-                    id="loadNumber"
-                    placeholder="Load #"
-                    value={newLoad.loadNumber}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, loadNumber: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="driverDropdown"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Driver
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <DriverDropdown
-                    driverList={drivers}
-                    selectedDriver={newLoad.driverObject}
-                    onSelectDriver={handleDriverSelect}
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="truckDropdown"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Truck
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <TruckDropdown
-                    truckList={trucks}
-                    selectedTruck={newLoad.truckObject}
-                    onSelectTruck={handleTruckSelect}
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="trailerDropdown"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Trailer
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <TrailerDropdown
-                    trailerList={trailers}
-                    selectedTrailer={newLoad.trailerObject}
-                    onSelectTrailer={handleTrailerSelect}
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="price"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Price
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <NumberInput
-                    id="price"
-                    placeholder="Price"
-                    value={newLoad.price}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, price: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="detentionPrice"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Detention Price
-                  </label>
-                  <NumberInput
-                    id="detentionPrice"
-                    placeholder="Detention"
-                    value={newLoad.detentionPrice}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, detentionPrice: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="Miles"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Miles
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <NumberInput
-                    id="allMiles"
-                    placeholder="Miles"
-                    value={newLoad.allMiles}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, allMiles: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="Fuel"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Fuel
-                  </label>
-                  <NumberInput
-                    id="fuelGallons"
-                    placeholder="Fuel"
-                    value={newLoad.fuelGallons}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, fuelGallons: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="pickupLocation"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Pick-up Location
-                    <span className="text-red-500">*</span>
-                  </label>
-
-                  <Autocomplete
-                    apiKey={Google_Maps_Api_Key}
-                    defaultValue={newLoad.pickupLocation}
-                    inputAutocompleteValue={newLoad.pickupLocation}
-                    onPlaceSelected={(place) => {
-                      setNewLoad((newLoad) => ({
-                        ...newLoad,
-                        pickupLocation: place.formatted_address || "",
-                      }));
-                    }}
-                    options={{
-                      types: [],
-                      componentRestrictions: { country: "us" },
-                    }}
-                  />
-                </div>
-
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="deliveryLocation"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Delivery Location
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <Autocomplete
-                    apiKey={Google_Maps_Api_Key}
-                    defaultValue={newLoad.deliveryLocation}
-                    inputAutocompleteValue={newLoad.deliveryLocation}
-                    onPlaceSelected={(place) => {
-                      setNewLoad((newLoad) => ({
-                        ...newLoad,
-                        deliveryLocation: place.formatted_address || "",
-                      }));
-                    }}
-                    options={{
-                      types: [],
-                      componentRestrictions: { country: "us" },
-                    }}
-                  />
-                  ;
-                </div>
-
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="pickupTime"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Pick-up Date & Time
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="pickupTime"
-                    type="datetime-local"
-                    placeholder="Pick-Up Time"
-                    value={newLoad.pickupTime}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, pickupTime: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="deliveryTime"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Delivery Date & Time
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="deliveryTime"
-                    type="datetime-local"
-                    placeholder="Delivery Time"
-                    value={newLoad.deliveryTime}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, deliveryTime: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="col-span-full sm:col-span-3">
-                  <label
-                    htmlFor="documents"
-                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Documents
-                  </label>
-                  <input
-                    id="documents"
-                    type="file"
-                    placeholder="Documents"
-                    value={newLoad.documents}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, documents: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <Divider />
-              <Dialog
-                open={isDeleteDialogOpen}
-                onClose={closeDeleteDialog}
-                static={true}
-              >
-                <DialogPanel>
-                  <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                    Confirm Deletion
-                  </h3>
-                  <p>Are you sure you want to delete this load?</p>
-                  <div className="flex items-center justify-end space-x-4">
-                    <button
-                      onClick={handleCancelClick}
-                      className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                    >
-                      Cancel
-                    </button>
-                    <Button
-                      onClick={handleDeleteClick}
-                      className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </DialogPanel>
-              </Dialog>
-
-              <div
-                className={`flex items-center ${
-                  formMode === "edit" ? "justify-between" : "justify-end"
-                } space-x-4`}
-              >
-                {formMode === "edit" && (
-                  <Button
-                    onClick={openDeleteDialog}
-                    className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
-                  >
-                    Delete
-                  </Button>
-                )}
-                {formMode === "edit" && editableIndex !== null && (
-                  <InvoiceGenerator
-                    loadDetails={[filteredLoads[editableIndex]]}
-                  />
-                )}
-                <div className="flex items-center space-x-4">
-                  <button
-                    onClick={handleCancelClick}
-                    className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleFormSubmit}
-                    type="submit"
-                    className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
-                  >
-                    {formMode === "add" ? "Add" : "Update"}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </DialogPanel>
-        </Dialog>
-      </>
-
-      <Grid
-        numItems={isMobileView ? 1 : 2}
-        numItemsLg={2}
-        className={`gap-4 pt-3 load-details-container ${
-          !selectedLoadNumber ? "hidden" : ""
-        }`}
-      >
-        <div className="details-table">
-          <Table className="table">
-            <TableHead className="sticky-header">
-              <TableRow>
-                <th className="sort" onClick={() => requestSort("loadNumber")}>
-                  {" "}
-                  Load #{" "}
-                  {sortConfig.key === "loadNumber" &&
-                  sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"}
-                </th>
-                <th>Truck #</th>
-                <th>Trailer #</th>
-                <th>Driver Name</th>
-                <th>Pick-up Time</th>
-                <th>Delivery Time</th>
-                <th>Pick-up Location</th>
-                <th>Delivery Location</th>
-                <th className="sort" onClick={() => requestSort("price")}>
-                  {" "}
-                  Price{" "}
-                  {sortConfig.key === "price" && sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"}
-                </th>
-                <th>Loaded miles</th>
-                <th className="sort" onClick={() => requestSort("status")}>
-                  {" "}
-                  Status{" "}
-                  {sortConfig.key === "status" && sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"}
-                </th>
-                <th></th>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredLoads.map((load, index) => (
-                <TableRow key={index}>
-                  <td>
-                    <Tooltip title="Show details">
-                      <div
-                        onClick={() => handleLoadNumberClick(load.loadNumber)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {load.loadNumber}
-                      </div>
-                    </Tooltip>
-                  </td>
-                  <td>
-                    <div>{load.truckObject}</div>
-                  </td>
-                  <td>
-                    <div>{load.trailerObject}</div>
-                  </td>
-                  <td>
-                    <div>{load.driverObject}</div>
-                  </td>
-                  <td>
-                    <div>{new Date(load.pickupTime).toLocaleString()}</div>
-                  </td>
-                  <td>
-                    <div>{new Date(load.deliveryTime).toLocaleString()}</div>
-                  </td>
-                  <td>
-                    <div>{load.pickupLocation}</div>
-                  </td>
-                  <td>
-                    <div>{load.deliveryLocation}</div>
-                  </td>
-                  <td>
-                    <div>{`$${load.price}`}</div>
-                  </td>
-                  <td>
-                    <div>{load.allMiles !== null && `${load.allMiles} mi`}</div>
-                  </td>
-                  <td>
-                    {editableIndex === index ? (
-                      <select
-                        className="select-custom load-details-table"
-                        value={load.status}
-                        onChange={(e) => {
-                          const newStatus = e.target.value;
-                          const updatedLoad = { ...load, status: newStatus };
-                          setLoadDetails((prevLoadDetails) => {
-                            const updatedDetails = [...prevLoadDetails];
-                            updatedDetails[index] = updatedLoad;
-                            return updatedDetails;
-                          });
-
-                          updateLoad(updatedLoad);
-                        }}
-                      >
-                        <option className={`badge bg-red-500`}>To Do</option>
-                        <option className={`badge bg-yellow-500`}>
-                          In Progress
-                        </option>
-                        <option className={`badge bg-green-500`}>
-                          Completed
-                        </option>
-                        <option className={`badge bg-orange-500`}>
-                          Not Invoiced
-                        </option>
-                        <option className={`badge bg-cyan-500`}>
-                          Invoiced
-                        </option>
-                        <option className={`badge bg-purple-500`}>
-                          Received Payment
-                        </option>
-                      </select>
-                    ) : (
-                      <span className={`badge ${getBadgeClass(load.status)}`}>
-                        {load.status}
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    {editableIndex === index ? (
-                      <div className="flex items-center">
-                        <Bars3Icon
-                          className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
-                          onClick={() => handleSaveClick(index)}
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex items-center">
-                        <Bars3Icon
-                          className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
-                          onClick={() => handleEditClick(index)}
-                        />
-                      </div>
-                    )}
-                  </td>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        <div
-          className="load-table table"
-          style={{
-            display: selectedLoadNumber ? "block" : "none",
-            width: "37%",
-          }}
-        >
-          {selectedLoadNumber && (
-            <LoadDetailsView
-              load={
-                loadDetails.find(
-                  (load) => load.loadNumber === selectedLoadNumber
-                ) || null
-              }
-              onClose={handleCloseDetailsView}
+            <StatusBars
+              toDoCount={toDoCount}
+              inProgressCount={inProgressCount}
+              completedCount={completedCount}
+              filteredToDoCount={filteredToDoCount}
+              filteredInProgressCount={filteredInProgressCount}
+              filteredCompletedCount={filteredCompletedCount}
+              onStatusClick={handleStatusClick}
+              onDateRangeChange={handleDateRangeChange}
             />
-          )}
+            <TotalPricePerDriverChart loadDetails={loadDetails} />
+            <BillingStatusBars
+              notInvoicedCount={notInvoicedCount}
+              invoicedCount={invoicedCount}
+              receivedPaymentCount={receivedPaymentCount}
+              filteredNotInvoicedCount={
+                filteredLoads.filter((load) => load.status === "Not Invoiced")
+                  .length
+              }
+              filteredInvoicedCount={
+                filteredLoads.filter((load) => load.status === "Invoiced")
+                  .length
+              }
+              filteredReceivedPaymentCount={
+                filteredLoads.filter(
+                  (load) => load.status === "Received Payment"
+                ).length
+              }
+              onStatusClick={handleStatusClick}
+              onDateRangeChange={handleDateRangeChange}
+            />
+          </Grid>
+          <Divider />
+          <>
+            <div className="main-buttons">
+              <DateRangePicker
+                className="DateRangePicker mr-2 max-w-md"
+                onValueChange={handleDateRangeChange}
+              />
+              <SearchSelect
+                placeholder="Search Load..."
+                onValueChange={handleSearchSelectChange}
+                className="mr-2"
+              >
+                {filteredLoads.map((load) => (
+                  <SearchSelectItem
+                    key={load.loadNumber}
+                    value={load.loadNumber}
+                  >
+                    {load.loadNumber}
+                  </SearchSelectItem>
+                ))}
+              </SearchSelect>
+              <Button className="main-button" onClick={() => setIsOpen(true)}>
+                {formMode === "add" ? "Add Load" : "Update Load"}
+              </Button>{" "}
+            </div>
+            <Dialog
+              open={isOpen}
+              onClose={(val) => setIsOpen(val)}
+              static={true}
+            >
+              <DialogPanel>
+                <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                  Load Information
+                </h3>
+                <form className="mt-8">
+                  <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="loadNumber"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Load Number<span className="text-red-500">*</span>
+                      </label>
+                      <TextInput
+                        type="text"
+                        id="loadNumber"
+                        placeholder="Load #"
+                        value={newLoad.loadNumber}
+                        onChange={(e) =>
+                          setNewLoad({ ...newLoad, loadNumber: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="driverDropdown"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Driver
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <DriverDropdown
+                        driverList={drivers}
+                        selectedDriver={newLoad.driverObject}
+                        onSelectDriver={handleDriverSelect}
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="truckDropdown"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Truck
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <TruckDropdown
+                        truckList={trucks}
+                        selectedTruck={newLoad.truckObject}
+                        onSelectTruck={handleTruckSelect}
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="trailerDropdown"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Trailer
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <TrailerDropdown
+                        trailerList={trailers}
+                        selectedTrailer={newLoad.trailerObject}
+                        onSelectTrailer={handleTrailerSelect}
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="price"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Price
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <NumberInput
+                        id="price"
+                        placeholder="Price"
+                        value={newLoad.price}
+                        onChange={(e) =>
+                          setNewLoad({ ...newLoad, price: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="detentionPrice"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Detention Price
+                      </label>
+                      <NumberInput
+                        id="detentionPrice"
+                        placeholder="Detention"
+                        value={newLoad.detentionPrice}
+                        onChange={(e) =>
+                          setNewLoad({
+                            ...newLoad,
+                            detentionPrice: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="Miles"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Miles
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <NumberInput
+                        id="allMiles"
+                        placeholder="Miles"
+                        value={newLoad.allMiles}
+                        onChange={(e) =>
+                          setNewLoad({ ...newLoad, allMiles: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="Fuel"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Fuel
+                      </label>
+                      <NumberInput
+                        id="fuelGallons"
+                        placeholder="Fuel"
+                        value={newLoad.fuelGallons}
+                        onChange={(e) =>
+                          setNewLoad({
+                            ...newLoad,
+                            fuelGallons: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="pickupLocation"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Pick-up Location
+                        <span className="text-red-500">*</span>
+                      </label>
+
+                      <Autocomplete
+                        apiKey={Google_Maps_Api_Key}
+                        defaultValue={newLoad.pickupLocation}
+                        inputAutocompleteValue={newLoad.pickupLocation}
+                        onPlaceSelected={(place) => {
+                          setNewLoad((newLoad) => ({
+                            ...newLoad,
+                            pickupLocation: place.formatted_address || "",
+                          }));
+                        }}
+                        options={{
+                          types: [],
+                          componentRestrictions: { country: "us" },
+                        }}
+                      />
+                    </div>
+
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="deliveryLocation"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Delivery Location
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <Autocomplete
+                        apiKey={Google_Maps_Api_Key}
+                        defaultValue={newLoad.deliveryLocation}
+                        inputAutocompleteValue={newLoad.deliveryLocation}
+                        onPlaceSelected={(place) => {
+                          setNewLoad((newLoad) => ({
+                            ...newLoad,
+                            deliveryLocation: place.formatted_address || "",
+                          }));
+                        }}
+                        options={{
+                          types: [],
+                          componentRestrictions: { country: "us" },
+                        }}
+                      />
+                      ;
+                    </div>
+
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="pickupTime"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Pick-up Date & Time
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        id="pickupTime"
+                        type="datetime-local"
+                        placeholder="Pick-Up Time"
+                        value={newLoad.pickupTime}
+                        onChange={(e) =>
+                          setNewLoad({ ...newLoad, pickupTime: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="deliveryTime"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Delivery Date & Time
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        id="deliveryTime"
+                        type="datetime-local"
+                        placeholder="Delivery Time"
+                        value={newLoad.deliveryTime}
+                        onChange={(e) =>
+                          setNewLoad({
+                            ...newLoad,
+                            deliveryTime: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="documents"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Documents
+                      </label>
+                      <input
+                        id="documents"
+                        type="file"
+                        placeholder="Documents"
+                        value={newLoad.documents}
+                        onChange={(e) =>
+                          setNewLoad({ ...newLoad, documents: e.target.value })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <Divider />
+                  <Dialog
+                    open={isDeleteDialogOpen}
+                    onClose={closeDeleteDialog}
+                    static={true}
+                  >
+                    <DialogPanel>
+                      <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                        Confirm Deletion
+                      </h3>
+                      <p>Are you sure you want to delete this load?</p>
+                      <div className="flex items-center justify-end space-x-4">
+                        <button
+                          onClick={handleCancelClick}
+                          className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                        >
+                          Cancel
+                        </button>
+                        <Button
+                          onClick={handleDeleteClick}
+                          className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </DialogPanel>
+                  </Dialog>
+
+                  <div
+                    className={`flex items-center ${
+                      formMode === "edit" ? "justify-between" : "justify-end"
+                    } space-x-4`}
+                  >
+                    {formMode === "edit" && (
+                      <Button
+                        onClick={openDeleteDialog}
+                        className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+                      >
+                        Delete
+                      </Button>
+                    )}
+                    {formMode === "edit" && editableIndex !== null && (
+                      <InvoiceGenerator
+                        loadDetails={[filteredLoads[editableIndex]]}
+                      />
+                    )}
+                    <div className="flex items-center space-x-4">
+                      <button
+                        onClick={handleCancelClick}
+                        className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleFormSubmit}
+                        type="submit"
+                        className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
+                      >
+                        {formMode === "add" ? "Add" : "Update"}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </DialogPanel>
+            </Dialog>
+          </>
+
+          <Grid
+            numItems={isMobileView ? 1 : 2}
+            numItemsLg={2}
+            className={`gap-4 pt-3 load-details-container ${
+              !selectedLoadNumber ? "hidden" : ""
+            }`}
+          >
+            <div className="details-table">
+              <Table className="table">
+                <TableHead className="sticky-header">
+                  <TableRow>
+                    <th
+                      className="sort"
+                      onClick={() => requestSort("loadNumber")}
+                    >
+                      {" "}
+                      Load #{" "}
+                      {sortConfig.key === "loadNumber" &&
+                      sortConfig.direction === "asc"
+                        ? "▲"
+                        : "▼"}
+                    </th>
+                    <th>Truck #</th>
+                    <th>Trailer #</th>
+                    <th>Driver Name</th>
+                    <th>Pick-up Time</th>
+                    <th>Delivery Time</th>
+                    <th>Pick-up Location</th>
+                    <th>Delivery Location</th>
+                    <th className="sort" onClick={() => requestSort("price")}>
+                      {" "}
+                      Price{" "}
+                      {sortConfig.key === "price" &&
+                      sortConfig.direction === "asc"
+                        ? "▲"
+                        : "▼"}
+                    </th>
+                    <th>Loaded miles</th>
+                    <th className="sort" onClick={() => requestSort("status")}>
+                      {" "}
+                      Status{" "}
+                      {sortConfig.key === "status" &&
+                      sortConfig.direction === "asc"
+                        ? "▲"
+                        : "▼"}
+                    </th>
+                    <th></th>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredLoads.map((load, index) => (
+                    <TableRow key={index}>
+                      <td>
+                        <Tooltip title="Show details">
+                          <div
+                            onClick={() =>
+                              handleLoadNumberClick(load.loadNumber)
+                            }
+                            style={{ cursor: "pointer" }}
+                          >
+                            {load.loadNumber}
+                          </div>
+                        </Tooltip>
+                      </td>
+                      <td>
+                        <div>{load.truckObject}</div>
+                      </td>
+                      <td>
+                        <div>{load.trailerObject}</div>
+                      </td>
+                      <td>
+                        <div>{load.driverObject}</div>
+                      </td>
+                      <td>
+                        <div>{new Date(load.pickupTime).toLocaleString()}</div>
+                      </td>
+                      <td>
+                        <div>
+                          {new Date(load.deliveryTime).toLocaleString()}
+                        </div>
+                      </td>
+                      <td>
+                        <div>{load.pickupLocation}</div>
+                      </td>
+                      <td>
+                        <div>{load.deliveryLocation}</div>
+                      </td>
+                      <td>
+                        <div>{`$${load.price}`}</div>
+                      </td>
+                      <td>
+                        <div>
+                          {load.allMiles !== null && `${load.allMiles} mi`}
+                        </div>
+                      </td>
+                      <td>
+                        {editableIndex === index ? (
+                          <select
+                            className="select-custom load-details-table"
+                            value={load.status}
+                            onChange={(e) => {
+                              const newStatus = e.target.value;
+                              const updatedLoad = {
+                                ...load,
+                                status: newStatus,
+                              };
+                              setLoadDetails((prevLoadDetails) => {
+                                const updatedDetails = [...prevLoadDetails];
+                                updatedDetails[index] = updatedLoad;
+                                return updatedDetails;
+                              });
+
+                              updateLoad(updatedLoad);
+                            }}
+                          >
+                            <option className={`badge bg-red-500`}>
+                              To Do
+                            </option>
+                            <option className={`badge bg-yellow-500`}>
+                              In Progress
+                            </option>
+                            <option className={`badge bg-green-500`}>
+                              Completed
+                            </option>
+                            <option className={`badge bg-orange-500`}>
+                              Not Invoiced
+                            </option>
+                            <option className={`badge bg-cyan-500`}>
+                              Invoiced
+                            </option>
+                            <option className={`badge bg-purple-500`}>
+                              Received Payment
+                            </option>
+                          </select>
+                        ) : (
+                          <span
+                            className={`badge ${getBadgeClass(load.status)}`}
+                          >
+                            {load.status}
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        {editableIndex === index ? (
+                          <div className="flex items-center">
+                            <Bars3Icon
+                              className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
+                              onClick={() => handleSaveClick(index)}
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex items-center">
+                            <Bars3Icon
+                              className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
+                              onClick={() => handleEditClick(index)}
+                            />
+                          </div>
+                        )}
+                      </td>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div
+              className="load-table table"
+              style={{
+                display: selectedLoadNumber ? "block" : "none",
+                width: "37%",
+              }}
+            >
+              {selectedLoadNumber && (
+                <LoadDetailsView
+                  load={
+                    loadDetails.find(
+                      (load) => load.loadNumber === selectedLoadNumber
+                    ) || null
+                  }
+                  onClose={handleCloseDetailsView}
+                />
+              )}
+            </div>
+          </Grid>
         </div>
-      </Grid>
+      )}
     </div>
   );
 };
