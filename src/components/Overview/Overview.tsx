@@ -268,6 +268,7 @@ const Overview: React.FC = () => {
           const startDate = new Date(selectedDate.from);
           const endDate = new Date(selectedDate.to);
           const deliveryDate = new Date(load.deliveryTime);
+          console.log('DELIVERYYYYYYY', deliveryDate)
 
           return (
             matchesStatus &&
@@ -1036,10 +1037,10 @@ const Overview: React.FC = () => {
                     <div>{load.driverObject}</div>
                   </td>
                   <td>
-                    <div>{load.pickupTime}</div>
+                    <div>{new Date(load.pickupTime).toLocaleString()}</div>
                   </td>
                   <td>
-                    <div>{load.deliveryTime}</div>
+                    <div>{new Date(load.deliveryTime).toLocaleString()}</div>
                   </td>
                   <td>
                     <div>{load.pickupLocation}</div>
@@ -1048,10 +1049,10 @@ const Overview: React.FC = () => {
                     <div>{load.deliveryLocation}</div>
                   </td>
                   <td>
-                    <div>{load.price}</div>
+                    <div>{`$${load.price}`}</div>
                   </td>
                   <td>
-                    <div>{load.allMiles}</div>
+                    <div>{load.allMiles !== null && `${load.allMiles} mi`}</div>
                   </td>
                   <td>
                     {editableIndex === index ? (
