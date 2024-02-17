@@ -8,10 +8,8 @@ interface TotalPricePerDriverChartProps {
 
 const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({ loadDetails }) => {
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
-  const [timeRanges, setTimeRanges] = useState<{ [key: string]: number }>({ week: 0, month: 0, quarter: 0, year: 0 });
   const [selectedTab, setSelectedTab] = useState<string>("week");
 
-  // Helper function to reduce code duplication
   const filterLoadDetailsByTimeRange = (range: string) => {
     const currentDate = new Date();
     return loadDetails.filter((load) => {
@@ -29,33 +27,27 @@ const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({ loa
         case "year":
           const yearStart = new Date(currentDate.getFullYear(), 0, 1);
           return deliveryTime >= yearStart;
+        default:
+          return false;
       }
     });
   };
 
-  // Calculate total revenue based on selected time range
   useEffect(() => {
-    const filteredLoadDetails = filterLoadDetailsByTimeRange(selectedTab);
-    const total = filteredLoadDetails.reduce((acc, load) => acc + (parseFloat(load.price) || 0), 0);
-    setTotalRevenue(total);
-  }, [loadDetails, selectedTab]);
+    const calculateAndSetRevenue = () => {
+      const filteredLoadDetails = filterLoadDetailsByTimeRange(selectedTab);
+      const total = filteredLoadDetails.reduce((acc, load) => acc + (parseFloat(load.price) || 0), 0);
+      setTotalRevenue(total);
+    };
 
-  // Calculate time range revenue
-  useEffect(() => {
-    const timeRangesCopy = { ...timeRanges };
-    Object.keys(timeRangesCopy).forEach((range) => {
-      const filteredLoadDetails = filterLoadDetailsByTimeRange(range);
-      const rangeTotal = filteredLoadDetails.reduce((acc, load) => acc + (parseFloat(load.price) || 0), 0);
-      timeRangesCopy[range] = rangeTotal;
-    });
-    setTimeRanges(timeRangesCopy);
-  }, [loadDetails]); // Only recalculate when loadDetails changes
+    calculateAndSetRevenue();
+  }, [loadDetails, selectedTab]);
 
   return (
     <div className="chart-container">
       <Card className="min-w-xs" decoration="top" decorationColor="blue">
         <div>
-          <Text>Total Revenue</Text>
+          <Text>Total Revenue for {selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)}</Text>
           <Metric>{`$${new Intl.NumberFormat("en-US").format(totalRevenue)}`}</Metric>
         </div>
         <TabGroup>
@@ -65,14 +57,11 @@ const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({ loa
             <Tab onClick={() => setSelectedTab("quarter")}>Quarter</Tab>
             <Tab onClick={() => setSelectedTab("year")}>Year</Tab>
           </TabList>
+          {/* You might display specific data related to the selected time range here. */}
           <TabPanels>
-            {Object.keys(timeRanges).map((range) => (
-              <TabPanel key={range}>
-                <div className="mt-0">
-                  {/* <ProgressBar value={(timeRanges[range] / totalRevenue) * 100} className="mt-2" /> */}
-                </div>
-              </TabPanel>
-            ))}
+            <TabPanel>
+              {/* This section could be used for additional details or visualizations specific to the selected time range. */}
+            </TabPanel>
           </TabPanels>
         </TabGroup>
       </Card>
