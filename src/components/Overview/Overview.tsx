@@ -257,19 +257,18 @@ const Overview: React.FC = () => {
   };
 
   useEffect(() => {
-    const filterLoads = () => {
+    const filterAndSortLoads = () => {
       const filteredLoads = loadDetails.filter((load) => {
         const matchesStatus = !selectedStatus || load.status === selectedStatus;
         const matchesSearchTerm = load.loadNumber
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
-
+  
         if (selectedDate && selectedDate.from && selectedDate.to) {
           const startDate = new Date(selectedDate.from);
           const endDate = new Date(selectedDate.to);
           const deliveryDate = new Date(load.deliveryTime);
-          console.log('DELIVERYYYYYYY', deliveryDate)
-
+  
           return (
             matchesStatus &&
             matchesSearchTerm &&
@@ -280,12 +279,19 @@ const Overview: React.FC = () => {
           return matchesStatus && matchesSearchTerm;
         }
       });
-
-      setFilteredLoads(filteredLoads);
+  
+      const sortedData = _.orderBy(
+        filteredLoads,
+        [sortConfig.key],
+        [sortConfig.direction]
+      );
+  
+      setFilteredLoads(sortedData);
     };
-
-    filterLoads();
-  }, [selectedDate, selectedStatus, loadDetails, searchTerm]);
+  
+    filterAndSortLoads();
+  }, [selectedDate, selectedStatus, loadDetails, searchTerm, sortConfig]);
+  
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [deletableIndex, setDeletableIndex] = useState<number | null>(null);
@@ -644,7 +650,7 @@ const Overview: React.FC = () => {
           <SearchSelect
             placeholder="Search Load..."
             onValueChange={handleSearchSelectChange}
-            className="mr-2 max-w-sm"
+            className="mr-2"
           >
             {filteredLoads.map((load) => (
               <SearchSelectItem key={load.loadNumber} value={load.loadNumber}>
