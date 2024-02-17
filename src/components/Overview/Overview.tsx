@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Overview.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { Bars3Icon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import Autocomplete from "react-google-autocomplete";
+const Google_Maps_Api_Key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import GetAllLoads, {
@@ -16,16 +16,15 @@ import GetAllTrailers from "../../routes/trailerDetails";
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
+import BillingStatusBars from "../OverviewCharts/BillingStatusBars";
+import LoadDetailsView from "./LoadDetailsView";
 import TotalPricePerDriverChart from "../OverviewCharts/TotalPricePerDriverChart";
+import { Tooltip } from "@mui/material";
 import {
-  Card,
   Table,
   TableBody,
-  TableCell,
   TableHead,
-  TableHeaderCell,
   TableRow,
-  Title,
   SearchSelect,
   SearchSelectItem,
   Grid,
@@ -35,12 +34,13 @@ import {
   Divider,
   TextInput,
   NumberInput,
+  DateRangePicker,
+  DateRangePickerValue,
 } from "@tremor/react";
 
 import _ from "lodash";
 
 import { LoadDetail } from "../Types/types";
-import { load } from "mime";
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
@@ -48,7 +48,13 @@ const Overview: React.FC = () => {
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  console.log("Driver", drivers);
+  const [filteredLoads, setFilteredLoads] = useState<LoadDetail[]>([]);
+  const [selectedDate, setSelectedDate] = useState<DateRangePickerValue | null>(
+    null
+  );
+  const [selectedLoadNumber, setSelectedLoadNumber] = useState<string | null>(
+    null
+  );
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
     _id: "",
@@ -167,6 +173,44 @@ const Overview: React.FC = () => {
     fetchAllLoads();
   }, []);
 
+  useEffect(() => {
+    if (newLoad.pickupLocation && newLoad.deliveryLocation) {
+      calculateDistance();
+    }
+  }, [newLoad.pickupLocation, newLoad.deliveryLocation]);
+
+  const calculateDistance = async () => {
+    if (newLoad.pickupLocation && newLoad.deliveryLocation) {
+      const service = new google.maps.DistanceMatrixService();
+      service.getDistanceMatrix(
+        {
+          origins: [newLoad.pickupLocation],
+          destinations: [newLoad.deliveryLocation],
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (
+          response: google.maps.DistanceMatrixResponse,
+          status: google.maps.DistanceMatrixStatus
+        ) => {
+          if (status === "OK" && response.rows[0].elements[0].status === "OK") {
+            const distanceMeters = response.rows[0].elements[0].distance.value;
+            const distanceMiles = (distanceMeters * 0.000621371).toFixed(1);
+            setNewLoad((prevState) => ({
+              ...prevState,
+              allMiles: distanceMiles.toString(),
+            }));
+          } else {
+            console.error("Failed to fetch distance:", status);
+            setNewLoad((prevState) => ({
+              ...prevState,
+              allMiles: "",
+            }));
+          }
+        }
+      );
+    }
+  };
+
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -193,9 +237,49 @@ const Overview: React.FC = () => {
     setSearchTerm(String(selectedValue));
   };
 
-  const filteredLoads = sortedData.filter((load) =>
-    load.loadNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleDateRangeChange = (value: DateRangePickerValue) => {
+    setSelectedDate(value);
+  };
+
+  const handleStatusClick = (status: string) => {
+    setSelectedStatus(status);
+  };
+
+  useEffect(() => {
+    const filterAndSortLoads = () => {
+      const filteredLoads = loadDetails.filter((load) => {
+        const matchesStatus = !selectedStatus || load.status === selectedStatus;
+        const matchesSearchTerm = load.loadNumber
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+
+        if (selectedDate && selectedDate.from && selectedDate.to) {
+          const startDate = new Date(selectedDate.from);
+          const endDate = new Date(selectedDate.to);
+          const deliveryDate = new Date(load.deliveryTime);
+
+          return (
+            matchesStatus &&
+            matchesSearchTerm &&
+            deliveryDate >= startDate &&
+            deliveryDate <= endDate
+          );
+        } else {
+          return matchesStatus && matchesSearchTerm;
+        }
+      });
+
+      const sortedData = _.orderBy(
+        filteredLoads,
+        [sortConfig.key],
+        [sortConfig.direction]
+      );
+
+      setFilteredLoads(sortedData);
+    };
+
+    filterAndSortLoads();
+  }, [selectedDate, selectedStatus, loadDetails, searchTerm, sortConfig]);
 
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [deletableIndex, setDeletableIndex] = useState<number | null>(null);
@@ -216,10 +300,6 @@ const Overview: React.FC = () => {
 
   const handleTrailerSelect = (selectedTrailer: string) => {
     setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
-  };
-
-  const handleStatusClick = (status: string) => {
-    setSelectedStatus(status);
   };
 
   const addLoadDetail = async () => {
@@ -273,23 +353,18 @@ const Overview: React.FC = () => {
     await UpdateLoad(load);
   };
 
-  const toggleFormVisibility = () => {
-    setShowForm(!showForm);
-  };
-
   const handleEditClick = (index: number) => {
+    const selectedLoad = filteredLoads[index];
     setEditableIndex(index);
     setFormMode("edit");
-
-    const selectedLoad = loadDetails[index];
     setNewLoad({ ...selectedLoad });
     setIsOpen(true);
   };
 
   const handleSaveClick = (index: number) => {
-    updateLoad(loadDetails[index]);
+    updateLoad(filteredLoads[index]);
     const updatedLoadDetails = [...loadDetails];
-    updatedLoadDetails[index] = loadDetails[index];
+    updatedLoadDetails[index] = filteredLoads[index];
     setLoadDetails(updatedLoadDetails);
     setEditableIndex(null);
   };
@@ -337,10 +412,16 @@ const Overview: React.FC = () => {
 
   const handleDeleteClick = () => {
     if (editableIndex !== null) {
-      deleteLoad(loadDetails[editableIndex]._id);
+      deleteLoad(filteredLoads[editableIndex]._id);
       const updatedLoadDetails = [...loadDetails];
-      updatedLoadDetails.splice(editableIndex, 1);
-      setLoadDetails(updatedLoadDetails);
+      const filteredLoadIndex = loadDetails.findIndex(
+        (load) => load._id === filteredLoads[editableIndex]._id
+      );
+
+      if (filteredLoadIndex !== -1) {
+        updatedLoadDetails.splice(filteredLoadIndex, 1);
+        setLoadDetails(updatedLoadDetails);
+      }
 
       resetForm();
       setFormMode("add");
@@ -374,24 +455,12 @@ const Overview: React.FC = () => {
     setSubmitting(false);
   };
 
-  const renderSortArrow = (column: string) => {
-    if (sortConfig.key === column) {
-      return sortConfig.direction === "asc" ? "▲" : "▼";
-    }
-    return null;
-  };
-
   const requestSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
     }
     setSortConfig({ key, direction });
-  };
-
-  const handleNewLoadSubmit = (event: any) => {
-    event.preventDefault();
-    setSubmitting(true);
   };
 
   const calculateTotalPrice = () => {
@@ -402,16 +471,12 @@ const Overview: React.FC = () => {
     setTotalPrice(total);
   };
 
-  const fetchData = async () => {
-    if (!fetchingActive) {
-      const testData = GetAllLoads();
-      console.log(testData);
-      setFetchingActive(true);
-    }
-  };
   const [inProgressCount, setInProgressCount] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
   const [toDoCount, setToDoCount] = useState(0);
+  const [notInvoicedCount, setNotInvoicedCount] = useState(0);
+  const [invoicedCount, setInvoicedCount] = useState(0);
+  const [receivedPaymentCount, setReceivedPaymentCount] = useState(0);
 
   useEffect(() => {
     fetchAllLoads().then(() => {
@@ -424,12 +489,24 @@ const Overview: React.FC = () => {
       const toDoCount = loadDetails.filter(
         (load) => load.status === "To-Do"
       ).length;
+      const notInvoicedCount = loadDetails.filter(
+        (load) => load.status === "Not Invoiced"
+      ).length;
+      const invoicedCount = loadDetails.filter(
+        (load) => load.status === "Invoiced"
+      ).length;
+      const receivedPaymentCount = loadDetails.filter(
+        (load) => load.status === "Received Payment"
+      ).length;
 
       calculateTotalPrice();
 
       setInProgressCount(inProgressCount);
       setCompletedCount(completedCount);
       setToDoCount(toDoCount);
+      setNotInvoicedCount(notInvoicedCount);
+      setInvoicedCount(invoicedCount);
+      setReceivedPaymentCount(receivedPaymentCount);
     });
     let errorsArr: string[] = [];
     Object.entries(errors).map(([key, value]) => {
@@ -455,14 +532,38 @@ const Overview: React.FC = () => {
   const getBadgeClass = (status: string) => {
     switch (status) {
       case "To-Do":
-        return "badge-primary";
+        return "badge-primary bg-red-500";
       case "In Progress":
         return "badge-warning";
       case "Completed":
         return "badge-success";
+      case "Not Invoiced":
+        return "badge-primary bg-orange-500";
+      case "Invoiced":
+        return "badge-warning bg-cyan-500";
+      case "Received Payment":
+        return "badge-success bg-purple-500";
       default:
         return "badge-secondary";
     }
+  };
+
+  const filteredToDoCount = filteredLoads.filter(
+    (load) => load.status === "To-Do"
+  ).length;
+  const filteredInProgressCount = filteredLoads.filter(
+    (load) => load.status === "In Progress"
+  ).length;
+  const filteredCompletedCount = filteredLoads.filter(
+    (load) => load.status === "Completed"
+  ).length;
+
+  const handleLoadNumberClick = (loadNumber: string) => {
+    setSelectedLoadNumber(loadNumber);
+  };
+
+  const handleCloseDetailsView = () => {
+    setSelectedLoadNumber(null);
   };
 
   return (
@@ -478,25 +579,51 @@ const Overview: React.FC = () => {
           toDoCount={toDoCount}
           inProgressCount={inProgressCount}
           completedCount={completedCount}
+          filteredToDoCount={filteredToDoCount}
+          filteredInProgressCount={filteredInProgressCount}
+          filteredCompletedCount={filteredCompletedCount}
           onStatusClick={handleStatusClick}
+          onDateRangeChange={handleDateRangeChange}
         />
         <TotalPricePerDriverChart loadDetails={loadDetails} />
+        <BillingStatusBars
+          notInvoicedCount={notInvoicedCount}
+          invoicedCount={invoicedCount}
+          receivedPaymentCount={receivedPaymentCount}
+          filteredNotInvoicedCount={
+            filteredLoads.filter((load) => load.status === "Not Invoiced")
+              .length
+          }
+          filteredInvoicedCount={
+            filteredLoads.filter((load) => load.status === "Invoiced").length
+          }
+          filteredReceivedPaymentCount={
+            filteredLoads.filter((load) => load.status === "Received Payment")
+              .length
+          }
+          onStatusClick={handleStatusClick}
+          onDateRangeChange={handleDateRangeChange}
+        />
       </Grid>
       <Divider />
       <>
-        <div className="main-button mt-3">
+        <div className="main-buttons">
+          <DateRangePicker
+            className="DateRangePicker mr-2 max-w-md"
+            onValueChange={handleDateRangeChange}
+          />
           <SearchSelect
             placeholder="Search Load..."
             onValueChange={handleSearchSelectChange}
-            className="mr-2 max-w-md"
+            className="mr-2"
           >
-            {loadDetails.map((load) => (
+            {filteredLoads.map((load) => (
               <SearchSelectItem key={load.loadNumber} value={load.loadNumber}>
                 {load.loadNumber}
               </SearchSelectItem>
             ))}
           </SearchSelect>
-          <Button onClick={() => setIsOpen(true)}>
+          <Button className="main-button" onClick={() => setIsOpen(true)}>
             {formMode === "add" ? "Add Load" : "Update Load"}
           </Button>{" "}
         </div>
@@ -644,15 +771,21 @@ const Overview: React.FC = () => {
                     Pick-up Location
                     <span className="text-red-500">*</span>
                   </label>
-                  <TextInput
-                    type="text"
-                    id="pickupLocation"
-                    placeholder="Pick-up Location"
-                    autoComplete="address-level2"
-                    value={newLoad.pickupLocation}
-                    onChange={(e) =>
-                      setNewLoad({ ...newLoad, pickupLocation: e.target.value })
-                    }
+
+                  <Autocomplete
+                    apiKey={Google_Maps_Api_Key}
+                    defaultValue={newLoad.pickupLocation}
+                    inputAutocompleteValue={newLoad.pickupLocation}
+                    onPlaceSelected={(place) => {
+                      setNewLoad((newLoad) => ({
+                        ...newLoad,
+                        pickupLocation: place.formatted_address || "",
+                      }));
+                    }}
+                    options={{
+                      types: [],
+                      componentRestrictions: { country: "us" },
+                    }}
                   />
                 </div>
 
@@ -664,19 +797,22 @@ const Overview: React.FC = () => {
                     Delivery Location
                     <span className="text-red-500">*</span>
                   </label>
-                  <TextInput
-                    type="text"
-                    id="deliveryLocation"
-                    autoComplete="address-level2"
-                    placeholder="Delivery Location"
-                    value={newLoad.deliveryLocation}
-                    onChange={(e) =>
-                      setNewLoad({
+                  <Autocomplete
+                    apiKey={Google_Maps_Api_Key}
+                    defaultValue={newLoad.deliveryLocation}
+                    inputAutocompleteValue={newLoad.deliveryLocation}
+                    onPlaceSelected={(place) => {
+                      setNewLoad((newLoad) => ({
                         ...newLoad,
-                        deliveryLocation: e.target.value,
-                      })
-                    }
+                        deliveryLocation: place.formatted_address || "",
+                      }));
+                    }}
+                    options={{
+                      types: [],
+                      componentRestrictions: { country: "us" },
+                    }}
                   />
+                  ;
                 </div>
 
                 <div className="col-span-full sm:col-span-3">
@@ -761,7 +897,11 @@ const Overview: React.FC = () => {
                 </DialogPanel>
               </Dialog>
 
-              <div className={`flex items-center ${formMode === 'edit' ? 'justify-between' : 'justify-end'} space-x-4`}>
+              <div
+                className={`flex items-center ${
+                  formMode === "edit" ? "justify-between" : "justify-end"
+                } space-x-4`}
+              >
                 {formMode === "edit" && (
                   <Button
                     onClick={openDeleteDialog}
@@ -772,7 +912,7 @@ const Overview: React.FC = () => {
                 )}
                 {formMode === "edit" && editableIndex !== null && (
                   <InvoiceGenerator
-                    loadDetails={[loadDetails[editableIndex]]}
+                    loadDetails={[filteredLoads[editableIndex]]}
                   />
                 )}
                 <div className="flex items-center space-x-4">
@@ -796,11 +936,15 @@ const Overview: React.FC = () => {
         </Dialog>
       </>
 
-      <div>
-        <p></p>
-        <div className="overflow-height-container">
+      <Grid
+        numItems={isMobileView ? 1 : 2}
+        numItemsLg={2}
+        className={`gap-4 pt-3 load-details-container ${
+          !selectedLoadNumber ? "hidden" : ""
+        }`}
+      >
+        <div className="details-table">
           <Table className="table">
-            {/* The table headers */}
             <TableHead className="sticky-header">
               <TableRow>
                 <th className="sort" onClick={() => requestSort("loadNumber")}>
@@ -818,7 +962,6 @@ const Overview: React.FC = () => {
                 <th>Delivery Time</th>
                 <th>Pick-up Location</th>
                 <th>Delivery Location</th>
-                <th>Documents</th>
                 <th className="sort" onClick={() => requestSort("price")}>
                   {" "}
                   Price{" "}
@@ -826,16 +969,7 @@ const Overview: React.FC = () => {
                     ? "▲"
                     : "▼"}
                 </th>
-                <th>Detention</th>
-                <th>All miles</th>
-                <th className="sort" onClick={() => requestSort("fuelGallons")}>
-                  {" "}
-                  Gallons{" "}
-                  {sortConfig.key === "fuelGallons" &&
-                  sortConfig.direction === "asc"
-                    ? "▲"
-                    : "▼"}
-                </th>
+                <th>Loaded miles</th>
                 <th className="sort" onClick={() => requestSort("status")}>
                   {" "}
                   Status{" "}
@@ -843,10 +977,6 @@ const Overview: React.FC = () => {
                     ? "▲"
                     : "▼"}
                 </th>
-                {/* <th>Broker info</th>
-              <th>Name</th>
-              <th>Phone number</th>
-              <th>Email</th> */}
                 <th></th>
               </TableRow>
             </TableHead>
@@ -854,7 +984,14 @@ const Overview: React.FC = () => {
               {filteredLoads.map((load, index) => (
                 <TableRow key={index}>
                   <td>
-                    <div>{load.loadNumber}</div>
+                    <Tooltip title="Show details">
+                      <div
+                        onClick={() => handleLoadNumberClick(load.loadNumber)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {load.loadNumber}
+                      </div>
+                    </Tooltip>
                   </td>
                   <td>
                     <div>{load.truckObject}</div>
@@ -866,10 +1003,10 @@ const Overview: React.FC = () => {
                     <div>{load.driverObject}</div>
                   </td>
                   <td>
-                    <div>{load.pickupTime}</div>
+                    <div>{new Date(load.pickupTime).toLocaleString()}</div>
                   </td>
                   <td>
-                    <div>{load.deliveryTime}</div>
+                    <div>{new Date(load.deliveryTime).toLocaleString()}</div>
                   </td>
                   <td>
                     <div>{load.pickupLocation}</div>
@@ -878,19 +1015,10 @@ const Overview: React.FC = () => {
                     <div>{load.deliveryLocation}</div>
                   </td>
                   <td>
-                    <div>{load.documents}</div>
+                    <div>{`$${load.price}`}</div>
                   </td>
                   <td>
-                    <div>{load.price}</div>
-                  </td>
-                  <td>
-                    <div>{load.detention}</div>
-                  </td>
-                  <td>
-                    <div>{load.allMiles}</div>
-                  </td>
-                  <td>
-                    <div>{load.fuelGallons}</div>
+                    <div>{load.allMiles !== null && `${load.allMiles} mi`}</div>
                   </td>
                   <td>
                     {editableIndex === index ? (
@@ -909,20 +1037,21 @@ const Overview: React.FC = () => {
                           updateLoad(updatedLoad);
                         }}
                       >
-                        <option
-                          className={`badge ${getBadgeClass(load.status)}`}
-                        >
-                          To Do
-                        </option>
-                        <option
-                          className={`badge ${getBadgeClass(load.status)}`}
-                        >
+                        <option className={`badge bg-red-500`}>To Do</option>
+                        <option className={`badge bg-yellow-500`}>
                           In Progress
                         </option>
-                        <option
-                          className={`badge ${getBadgeClass(load.status)}`}
-                        >
+                        <option className={`badge bg-green-500`}>
                           Completed
+                        </option>
+                        <option className={`badge bg-orange-500`}>
+                          Not Invoiced
+                        </option>
+                        <option className={`badge bg-cyan-500`}>
+                          Invoiced
+                        </option>
+                        <option className={`badge bg-purple-500`}>
+                          Received Payment
                         </option>
                       </select>
                     ) : (
@@ -953,7 +1082,25 @@ const Overview: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-      </div>
+        <div
+          className="load-table table"
+          style={{
+            display: selectedLoadNumber ? "block" : "none",
+            width: "37%",
+          }}
+        >
+          {selectedLoadNumber && (
+            <LoadDetailsView
+              load={
+                loadDetails.find(
+                  (load) => load.loadNumber === selectedLoadNumber
+                ) || null
+              }
+              onClose={handleCloseDetailsView}
+            />
+          )}
+        </div>
+      </Grid>
     </div>
   );
 };
