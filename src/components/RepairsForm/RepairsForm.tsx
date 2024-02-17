@@ -55,20 +55,7 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
       setIsOpen(false);
     }
   };
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     onSubmitRepair(repairDetail as RepairDetail);
 
-//     // Clear the form or perform any additional actions as needed
-//     setRepairDetail({
-//       repair: "",
-//       truckObject: "",
-//       trailerObject: "",
-//       repairDate: "",
-//       repairCost: "",
-//       repairComments: "",
-//     });
-//   };
 
   return (
     <>

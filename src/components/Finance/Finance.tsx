@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Grid, Dialog,Title ,Button, DialogPanel } from "@tremor/react";
 import RepairTable from '../Finance-Columns/Repairs-table';
-import Example from '../ReapairsForm.tsx/RepairsForm';
-import Form from '../ReapairsForm.tsx/RepairsForm';
-import { RepairDetail } from '../Types/types';
-import RepairsForm from '../ReapairsForm.tsx/RepairsForm';
+import Example from '../RepairsForm/RepairsForm';
+import Form from '../RepairsForm/RepairsForm';
+import { PayrollDetail, RepairDetail } from '../Types/types';
+import RepairsForm from '../RepairsForm/RepairsForm';
 import GetAllRepairs, { CreateNewRepair } from '../../routes/repairDetails';
+import PayrollForm from '../PayrollForm/PayrollForm';
+import PayrollTable from '../Finance-Columns/Payroll-table';
+import GetAllPayroll from '../../routes/payrollDetails';
 
 const Finance: React.FC= () =>{
   const [repairDetails, setRepairDetails] = useState<RepairDetail[]>([]);
-
+  const [payrollDetail, setPayrollDetails] = useState<PayrollDetail[]>([]);
  const fetchRepairs = async () => {
     try {
       const repairs = await GetAllRepairs();
@@ -24,7 +27,7 @@ const Finance: React.FC= () =>{
   const handleAddRepair = async (newRepairDetail: RepairDetail) => {
     try {
       // Call your backend API to create a new repair
-      const newRepair = await CreateNewRepair(newRepairDetail);
+      const newRepair = (newRepairDetail);
 
       if (newRepair) {
         // Add the new repair detail to the existing list
@@ -35,9 +38,35 @@ const Finance: React.FC= () =>{
       // Handle error as needed
     }
   };
+  //-----Payroll---
+  const fetchPayroll = async () => {
+    try {
+      const payroll = await GetAllPayroll();
+      if (payroll) {
+        setPayrollDetails(payroll);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAddPayroll = async (newPayrollDetail: PayrollDetail) => {
+    try {
+      // Call your backend API to create a new repair
+      const newPayroll = (newPayrollDetail);
+
+      if (newPayroll) {
+        // Add the new repair detail to the existing list
+        setPayrollDetails((prevDetails) => [...prevDetails, newPayroll]);
+      }
+    } catch (error) {
+      console.error(error);
+      // Handle error as needed
+    }
+  };
 
   useEffect(() => {
-    fetchRepairs();
+    fetchRepairs(); fetchPayroll();
   }, []);
 
 
@@ -54,7 +83,8 @@ const Finance: React.FC= () =>{
             </Card>
             <Card>
               <Title>Payroll</Title>
-              
+              <PayrollForm onSubmitPayroll={handleAddPayroll} />
+              <PayrollTable payrollDetail={payrollDetail} fetchPayroll={fetchPayroll}/>
             </Card>
             <Card>
               <Title>Fuel</Title>
