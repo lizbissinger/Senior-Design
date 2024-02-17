@@ -6,7 +6,7 @@ function LinearWithValueLabel(props: LinearProgressProps & { value: number }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', height: '80vh', justifyContent: 'center' }}>
       <Box sx={{ width: '50%', mr: 1 }}>
-        <LinearProgress variant="buffer" {...props} />
+        <LinearProgress variant="determinate" {...props} />
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="body2" color="text.secondary">{`${Math.round(
