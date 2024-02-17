@@ -353,10 +353,6 @@ const Overview: React.FC = () => {
     await UpdateLoad(load);
   };
 
-  const toggleFormVisibility = () => {
-    setShowForm(!showForm);
-  };
-
   const handleEditClick = (index: number) => {
     const selectedLoad = filteredLoads[index];
     setEditableIndex(index);
@@ -459,24 +455,12 @@ const Overview: React.FC = () => {
     setSubmitting(false);
   };
 
-  const renderSortArrow = (column: string) => {
-    if (sortConfig.key === column) {
-      return sortConfig.direction === "asc" ? "▲" : "▼";
-    }
-    return null;
-  };
-
   const requestSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
     }
     setSortConfig({ key, direction });
-  };
-
-  const handleNewLoadSubmit = (event: any) => {
-    event.preventDefault();
-    setSubmitting(true);
   };
 
   const calculateTotalPrice = () => {
@@ -487,13 +471,6 @@ const Overview: React.FC = () => {
     setTotalPrice(total);
   };
 
-  const fetchData = async () => {
-    if (!fetchingActive) {
-      const testData = GetAllLoads();
-      console.log(testData);
-      setFetchingActive(true);
-    }
-  };
   const [inProgressCount, setInProgressCount] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
   const [toDoCount, setToDoCount] = useState(0);
