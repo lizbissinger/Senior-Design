@@ -1,157 +1,62 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Metric,
-  Text,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-  ProgressBar,
-} from "@tremor/react";
+import { Card, Metric, Text, Tab, TabGroup, TabList, TabPanel, TabPanels, ProgressBar } from "@tremor/react";
 import { LoadDetail } from "../Types/types";
 
 interface TotalPricePerDriverChartProps {
   loadDetails: LoadDetail[];
 }
 
-const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({
-  loadDetails,
-}) => {
+const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({ loadDetails }) => {
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
-  const [timeRanges, setTimeRanges] = useState<{ [key: string]: number }>({
-    week: 0,
-    month: 0,
-    quarter: 0,
-    year: 0,
-  });
-
+  const [timeRanges, setTimeRanges] = useState<{ [key: string]: number }>({ week: 0, month: 0, quarter: 0, year: 0 });
   const [selectedTab, setSelectedTab] = useState<string>("week");
 
-  useEffect(() => {
-    calculateTotalRevenue();
-  }, [loadDetails, selectedTab]);
-
-  useEffect(() => {
-    calculateTimeRangeRevenue();
-  }, [totalRevenue, selectedTab]);
-
-  const calculateTotalRevenue = () => {
-    let total = 0;
-    const filteredLoadDetails = loadDetails.filter((load) => {
+  // Helper function to reduce code duplication
+  const filterLoadDetailsByTimeRange = (range: string) => {
+    const currentDate = new Date();
+    return loadDetails.filter((load) => {
       const deliveryTime = new Date(load.deliveryTime);
-      const currentDate = new Date();
-
-      switch (selectedTab) {
+      switch (range) {
         case "week":
-          const currentWeekStart = new Date(currentDate);
-          currentWeekStart.setDate(
-            currentWeekStart.getDate() -
-              currentDate.getDay() +
-              (currentDate.getDay() === 0 ? -6 : 1)
-          );
-          return deliveryTime >= currentWeekStart;
-
+          const weekStart = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + (currentDate.getDay() === 0 ? -6 : 1)));
+          return deliveryTime >= weekStart;
         case "month":
-          const currentMonthStart = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            1
-          );
-          return deliveryTime >= currentMonthStart;
-
+          const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+          return deliveryTime >= monthStart;
         case "quarter":
-          const currentQuarterStart = new Date(
-            currentDate.getFullYear(),
-            Math.floor(currentDate.getMonth() / 3) * 3,
-            1
-          );
-          return deliveryTime >= currentQuarterStart;
-
+          const quarterStart = new Date(currentDate.getFullYear(), Math.floor(currentDate.getMonth() / 3) * 3, 1);
+          return deliveryTime >= quarterStart;
         case "year":
-          const currentYearStart = new Date(currentDate.getFullYear(), 0, 1);
-          return deliveryTime >= currentYearStart;
-
-        default:
-          return true;
+          const yearStart = new Date(currentDate.getFullYear(), 0, 1);
+          return deliveryTime >= yearStart;
       }
     });
-
-    filteredLoadDetails.forEach((load) => {
-      const price = parseFloat(load.price) || 0;
-      total += price;
-    });
-
-    console.log(`Total Revenue calculated: $${total}`);
-    setTotalRevenue(total);
   };
 
-  const calculateTimeRangeRevenue = () => {
+  // Calculate total revenue based on selected time range
+  useEffect(() => {
+    const filteredLoadDetails = filterLoadDetailsByTimeRange(selectedTab);
+    const total = filteredLoadDetails.reduce((acc, load) => acc + (parseFloat(load.price) || 0), 0);
+    setTotalRevenue(total);
+  }, [loadDetails, selectedTab]);
+
+  // Calculate time range revenue
+  useEffect(() => {
     const timeRangesCopy = { ...timeRanges };
-
     Object.keys(timeRangesCopy).forEach((range) => {
-      const filteredLoadDetails = loadDetails.filter((load) => {
-        const deliveryTime = new Date(load.deliveryTime);
-        const currentDate = new Date();
-
-        switch (range) {
-          case "week":
-            const currentWeekStart = new Date(currentDate);
-            currentWeekStart.setDate(
-              currentWeekStart.getDate() -
-                currentDate.getDay() +
-                (currentDate.getDay() === 0 ? -6 : 1)
-            );
-            return deliveryTime >= currentWeekStart;
-
-          case "month":
-            const currentMonthStart = new Date(
-              currentDate.getFullYear(),
-              currentDate.getMonth(),
-              1
-            );
-            return deliveryTime >= currentMonthStart;
-
-          case "quarter":
-            const currentQuarterStart = new Date(
-              currentDate.getFullYear(),
-              Math.floor(currentDate.getMonth() / 3) * 3,
-              1
-            );
-            return deliveryTime >= currentQuarterStart;
-
-          case "year":
-            const currentYearStart = new Date(currentDate.getFullYear(), 0, 1);
-            return deliveryTime >= currentYearStart;
-
-          default:
-            return true;
-        }
-      });
-
-      let rangeTotal = 0;
-      filteredLoadDetails.forEach((load) => {
-        const price = parseFloat(load.price) || 0;
-        rangeTotal += price;
-      });
-
-      console.log(`Revenue for ${range} calculated: $${rangeTotal}`);
+      const filteredLoadDetails = filterLoadDetailsByTimeRange(range);
+      const rangeTotal = filteredLoadDetails.reduce((acc, load) => acc + (parseFloat(load.price) || 0), 0);
       timeRangesCopy[range] = rangeTotal;
     });
-
-    console.log("Time Range Revenue calculated:", timeRangesCopy);
-    setTimeRanges({ ...timeRangesCopy });
-  };
+    setTimeRanges(timeRangesCopy);
+  }, [loadDetails]); // Only recalculate when loadDetails changes
 
   return (
     <div className="chart-container">
       <Card className="min-w-xs" decoration="top" decorationColor="blue">
         <div>
           <Text>Total Revenue</Text>
-          <Metric>{`$ ${new Intl.NumberFormat("us")
-            .format(totalRevenue)
-            .toString()}`}</Metric>
+          <Metric>{`$${new Intl.NumberFormat("en-US").format(totalRevenue)}`}</Metric>
         </div>
         <TabGroup>
           <TabList className="mt-2 p-1">
