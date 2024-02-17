@@ -84,7 +84,16 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
               Close
             </Button>
           <Title className="mb-3">Add Repair Form</Title>
+          <Divider />
     <form className="repairs-form" onSubmit={handleSubmit}>
+    <div className="col-span-full">
+      <label
+          htmlFor="repair"
+          className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+        >
+          Repair Detail
+          <span className="text-red-500">*</span>
+        </label>
     <TextInput
           placeholder="Repair Detail"
           type="text"
@@ -93,7 +102,16 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
           onChange={handleInputChange}
           required
         />
+       </div> 
         <Divider></Divider>
+        <div className="col-span-full">
+        <label
+          htmlFor="repairCost"
+          className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+        >
+          Cost
+          <span className="text-red-500">*</span>
+        </label>
         <TextInput
           placeholder="Cost"
           type="text"
@@ -102,7 +120,16 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
           onChange={handleInputChange}
           required
         />
+        </div>
         <Divider></Divider>
+        <label
+          htmlFor="repairDate"
+          className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+        >
+          Date
+          <span className="text-red-500">*</span>
+        </label>
+        <div className="col-span-full">
         <input 
         id="pickupTime"
         name="repairDate"
@@ -111,10 +138,8 @@ const [repairDetail, setRepairDetail] = useState<Partial<RepairDetail>>({
         value={repairDetail.repairDate}
         onChange={handleInputChange}
         />
-        {/* <DatePicker className="max-w-sm mx-auto"
-         value={repairDetail.repairDate ? new Date(repairDetail.repairDate) : undefined}
-         onChange={handleDateChangeWrapper}
-         /> */}
+        </div>
+      
          <Divider></Divider>
         <TextInput
           placeholder="Select Truck (Make This deopdown)"
