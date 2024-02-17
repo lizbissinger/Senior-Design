@@ -812,7 +812,7 @@ const Overview: React.FC = () => {
                       }));
                     }}
                     options={{
-                      types: ["address"],
+                      types: [],
                       componentRestrictions: { country: "us" },
                     }}
                   />
@@ -837,7 +837,7 @@ const Overview: React.FC = () => {
                       }));
                     }}
                     options={{
-                      types: ["address"],
+                      types: [],
                       componentRestrictions: { country: "us" },
                     }}
                   />
