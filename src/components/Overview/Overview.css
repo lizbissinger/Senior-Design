@@ -98,7 +98,7 @@ h3 {
   padding: 2px;
   padding-bottom: 10px;
   overflow: auto;
-  max-height: 500px;
+  max-height: 495px;
   overflow-y: auto;
   height: 80vh;
 }
@@ -263,5 +263,10 @@ table th{
   .chart-container {
     padding: 0px;
     margin: inherit
+  }
+
+  .mobile-card {
+    max-width: 300px;
+    margin: 0 auto;
   }
 }
