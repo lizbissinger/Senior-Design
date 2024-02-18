@@ -37,6 +37,8 @@ import {
   NumberInput,
   DateRangePicker,
   DateRangePickerValue,
+  SelectItem,
+  Select,
 } from "@tremor/react";
 
 import _ from "lodash";
@@ -48,7 +50,9 @@ const Overview: React.FC = () => {
   const [trucks, setTrucks] = useState<string[]>([]);
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [isStatusEditing, setIsStatusEditing] = useState(false);
+  const [editingLoadIndex, setEditingLoadIndex] = useState<number | null>(null);
   const [filteredLoads, setFilteredLoads] = useState<LoadDetail[]>([]);
   const [selectedDate, setSelectedDate] = useState<DateRangePickerValue | null>(
     null
@@ -984,7 +988,7 @@ const Overview: React.FC = () => {
               !selectedLoadNumber ? "hidden" : ""
             }`}
           >
-            <div className="details-table">
+<div className="details-table" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Table className="table">
                 <TableHead className="sticky-header">
                   <TableRow>
@@ -1029,7 +1033,7 @@ const Overview: React.FC = () => {
                 <TableBody>
                   {filteredLoads.map((load, index) => (
                     <TableRow key={index}>
-                      <td>
+                      <td className="centered-cell">
                         <Tooltip title="Show details">
                           <div
                             onClick={() =>
@@ -1041,83 +1045,85 @@ const Overview: React.FC = () => {
                           </div>
                         </Tooltip>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>{load.truckObject}</div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>{load.trailerObject}</div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>{load.driverObject}</div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>{new Date(load.pickupTime).toLocaleString()}</div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>
                           {new Date(load.deliveryTime).toLocaleString()}
                         </div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>{load.pickupLocation}</div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>{load.deliveryLocation}</div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>{`$${load.price}`}</div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         <div>
                           {load.allMiles !== null && `${load.allMiles} mi`}
                         </div>
                       </td>
-                      <td>
-                        {editableIndex === index ? (
-                          <select
-                            className="select-custom load-details-table"
-                            value={load.status}
-                            onChange={(e) => {
-                              const newStatus = e.target.value;
-                              const updatedLoad = {
-                                ...load,
-                                status: newStatus,
-                              };
-                              setLoadDetails((prevLoadDetails) => {
-                                const updatedDetails = [...prevLoadDetails];
-                                updatedDetails[index] = updatedLoad;
-                                return updatedDetails;
-                              });
+                      <td className="centered-cell">
+                      <div className="col-span-full sm:col-span-3">
+  <div className="flex items-center space-x-2">
+    {isStatusEditing && editingLoadIndex === index ? ( // Check if editing the selected load
+      <Select
+        id="status"
+        value={load.status || ''}
+        onValueChange={(selectedStatus) => {
+          const updatedLoad = {
+            ...load,
+            status: selectedStatus,
+          };
+          setLoadDetails((prevLoadDetails) => {
+            const updatedDetails = [...prevLoadDetails];
+            updatedDetails[index] = updatedLoad;
+            return updatedDetails;
+          });
 
-                              updateLoad(updatedLoad);
-                            }}
-                          >
-                            <option className={`badge bg-red-500`}>
-                              To Do
-                            </option>
-                            <option className={`badge bg-yellow-500`}>
-                              In Progress
-                            </option>
-                            <option className={`badge bg-green-500`}>
-                              Completed
-                            </option>
-                            <option className={`badge bg-orange-500`}>
-                              Not Invoiced
-                            </option>
-                            <option className={`badge bg-cyan-500`}>
-                              Invoiced
-                            </option>
-                            <option className={`badge bg-purple-500`}>
-                              Received Payment
-                            </option>
-                          </select>
-                        ) : (
-                          <span
-                            className={`badge ${getBadgeClass(load.status)}`}
-                          >
-                            {load.status}
-                          </span>
-                        )}
+          updateLoad(updatedLoad);
+          setIsStatusEditing(false);
+          setEditingLoadIndex(null); // Reset editing index after updating status
+        }}
+      >
+        <SelectItem value="To Do" />
+        <SelectItem value="In Progress" />
+        <SelectItem value="Completed" />
+        <SelectItem value="Not Invoiced" />
+        <SelectItem value="Invoiced" />
+        <SelectItem value="Received Payment" />
+      </Select>
+    ) : (
+      <Tooltip title="Change Status" arrow>
+        <span
+          className={`badge ${getBadgeClass(load.status)}`}
+          onClick={() => {
+            setIsStatusEditing(true);
+            setEditingLoadIndex(index); // Set the index of the load being edited
+          }}
+          style={{ cursor: 'pointer' }}
+        >
+          {load.status || 'Add Status'}
+        </span>
+      </Tooltip>
+    )}
+  </div>
+</div>
+
+                          
                       </td>
                       <td>
                         {editableIndex === index ? (
