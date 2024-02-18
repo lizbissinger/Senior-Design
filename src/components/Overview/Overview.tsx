@@ -202,31 +202,28 @@ const Overview: React.FC = () => {
     if (newLoad.pickupLocation && newLoad.deliveryLocation) {
       const service = new google.maps.DistanceMatrixService();
       service.getDistanceMatrix(
-        {
-          origins: [newLoad.pickupLocation],
-          destinations: [newLoad.deliveryLocation],
-          travelMode: google.maps.TravelMode.DRIVING,
-        },
-        (
-          response: google.maps.DistanceMatrixResponse,
-          status: google.maps.DistanceMatrixStatus
-        ) => {
-          if (status === "OK" && response.rows[0].elements[0].status === "OK") {
-            const distanceMeters = response.rows[0].elements[0].distance.value;
-            const distanceMiles = (distanceMeters * 0.000621371).toFixed(1);
-            setNewLoad((prevState) => ({
-              ...prevState,
-              allMiles: distanceMiles.toString(),
-            }));
-          } else {
-            console.error("Failed to fetch distance:", status);
-            setNewLoad((prevState) => ({
-              ...prevState,
-              allMiles: "",
-            }));
-          }
-        }
-      );
+  {
+    origins: [newLoad.pickupLocation],
+    destinations: [newLoad.deliveryLocation],
+    travelMode: google.maps.TravelMode.DRIVING,
+  },
+  (response: google.maps.DistanceMatrixResponse | null, status: google.maps.DistanceMatrixStatus) => {
+    if (status === "OK" && response && response.rows[0].elements[0].status === "OK") {
+      const distanceMeters = response.rows[0].elements[0].distance.value;
+      const distanceMiles = (distanceMeters * 0.000621371).toFixed(1);
+      setNewLoad((prevState) => ({
+        ...prevState,
+        allMiles: distanceMiles.toString(),
+      }));
+    } else {
+      console.error("Failed to fetch distance:", status);
+      setNewLoad((prevState) => ({
+        ...prevState,
+        allMiles: "",
+      }));
+    }
+  }
+);
     }
   };
 
