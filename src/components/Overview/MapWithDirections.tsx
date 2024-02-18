@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  GoogleMap,
-  DirectionsRenderer,
-  useLoadScript,
-} from "@react-google-maps/api";
+import { GoogleMap, DirectionsRenderer, useLoadScript } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100%",
@@ -15,22 +11,20 @@ interface MapWithDirectionsProps {
   deliveryLocation: string;
 }
 
-const googleMapsApiKey = "AIzaSyCGylTS64QlW8c1eGxcBtDbcgsa8roUPuM";
+const googleMapsApiKey = "AIzaSyCGylTS64QlW8c1eGxcBtDbcgsa8roUPuM"; // Replace YOUR_API_KEY with your actual Google Maps API key
 
-const MapWithDirections: React.FC<MapWithDirectionsProps> = ({
-  pickupLocation,
-  deliveryLocation,
-}) => {
+const MapWithDirections: React.FC<MapWithDirectionsProps> = ({ pickupLocation, deliveryLocation }) => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey,
+    googleMapsApiKey: googleMapsApiKey,
   });
 
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
 
   useEffect(() => {
-    const directionsService = new google.maps.DirectionsService();
+    const fetchDirections = () => {
+      if (!pickupLocation || !deliveryLocation) return;
 
-    if (pickupLocation && deliveryLocation) {
+      const directionsService = new google.maps.DirectionsService();
       directionsService.route(
         {
           origin: pickupLocation,
@@ -41,30 +35,24 @@ const MapWithDirections: React.FC<MapWithDirectionsProps> = ({
           if (status === google.maps.DirectionsStatus.OK && result) {
             setDirections(result);
           } else {
-            console.error(`Directions request failed due to ${status}`);
+            console.error(`Failed to fetch directions: ${status}`);
             setDirections(null);
           }
         }
       );
-    }
-  }, [pickupLocation, deliveryLocation]);
+    };
 
-  if (loadError) {
-    return <div>Error loading maps</div>;
-  }
+    if (isLoaded) fetchDirections();
+  }, [isLoaded, pickupLocation, deliveryLocation]);
 
-  if (!isLoaded) {
-    return <div>Loading Maps</div>;
-  }
+  if (loadError) return <div>Error loading maps</div>;
+  if (!isLoaded) return <div>Loading Maps</div>;
 
-  const defaultCenter = { lat: -34.397, lng: 150.644 }; // A fallback center
-  const mapCenter = directions?.routes[0]?.bounds?.getCenter() || defaultCenter;
-  
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={mapCenter}
-      zoom={8} // Consider dynamically adjusting zoom based on the route
+      center={directions?.routes[0]?.bounds?.getCenter()}
+      zoom={10}
     >
       {directions && <DirectionsRenderer directions={directions} />}
     </GoogleMap>

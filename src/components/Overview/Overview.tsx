@@ -847,7 +847,6 @@ const Overview: React.FC = () => {
                           componentRestrictions: { country: "us" },
                         }}
                       />
-                      ;
                     </div>
 
                     <div className="col-span-full sm:col-span-3">

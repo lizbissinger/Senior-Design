@@ -14,9 +14,15 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
 
   const toggleMapVisibility = () => setShowMap(!showMap);
 
+  const handleMapCloseClick = (event: { stopPropagation: () => void; }) => {
+    event.stopPropagation(); // Prevents toggleMapVisibility when clicking the close button
+    setShowMap(false);
+  };
+
   return (
     <Card>
       <CloseButton onClick={onClose} className="main-button"></CloseButton>
+      <List className="table">
       <List className="table">
         <ListItem>
           <strong>Load Number:</strong> {load?.loadNumber}
@@ -61,9 +67,12 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
           <strong>Fuel (Gallons):</strong> {load?.fuelGallons}
         </ListItem>
       </List>
-      <Card onClick={toggleMapVisibility} style={{ cursor: 'pointer' }}>
-        DIRECTIONS
-      </Card>
+      </List>
+      {/* Adjusted Card for DIRECTIONS */}
+      <div onClick={toggleMapVisibility} style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>DIRECTIONS</span>
+        {showMap && <CloseButton onClick={handleMapCloseClick} />}
+      </div>
       {showMap && load?.pickupLocation && load?.deliveryLocation && (
         <MapWithDirections
           pickupLocation={load.pickupLocation}
