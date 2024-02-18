@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GoogleMap, DirectionsRenderer, useLoadScript } from "@react-google-maps/api";
+const Google_Maps_Api_Key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const containerStyle = {
   width: "100%",
@@ -11,11 +12,9 @@ interface MapWithDirectionsProps {
   deliveryLocation: string;
 }
 
-const googleMapsApiKey = "AIzaSyCGylTS64QlW8c1eGxcBtDbcgsa8roUPuM"; // Replace YOUR_API_KEY with your actual Google Maps API key
-
 const MapWithDirections: React.FC<MapWithDirectionsProps> = ({ pickupLocation, deliveryLocation }) => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: googleMapsApiKey,
+    googleMapsApiKey: Google_Maps_Api_Key,
   });
 
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
