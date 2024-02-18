@@ -968,17 +968,17 @@ const Overview: React.FC = () => {
                       onClick={() => requestSort("loadNumber")}
                     >
                       {" "}
-                      Load #{" "}
+                      Load {" "}
                       {sortConfig.key === "loadNumber" &&
                       sortConfig.direction === "asc"
                         ? "▲"
                         : "▼"}
                     </th>
-                    <th>Truck #</th>
-                    <th>Trailer #</th>
-                    <th>Driver Name</th>
-                    <th>Pick-up Time</th>
-                    <th>Delivery Time</th>
+                    <th>Truck</th>
+                    <th>Trailer</th>
+                    <th>Driver</th>
+                    <th>Pick-up Date-Time</th>
+                    <th>Delivery Date-Time</th>
                     <th>Pick-up Location</th>
                     <th>Delivery Location</th>
                     <th className="sort" onClick={() => requestSort("price")}>
