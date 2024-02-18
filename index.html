@@ -32,6 +32,10 @@
         const scriptTag = document.createElement("script");
         scriptTag.type = "module";
         scriptTag.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        scriptTag.onload = () =>
+          window.dispatchEvent(new Event("googleMapsScriptLoaded"));
+        scriptTag.onerror = () =>
+          window.dispatchEvent(new Event("googleMapsScriptError"));
         document.head.appendChild(scriptTag);
       });
     </script>

@@ -1,7 +1,8 @@
-import React from "react";
-import { LoadDetail } from "../Types/types";
-import { Card, List, ListItem } from "@tremor/react";
-import CloseButton from "react-bootstrap/CloseButton";
+import React, { useState } from 'react';
+import { LoadDetail } from '../Types/types';
+import { Card, List, ListItem } from '@tremor/react';
+import CloseButton from 'react-bootstrap/CloseButton';
+import MapWithDirections from './MapWithDirections'; // Ensure this path matches your actual component's location
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
@@ -9,9 +10,19 @@ interface LoadDetailsViewProps {
 }
 
 const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
+  const [showMap, setShowMap] = useState(false);
+
+  const toggleMapVisibility = () => setShowMap(!showMap);
+
+  const handleMapCloseClick = (event: { stopPropagation: () => void; }) => {
+    event.stopPropagation(); // Prevents toggleMapVisibility when clicking the close button
+    setShowMap(false);
+  };
+
   return (
     <Card>
       <CloseButton onClick={onClose} className="main-button"></CloseButton>
+      <List className="table">
       <List className="table">
         <ListItem>
           <strong>Load Number:</strong> {load?.loadNumber}
@@ -56,9 +67,18 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
           <strong>Fuel (Gallons):</strong> {load?.fuelGallons}
         </ListItem>
       </List>
-      <Card>
-        DIRECTIONS
-      </Card>
+      </List>
+      {/* Adjusted Card for DIRECTIONS */}
+      <div onClick={toggleMapVisibility} style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>DIRECTIONS</span>
+        {showMap && <CloseButton onClick={handleMapCloseClick} />}
+      </div>
+      {showMap && load?.pickupLocation && load?.deliveryLocation && (
+        <MapWithDirections
+          pickupLocation={load.pickupLocation}
+          deliveryLocation={load.deliveryLocation}
+        />
+      )}
     </Card>
   );
 };
