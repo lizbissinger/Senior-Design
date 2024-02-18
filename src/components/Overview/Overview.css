@@ -137,6 +137,10 @@ table {
   overflow: auto;
 }
 
+table th{
+    border-top: 0px !important;
+}
+
 .load-details-table th {
   background-color: #f2f2f2;
   font-weight: bold;
@@ -181,6 +185,7 @@ table {
 .main-buttons {
   display: flex;
   justify-content: flex-start;
+  gap: 2px;
 }
 
 @media screen and (max-width: 768px) {
