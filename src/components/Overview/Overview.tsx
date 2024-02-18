@@ -50,7 +50,7 @@ const Overview: React.FC = () => {
   const [trucks, setTrucks] = useState<string[]>([]);
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [isStatusEditing, setIsStatusEditing] = useState(false);
   const [editingLoadIndex, setEditingLoadIndex] = useState<number | null>(null);
   const [filteredLoads, setFilteredLoads] = useState<LoadDetail[]>([]);
@@ -87,10 +87,6 @@ const Overview: React.FC = () => {
     comments: "",
   });
 
-  const [assignedDrivers, setAssignedDrivers] = useState<string[]>([]);
-  const [assignedTrucks, setAssignedTrucks] = useState<string[]>([]);
-  const [assignedTrailers, setAssignedTrailers] = useState<string[]>([]);
-
   const fetchAllLoads = async () => {
     let allLoads: any = null;
     allLoads = await GetAllLoads();
@@ -104,36 +100,6 @@ const Overview: React.FC = () => {
       }
       setLoadDetails(loadsArr);
     }
-
-    let inProgressDrivers: string[] = [];
-    if (Array.isArray(allLoads)) {
-      allLoads.forEach((load) => {
-        if (load.status === "In Progress" && load.driverObject) {
-          inProgressDrivers.push(load.driverObject);
-        }
-      });
-    }
-    setAssignedDrivers(inProgressDrivers);
-
-    let inProgressTrucks: string[] = [];
-    if (Array.isArray(allLoads)) {
-      allLoads.forEach((load) => {
-        if (load.status === "In Progress" && load.truckObject) {
-          inProgressTrucks.push(load.truckObject);
-        }
-      });
-    }
-    setAssignedTrucks(inProgressTrucks);
-
-    let inProgressTrailers: string[] = [];
-    if (Array.isArray(allLoads)) {
-      allLoads.forEach((load) => {
-        if (load.status === "In Progress" && load.trailerObject) {
-          inProgressTrailers.push(load.trailerObject);
-        }
-      });
-    }
-    setAssignedTrailers(inProgressTrailers);
   };
 
   const fetchDrivers = async () => {
@@ -241,8 +207,6 @@ const Overview: React.FC = () => {
     key: "",
     direction: "asc",
   });
-
-  const [fetchingActive, setFetchingActive] = useState(false);
 
   const filteredLoadDetails = selectedStatus
     ? loadDetails.filter((load) => load.status === selectedStatus)
@@ -988,7 +952,14 @@ const Overview: React.FC = () => {
               !selectedLoadNumber ? "hidden" : ""
             }`}
           >
-<div className="details-table" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              className="details-table"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <Table className="table">
                 <TableHead className="sticky-header">
                   <TableRow>
@@ -1077,53 +1048,53 @@ const Overview: React.FC = () => {
                         </div>
                       </td>
                       <td className="centered-cell">
-                      <div className="col-span-full sm:col-span-3">
-  <div className="flex items-center space-x-2">
-    {isStatusEditing && editingLoadIndex === index ? ( // Check if editing the selected load
-      <Select
-        id="status"
-        value={load.status || ''}
-        onValueChange={(selectedStatus) => {
-          const updatedLoad = {
-            ...load,
-            status: selectedStatus,
-          };
-          setLoadDetails((prevLoadDetails) => {
-            const updatedDetails = [...prevLoadDetails];
-            updatedDetails[index] = updatedLoad;
-            return updatedDetails;
-          });
+                        <div className="col-span-full sm:col-span-3">
+                          <div className="flex items-center space-x-2">
+                            {isStatusEditing && editingLoadIndex === index ? (
+                              <Select
+                                id="status"
+                                value={load.status || ""}
+                                onValueChange={(selectedStatus) => {
+                                  const updatedLoad = {
+                                    ...load,
+                                    status: selectedStatus,
+                                  };
+                                  setLoadDetails((prevLoadDetails) => {
+                                    const updatedDetails = [...prevLoadDetails];
+                                    updatedDetails[index] = updatedLoad;
+                                    return updatedDetails;
+                                  });
 
-          updateLoad(updatedLoad);
-          setIsStatusEditing(false);
-          setEditingLoadIndex(null); // Reset editing index after updating status
-        }}
-      >
-        <SelectItem value="To Do" />
-        <SelectItem value="In Progress" />
-        <SelectItem value="Completed" />
-        <SelectItem value="Not Invoiced" />
-        <SelectItem value="Invoiced" />
-        <SelectItem value="Received Payment" />
-      </Select>
-    ) : (
-      <Tooltip title="Change Status" arrow>
-        <span
-          className={`badge ${getBadgeClass(load.status)}`}
-          onClick={() => {
-            setIsStatusEditing(true);
-            setEditingLoadIndex(index); // Set the index of the load being edited
-          }}
-          style={{ cursor: 'pointer' }}
-        >
-          {load.status || 'Add Status'}
-        </span>
-      </Tooltip>
-    )}
-  </div>
-</div>
-
-                          
+                                  updateLoad(updatedLoad);
+                                  setIsStatusEditing(false);
+                                  setEditingLoadIndex(null);
+                                }}
+                              >
+                                <SelectItem value="To Do" />
+                                <SelectItem value="In Progress" />
+                                <SelectItem value="Completed" />
+                                <SelectItem value="Not Invoiced" />
+                                <SelectItem value="Invoiced" />
+                                <SelectItem value="Received Payment" />
+                              </Select>
+                            ) : (
+                              <Tooltip title="Change Status" arrow>
+                                <span
+                                  className={`badge ${getBadgeClass(
+                                    load.status
+                                  )}`}
+                                  onClick={() => {
+                                    setIsStatusEditing(true);
+                                    setEditingLoadIndex(index);
+                                  }}
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  {load.status || "Add Status"}
+                                </span>
+                              </Tooltip>
+                            )}
+                          </div>
+                        </div>
                       </td>
                       <td>
                         {editableIndex === index ? (
