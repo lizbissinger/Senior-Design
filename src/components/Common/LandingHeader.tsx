@@ -81,18 +81,18 @@ const Header = () => {
                   </div>
                 </div>
                 <Disclosure.Button className="text-sm ">
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                  <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <Link
                       to="/login"
                       className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
-                    >
+                      >
                       Sign In
                     </Link>
                   </div>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                  <div className="absolute inset-y-0 right-0 flex font-medium items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <Link
                       to="/login"
-                      className="ease-in-up shadow-btn hover:shadow-btn-hover rounded-sm bg-primary px-4 py-2 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:hidden"
+                      className=" md:hidden"
                     >
                       Sign In
                     </Link>
@@ -109,9 +109,9 @@ const Header = () => {
                     onClick={() => navigate(menuItem.path || "")}
                     className={`${
                       menuItem.path === window.location.pathname
-                        ? "bg-[#6686DC] text-neutral-950 no-underline"
+                        ? "bg text-neutral-950 no-underline"
                         : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950"
-                    } block rounded-md px-3 py-2 text-base font-medium focus:outline-none`}
+                    } rounded-md px-3 py-2 text-base font-medium focus:outline-none`}
                   >
                     {menuItem.title}
                   </button>
