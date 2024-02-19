@@ -34,9 +34,47 @@ const Header = () => {
     setOpen(!open);
   };
 
+  const [navbarOpen, setNavbarOpen] = useState(false);
+  const navbarToggleHandler = () => {
+    setNavbarOpen(!navbarOpen);
+  };
+
+  const [sticky, setSticky] = useState(false);
+  const handleStickyNavbar = () => {
+    if (window.scrollY >= 80) {
+      setSticky(true);
+    } else {
+      setSticky(false);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener("scroll", handleStickyNavbar);
+    return () => {
+      window.removeEventListener("scroll", handleStickyNavbar);
+    };
+  }, []);
+
+  const [openIndex, setOpenIndex] = useState(-1);
+  const handleSubmenu = (index: SetStateAction<number>) => {
+    if (openIndex === index) {
+      setOpenIndex(-1);
+    } else {
+      setOpenIndex(index);
+    }
+  };
+
+  const usePathName = "/";
+
   return (
     <>
-      <Disclosure as="nav" className="sticky relative top-0 z-50">
+      <Disclosure
+        as="nav"
+        className={`header fixed top-0 left-1/2 transform -translate-x-1/2 z-40 flex-end w-full items-center ${
+          sticky
+            ? "dark:bg-gray-dark dark:shadow-sticky-dark bg-white bg-opacity-80 shadow-sticky backdrop-blur-sm"
+            : "absolute bg-transparent"
+        } sm:justify-center`}
+      >
         {({ open }) => (
           <>
             <div className="max-w-full px-2 sm:px-6 lg:px-8">
@@ -56,7 +94,7 @@ const Header = () => {
                   <div className="flex flex-shrink-0 items-center">
                     <h1 className="h-8 w-auto select-none lg:ml-1 lg:mb-3">
                       <Link to="/" className={`header-logo block w-full`}>
-                        <h1 className="font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text md:leading-tight">
+                        <h1 className="items-center font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text md:leading-tight">
                           FLEETWAVE
                         </h1>
                       </Link>
@@ -81,7 +119,7 @@ const Header = () => {
                   </div>
                 </div>
                 <Disclosure.Button className="text-sm ">
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                  <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <Link
                       to="/login"
                       className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
@@ -89,11 +127,8 @@ const Header = () => {
                       Sign In
                     </Link>
                   </div>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    <Link
-                      to="/login"
-                      className="ease-in-up shadow-btn hover:shadow-btn-hover rounded-sm bg-primary px-4 py-2 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:hidden"
-                    >
+                  <div className="absolute inset-y-0 right-0 flex font-medium items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <Link to="/login" className=" md:hidden">
                       Sign In
                     </Link>
                   </div>
@@ -109,9 +144,9 @@ const Header = () => {
                     onClick={() => navigate(menuItem.path || "")}
                     className={`${
                       menuItem.path === window.location.pathname
-                        ? "bg-[#6686DC] text-neutral-950 no-underline"
+                        ? "bg text-neutral-950 no-underline"
                         : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950"
-                    } block rounded-md px-3 py-2 text-base font-medium focus:outline-none`}
+                    } rounded-md px-3 py-2 text-base font-medium focus:outline-none`}
                   >
                     {menuItem.title}
                   </button>
