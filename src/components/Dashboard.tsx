@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, Routes, Route, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Overview from "./Overview/Overview";
 import FleetManagement from "./FleetManagement/FleetManagement";
 import "./Dashboard.css";
@@ -10,31 +10,43 @@ import Finance from "./Finance/Finance";
 import { UserButton } from "@clerk/clerk-react";
 
 const Dashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("Overview");
+  const [activeTab, setActiveTab] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathSegments = location.pathname.split("/");
+    const currentTab = pathSegments[pathSegments.length - 1];
+    setActiveTab(currentTab || "overview");
+  }, [location.pathname]);
 
   const navigation = [
     {
       name: "Overview",
       href: "/dashboard/overview",
-      current: activeTab === "Overview",
+      current: activeTab === "overview",
     },
     {
       name: "Fleet Management",
       href: "/dashboard/fleet",
-      current: activeTab === "Fleet Management",
+      current: activeTab === "fleet",
     },
     {
       name: "Reports",
       href: "/dashboard/reports",
-      current: activeTab === "Reports",
+      current: activeTab === "reports",
     },
     {
       name: "Finance",
       href: "/dashboard/finance",
-      current: activeTab === "Finance",
+      current: activeTab === "finance",
     },
   ];
+
+  function handleLinkClick(item: any) {
+    setActiveTab(item.href.split("/").pop() || "");
+    navigate(item.href);
+  }
 
   function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
