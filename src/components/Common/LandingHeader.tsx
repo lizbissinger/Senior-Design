@@ -2,6 +2,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Disclosure, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Tab, TabGroup } from "@tremor/react";
 
 export type Menu = {
   id: number;
@@ -137,19 +138,21 @@ const Header = () => {
             </div>
 
             <Disclosure.Panel className="sm:hidden">
-              <div className="space-y-1 px-2 pb-3 pt-2">
+              <div style={{ display: "inline-flex" }}>
                 {menuData.map((menuItem) => (
-                  <button
-                    key={menuItem.id}
-                    onClick={() => navigate(menuItem.path || "")}
-                    className={`${
-                      menuItem.path === window.location.pathname
-                        ? "bg text-neutral-950 no-underline"
-                        : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950"
-                    } rounded-md px-3 py-2 text-base font-medium focus:outline-none`}
-                  >
-                    {menuItem.title}
-                  </button>
+                  <TabGroup>
+                    <Tab
+                      key={menuItem.id}
+                      onClick={() => navigate(menuItem.path || "")}
+                      className={`${
+                        menuItem.path === window.location.pathname
+                          ? "bg text-neutral-950 no-underline"
+                          : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950"
+                      } rounded-md px-3 py-2 text-base font-medium focus:outline-none`}
+                    >
+                      {menuItem.title}
+                    </Tab>
+                  </TabGroup>
                 ))}
               </div>
             </Disclosure.Panel>
