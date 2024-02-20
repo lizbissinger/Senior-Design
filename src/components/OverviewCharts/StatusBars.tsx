@@ -62,9 +62,9 @@ const StatusBars: React.FC<{
         onClick={() => handleStatusClick("To-Do")}
       >
         <Flex>
-          <div>
-            <Text>To Do</Text>
-            <Metric>{filteredToDoCount}</Metric>
+          <div className="center-text align-p">
+            <Text className="align-p">To Do</Text>
+            <Metric className="align-p">{filteredToDoCount}</Metric>
           </div>
         </Flex>
       </Card>
@@ -77,7 +77,7 @@ const StatusBars: React.FC<{
         onClick={() => handleStatusClick("In Progress")}
       >
         <Flex>
-          <div>
+          <div className="center-text">
             <Text>In Progress</Text>
             <Metric>{filteredInProgressCount}</Metric>
           </div>
@@ -92,9 +92,9 @@ const StatusBars: React.FC<{
         onClick={() => handleStatusClick("Completed")}
       >
         <Flex>
-          <div>
-            <Text>Completed</Text>
-            <Metric>{filteredCompletedCount}</Metric>
+          <div className="center-text align-p">
+            <Text className="align-p">Completed</Text>
+            <Metric className="align-p">{filteredCompletedCount}</Metric>
           </div>
         </Flex>
       </Card>
