@@ -54,7 +54,7 @@ const BillingStatusBars: React.FC<BillingStatusBarsProps> = ({
         onClick={() => handleStatusClick("Not Invoiced")}
       >
         <Flex>
-          <div>
+          <div className="center-text">
             <Text>Not Invoiced</Text>
             <Metric>{filteredNotInvoicedCount}</Metric>
           </div>
@@ -70,9 +70,9 @@ const BillingStatusBars: React.FC<BillingStatusBarsProps> = ({
         onClick={() => handleStatusClick("Invoiced")}
       >
         <Flex>
-          <div>
-            <Text>Invoiced</Text>
-            <Metric>{filteredInvoicedCount}</Metric>
+          <div className="center-text align-p">
+            <Text className="align-p">Invoiced</Text>
+            <Metric className="align-p">{filteredInvoicedCount}</Metric>
           </div>
         </Flex>
       </Card>
@@ -86,7 +86,7 @@ const BillingStatusBars: React.FC<BillingStatusBarsProps> = ({
         onClick={() => handleStatusClick("Received Payment")}
       >
         <Flex>
-          <div>
+          <div className="center-text">
             <Text>Received Payment</Text>
             <Metric>{filteredReceivedPaymentCount}</Metric>
           </div>
