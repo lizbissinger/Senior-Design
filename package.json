@@ -23,6 +23,7 @@
     "@mui/material": "^5.15.6",
     "@mui/x-data-grid": "^6.19.4",
     "@react-google-maps/api": "^2.19.3",
+    "@remixicon/react": "^4.1.1",
     "@tremor/react": "^3.13.3",
     "@types/faker": "^6.6.9",
     "@types/jspdf": "^2.0.0",
