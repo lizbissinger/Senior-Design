@@ -1,11 +1,40 @@
-import { Image } from "react-bootstrap";
 import { SetStateAction, useEffect, useState } from "react";
-import ThemeToggler from "./ThemeToggler";
-import menuData from "./menuData";
-import Link from "@mui/material/Link";
-import { Button } from "@tremor/react";
+import { Link, useNavigate } from "react-router-dom";
+import { Disclosure, Transition } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Tab, TabGroup } from "@tremor/react";
+
+export type Menu = {
+  id: number;
+  title: string;
+  path?: string;
+  newTab: boolean;
+  submenu?: Menu[];
+};
+
+const menuData: Menu[] = [
+  {
+    id: 1,
+    title: "Home",
+    path: "/",
+    newTab: false,
+  },
+  {
+    id: 2,
+    title: "About",
+    path: "/about",
+    newTab: false,
+  },
+];
 
 const Header = () => {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleToggle = () => {
+    setOpen(!open);
+  };
+
   const [navbarOpen, setNavbarOpen] = useState(false);
   const navbarToggleHandler = () => {
     setNavbarOpen(!navbarOpen);
@@ -39,131 +68,97 @@ const Header = () => {
 
   return (
     <>
-      <header
-        className={`header left-0 top-0 z-40 flex w-full items-center ${
+      <Disclosure
+        as="nav"
+        className={`header fixed top-0 left-1/2 transform -translate-x-1/2 z-40 flex-end w-full items-center ${
           sticky
-            ? "dark:bg-gray-dark dark:shadow-sticky-dark fixed z-[9999] bg-white !bg-opacity-80 shadow-sticky backdrop-blur-sm transition"
+            ? "dark:bg-gray-dark dark:shadow-sticky-dark bg-white bg-opacity-80 shadow-sticky backdrop-blur-sm"
             : "absolute bg-transparent"
-        }`}
+        } sm:justify-center`}
       >
-        <div className="container">
-          <div className="relative -mx-4 flex items-center justify-between">
-            <div className="w-60 max-w-full px-4 xl:mr-12">
-              <Link
-                href="/"
-                className={`header-logo block w-full ${
-                  sticky ? "py-5 lg:py-2" : "py-8"
-                } `}
-              >
-                <h1 className="font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text md:leading-tight">
-                  FLEETWAVE
-                </h1>
-              </Link>
-            </div>
-            <div className="flex w-full items-center justify-between px-4">
-              <div>
-                <Button
-                  onClick={navbarToggleHandler}
-                  id="navbarToggler"
-                  className="absolute right-4 top-1/2 block translate-y-[-50%] rounded-lg px-3 py-[6px] ring-primary focus:ring-2 lg:hidden"
-                >
-                  <span
-                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
-                      navbarOpen ? " top-[7px] rotate-45" : " "
-                    }`}
-                  />
-                  <span
-                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
-                      navbarOpen ? "opacity-0 " : " "
-                    }`}
-                  />
-                  <span
-                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
-                      navbarOpen ? " top-[-8px] -rotate-45" : " "
-                    }`}
-                  />
-                </Button>
-                <nav
-                  id="navbarCollapse"
-                  className={`navbar absolute right-0 z-30 w-[250px] rounded border-[.5px] border-body-color/50 bg-white px-6 py-4 duration-300 dark:border-body-color/20 dark:bg-dark lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 ${
-                    navbarOpen ? "block" : "hidden"
-                  }`}
-                >
-                  <ul className="block lg:flex lg:space-x-12">
-                    {menuData.map((menuItem, index) => (
-                      <li key={index} className="group relative">
-                        {menuItem.path ? (
-                          <Link
-                            href={menuItem.path}
-                            className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
-                              usePathName === menuItem.path
-                                ? "text-primary dark:text-white"
-                                : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
-                            }`}
-                          >
-                            {menuItem.title}
-                          </Link>
-                        ) : (
-                          <>
-                            <p
-                              onClick={() => handleSubmenu(index)}
-                              className="flex cursor-pointer items-center justify-between py-2 text-base text-dark group-hover:text-primary dark:text-white/70 dark:group-hover:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6"
-                            >
-                              {menuItem.title}
-                              <span className="pl-3">
-                                <svg width="25" height="24" viewBox="0 0 25 24">
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M6.29289 8.8427C6.68342 8.45217 7.31658 8.45217 7.70711 8.8427L12 13.1356L16.2929 8.8427C16.6834 8.45217 17.3166 8.45217 17.7071 8.8427C18.0976 9.23322 18.0976 9.86639 17.7071 10.2569L12 15.964L6.29289 10.2569C5.90237 9.86639 5.90237 9.23322 6.29289 8.8427Z"
-                                    fill="currentColor"
-                                  />
-                                </svg>
-                              </span>
-                            </p>
-                            <div
-                              className={`submenu relative left-0 top-full rounded-sm bg-white transition-[top] duration-300 lg:w-[250px] lg:p-4 lg:shadow-lg ${
-                                openIndex === index ? "block" : "hidden"
-                              }`}
-                            >
-                              {menuItem.submenu && (
-                                <div>
-                                  {menuItem.submenu.map(
-                                    (submenuItem, index) => (
-                                      <Link
-                                        href={submenuItem.path}
-                                        key={index}
-                                        className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
-                                      >
-                                        {submenuItem.title}
-                                      </Link>
-                                    )
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </div>
-              <div className="flex items-center justify-end pr-16 lg:pr-0">
-                <Link
-                  href="/login"
-                  className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
-                >
-                  Sign In
-                </Link>
-                <div>
-                  <ThemeToggler />
+        {({ open }) => (
+          <>
+            <div className="max-w-full px-2 sm:px-6 lg:px-8">
+              <div className="relative flex h-16 items-center justify-between">
+                <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-neutral-950 hover:bg-[#6686DC] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <span className="absolute -inset-0.5" />
+                    <span className="sr-only">Open main menu</span>
+                    {open ? (
+                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                    )}
+                  </Disclosure.Button>
                 </div>
+                <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                  <div className="flex flex-shrink-0 items-center">
+                    <h1 className="h-8 w-auto select-none lg:ml-1 lg:mb-3">
+                      <Link to="/" className={`header-logo block w-full`}>
+                        <h1 className="items-center font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text md:leading-tight">
+                          FLEETWAVE
+                        </h1>
+                      </Link>
+                    </h1>
+                  </div>
+                  <div className="hidden sm:ml-6 sm:block mt-1">
+                    <div className="flex space-x-4">
+                      {menuData.map((menuItem) => (
+                        <button
+                          key={menuItem.id}
+                          onClick={() => navigate(menuItem.path || "")}
+                          className={`${
+                            menuItem.path === window.location.pathname
+                              ? "bg-[#6686DC] text-neutral-950"
+                              : "text-neutral-950 hover:bg-[#6686DC] hover:text-neutral-950 hover:no-underline"
+                          } rounded-md px-3 py-2 text-50 font-medium focus:outline-none`}
+                        >
+                          {menuItem.title}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <Disclosure.Button className="text-sm ">
+                  <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <Link
+                      to="/login"
+                      className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
+                    >
+                      Sign In
+                    </Link>
+                  </div>
+                  <div className="absolute inset-y-0 right-0 flex font-medium items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <Link to="/login" className=" md:hidden">
+                      Sign In
+                    </Link>
+                  </div>
+                </Disclosure.Button>
               </div>
             </div>
-          </div>
-        </div>
-      </header>
+
+            <Disclosure.Panel className="sm:hidden">
+              <div style={{ display: "inline-flex" }}>
+                {menuData.map((menuItem) => (
+                  <TabGroup>
+                    <Tab
+                      key={menuItem.id}
+                      onClick={() => navigate(menuItem.path || "")}
+                      className={`${
+                        menuItem.path === window.location.pathname
+                          ? "bg text-neutral-950 no-underline"
+                          : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950"
+                      } rounded-md px-3 py-2 text-base font-medium focus:outline-none`}
+                    >
+                      {menuItem.title}
+                    </Tab>
+                  </TabGroup>
+                ))}
+              </div>
+            </Disclosure.Panel>
+          </>
+        )}
+      </Disclosure>
     </>
   );
 };

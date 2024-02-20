@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  SignIn,
-  SignInButton,
-  SignUp,
-} from "@clerk/clerk-react";
-import Overview from "../components/Overview/Overview";
+import { SignIn, SignInButton, SignUp } from "@clerk/clerk-react";
 
 export default function SignInPage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -17,7 +12,9 @@ export default function SignInPage() {
     <>
       <section
         id="home"
-        className={`${isDarkMode ? "dark" : ""} bg-gray-dark relative z-10 overflow-hidden bg-white pb-16 pt-[120px] md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[200px] 2xl:pt-[210px]`}
+        className={`${
+          isDarkMode ? "dark" : ""
+        } bg-gray-dark relative z-10 overflow-hidden bg-white pb-16 pt-[120px] md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[200px] 2xl:pt-[210px]`}
       >
         <div
           style={{
@@ -29,10 +26,9 @@ export default function SignInPage() {
         >
           <SignIn
             path="/login"
-        routing="path"
-        signUpUrl="/sign-up"
-        afterSignInUrl={"dashboard/Overview"}
-        appearance={{
+            signUpUrl="/sign-up"
+            afterSignInUrl={"dashboard/Overview"}
+            appearance={{
               elements: {
                 formButtonPrimary: {
                   backgroundColor: "#7392e9",
@@ -297,4 +293,4 @@ export default function SignInPage() {
       </section>
     </>
   );
-};
+}
