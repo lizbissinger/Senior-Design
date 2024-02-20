@@ -8,6 +8,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Finance from "./Finance/Finance";
 import { UserButton } from "@clerk/clerk-react";
+import DarkModeSwitcher from "./DarkModeSwitcher";
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("");
@@ -107,7 +108,10 @@ const Dashboard: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                <DarkModeSwitcher />
+
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+
                   <button
                     type="button"
                     className="relative rounded-full bg-[#7392e9] p-1 text-neutral-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-900"

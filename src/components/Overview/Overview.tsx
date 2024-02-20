@@ -950,13 +950,8 @@ const Overview: React.FC = () => {
           >
             <div
               className="details-table"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
             >
-              <Table className="table">
+              <Table className="">
                 <TableHead className="sticky-header">
                   <TableRow>
                     <th
