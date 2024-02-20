@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { LoadDetail } from "../Types/types";
@@ -15,12 +15,12 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
     doc.setFontSize(11);
     doc.text(`LOGO?`, 14, 15);
 
-    doc.setTextColor(128, 128, 128); // Gray color
+    doc.setTextColor(128, 128, 128);
     doc.setFontSize(30);
     doc.text("INVOICE", doc.internal.pageSize.width - 15, 20, {
       align: "right",
     });
-    doc.setTextColor(0, 0, 0); // Reset to black
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(11);
 
     // Address on the left side
