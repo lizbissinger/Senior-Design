@@ -13,6 +13,7 @@ import {
 import { LoadDetail } from "../Types/types";
 import CloseButton from "react-bootstrap/CloseButton";
 import MapWithDirections from "./MapWithDirections";
+import "./Overview.css";
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
@@ -37,9 +38,9 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
           <Tab value="1">Load Info</Tab>
           <Tab value="2">Directions</Tab>
         </TabList>
-        <TabPanels className="table">
+        <TabPanels>
           <TabPanel>
-            <List className="">
+            <List className="dark-font">
               <ListItem>
                 <strong>Load Number:</strong> {load?.loadNumber}
               </ListItem>
