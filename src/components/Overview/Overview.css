@@ -116,6 +116,10 @@ h3 {
   color: var(--bs-emphasis-color);
 }
 
+.dark-font {
+  color: var(--bs-emphasis-color);
+}
+
 table {
   margin-top: 0 !important;
 }

@@ -1070,7 +1070,7 @@ const Overview: React.FC = () => {
               </Table>
             </div>
             <div
-              className="load-table table"
+              className="load-table"
               style={{
                 display: selectedLoadNumber ? "block" : "none",
                 width: "37%",
