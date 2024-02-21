@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen">
       <Disclosure as="nav" className="bg-slate-100 sticky top-0 z-50 dark:bg-slate-950">
         {({ open }) => (
           <>
