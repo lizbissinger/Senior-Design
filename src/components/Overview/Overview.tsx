@@ -89,6 +89,8 @@ const Overview: React.FC = () => {
       company: "",
     },
     comments: "",
+    createdAt: "",
+    updatedAt: ""
   });
 
   useEffect(() => {
@@ -278,6 +280,8 @@ const Overview: React.FC = () => {
         company: "",
       },
       comments: "",
+      createdAt: "",
+      updatedAt: ""
     });
     setShowForm(false);
     setIsOpen(false);
@@ -348,6 +352,8 @@ const Overview: React.FC = () => {
         company: "",
       },
       comments: "",
+      createdAt: "",
+      updatedAt: ""
     });
     setFormMode("add");
     setEditableIndex(null);
@@ -511,6 +517,22 @@ const Overview: React.FC = () => {
   const handleCloseDetailsView = () => {
     setSelectedLoadNumber(null);
   };
+
+  const formatTimes = (timestamp: string | undefined): string => {
+    if (!timestamp) return "";
+  
+    const options: Intl.DateTimeFormatOptions = {
+      month: "numeric",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    };
+  
+    return new Date(timestamp).toLocaleString("en-US", options);
+  };
+  
 
   return (
     <div className="overview-container">
@@ -977,12 +999,10 @@ const Overview: React.FC = () => {
                         <div>{load.driverObject}</div>
                       </td>
                       <td className="centered-cell">
-                        <div>{new Date(load.pickupTime).toLocaleString()}</div>
+                        <div>{formatTimes(load.pickupTime)}</div>
                       </td>
                       <td className="centered-cell">
-                        <div>
-                          {new Date(load.deliveryTime).toLocaleString()}
-                        </div>
+                        <div>{formatTimes(load.deliveryTime)}</div>
                       </td>
                       <td className="centered-cell">
                         <div>{load.pickupLocation}</div>
