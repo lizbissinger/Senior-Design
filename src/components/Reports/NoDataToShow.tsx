@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const NoDataToShow: React.FC = () => {
     return (
         <div>
-            <div className="mt-4 flex h-96 items-center justify-center rounded-tremor-small border border-tremor-border bg-tremor-background-muted p-4 dark:border-dark-tremor-border dark:bg-dark-tremor-background-subtle">
+            <div className="mt-4 flex h-96 items-center justify-center rounded-tremor-small border border-tremor-border bg-tremor-background-muted p-4 dark:border-dark-tremor-border dark:bg-slate-900">
                 <div className="text-center">
                 <RiBarChartFill
                     className="mx-auto h-7 w-7 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
