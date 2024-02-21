@@ -17,6 +17,7 @@ import {
   fetchTrailers,
   calculateDistance,
 } from "./OverviewUtils";
+import { fetchDocuments } from "../../routes/documents"; // Adjust the path as needed
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
@@ -47,10 +48,11 @@ import {
 
 import _ from "lodash";
 
-import { LoadDetail } from "../Types/types";
+import { LoadDetail, Document } from "../Types/types";
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
+  const [documents, setDocuments] = useState<Array<any>>([]);
   const [trucks, setTrucks] = useState<string[]>([]);
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -75,7 +77,7 @@ const Overview: React.FC = () => {
     deliveryTime: "",
     pickupLocation: "",
     deliveryLocation: "",
-    documents: "",
+    documents: [],
     price: "",
     detention: "",
     detentionPrice: "",
@@ -266,7 +268,7 @@ const Overview: React.FC = () => {
       deliveryTime: "",
       pickupLocation: "",
       deliveryLocation: "",
-      documents: "",
+      documents: [],
       price: "",
       detention: "",
       detentionPrice: "",
@@ -338,7 +340,7 @@ const Overview: React.FC = () => {
       deliveryTime: "",
       pickupLocation: "",
       deliveryLocation: "",
-      documents: "",
+      documents: [],
       price: "",
       detention: "",
       detentionPrice: "",
@@ -478,7 +480,8 @@ const Overview: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   useEffect(() => {
-    setIsOpen(false);
+    // setIsOpen(false); -commenting this out, there should be no need for this - it's interefering with documents
+    
   }, []);
 
   const getBadgeClass = (status: string) => {
@@ -874,10 +877,10 @@ const Overview: React.FC = () => {
                         id="documents"
                         type="file"
                         placeholder="Documents"
-                        value={newLoad.documents}
-                        onChange={(e) =>
-                          setNewLoad({ ...newLoad, documents: e.target.value })
-                        }
+                        multiple
+                        onChange={(e) => {
+                         
+                        }}
                       />
                     </div>
                   </div>

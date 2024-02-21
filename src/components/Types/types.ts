@@ -8,7 +8,7 @@ export type LoadDetail = {
   deliveryTime: string;
   pickupLocation: string;
   deliveryLocation: string;
-  documents: string;
+  documents: Document[];
   price: string;
   detention: string;
   detentionPrice: string;
@@ -82,4 +82,11 @@ export type Fuel = {
   truckObject: string;
   date: string;
   comments: string;
+}
+
+export type Document = {
+  _id: string;
+  fileName: string;
+  contentType: string;
+  data: string;
 };
