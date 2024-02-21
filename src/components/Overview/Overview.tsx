@@ -5,14 +5,18 @@ const Google_Maps_Api_Key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
-import GetAllLoads, {
+import {
   CreateNewLoad,
   DeleteLoad,
   UpdateLoad,
 } from "../../routes/loadDetails";
-import GetAllDrivers from "../../routes/driverDetails";
-import GetAllTrucks from "../../routes/truckDetails";
-import GetAllTrailers from "../../routes/trailerDetails";
+import {
+  fetchAllLoads,
+  fetchDrivers,
+  fetchTrucks,
+  fetchTrailers,
+  calculateDistance,
+} from "./OverviewUtils";
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
@@ -87,62 +91,55 @@ const Overview: React.FC = () => {
     comments: "",
   });
 
-  const fetchAllLoads = async () => {
-    let allLoads: any = null;
-    allLoads = await GetAllLoads();
-    if (allLoads) {
-      let loadsArr: LoadDetail[] = [];
-      if (Array.isArray(allLoads)) {
-        allLoads.forEach((element) => {
-          let load: LoadDetail = JSON.parse(JSON.stringify(element));
-          loadsArr.push(load);
-        });
-      }
-      setLoadDetails(loadsArr);
-    }
-  };
+  useEffect(() => {
+    const fetchAndSetTrailers = async () => {
+      const fetchedTrailers = await fetchTrailers();
+      setTrailers(fetchedTrailers);
+    };
 
-  const fetchDrivers = async () => {
-    try {
-      const driverList = await GetAllDrivers();
+    const fetchAndSetTrucks = async () => {
+      const fetchedTrucks = await fetchTrucks();
+      setTrucks(fetchedTrucks);
+    };
 
-      if (driverList) {
-        const driverNames = driverList.map((driver) => driver.name);
-        setDrivers(driverNames);
-      }
-    } catch (error) {}
-  };
+    const fetchAndSetDrivers = async () => {
+      const fetchedDrivers = await fetchDrivers();
+      setDrivers(fetchedDrivers);
+    };
 
-  const fetchTrucks = async () => {
-    try {
-      const truckList = await GetAllTrucks();
-
-      if (truckList) {
-        const truckNames = truckList.map((truck) => truck.truckNumber);
-        setTrucks(truckNames);
-      }
-    } catch (error) {}
-  };
-
-  const fetchTrailers = async () => {
-    try {
-      const trailerList = await GetAllTrailers();
-
-      if (trailerList) {
-        const trailerNames = trailerList.map(
-          (trailer) => trailer.trailerNumber
-        );
-        setTrailers(trailerNames);
-      }
-    } catch (error) {}
-  };
+    const fetchAndSetAllLoads = async () => {
+      const loads = await fetchAllLoads();
+      setLoadDetails(loads);
+    };
+    fetchAndSetTrailers();
+    fetchAndSetTrucks();
+    fetchAndSetDrivers();
+    fetchAndSetAllLoads();
+  }, []);
 
   useEffect(() => {
-    fetchTrucks();
-    fetchTrailers();
-    fetchDrivers();
-    fetchAllLoads();
-  }, []);
+    const handleDistanceCalculation = async () => {
+      if (newLoad.pickupLocation && newLoad.deliveryLocation) {
+        try {
+          const distanceMiles = await calculateDistance(
+            newLoad.pickupLocation,
+            newLoad.deliveryLocation
+          );
+          setNewLoad((prevState) => ({
+            ...prevState,
+            allMiles: distanceMiles,
+          }));
+        } catch (error) {
+          console.error(error);
+          setNewLoad((prevState) => ({
+            ...prevState,
+            allMiles: "",
+          }));
+        }
+      }
+    };
+    handleDistanceCalculation();
+  }, [newLoad.pickupLocation, newLoad.deliveryLocation]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -161,41 +158,6 @@ const Overview: React.FC = () => {
 
     return () => clearInterval(loadingInterval);
   }, []);
-
-  useEffect(() => {
-    if (newLoad.pickupLocation && newLoad.deliveryLocation) {
-      calculateDistance();
-    }
-  }, [newLoad.pickupLocation, newLoad.deliveryLocation]);
-
-  const calculateDistance = async () => {
-    if (newLoad.pickupLocation && newLoad.deliveryLocation) {
-      const service = new google.maps.DistanceMatrixService();
-      service.getDistanceMatrix(
-  {
-    origins: [newLoad.pickupLocation],
-    destinations: [newLoad.deliveryLocation],
-    travelMode: google.maps.TravelMode.DRIVING,
-  },
-  (response: google.maps.DistanceMatrixResponse | null, status: google.maps.DistanceMatrixStatus) => {
-    if (status === "OK" && response && response.rows[0].elements[0].status === "OK") {
-      const distanceMeters = response.rows[0].elements[0].distance.value;
-      const distanceMiles = (distanceMeters * 0.000621371).toFixed(1);
-      setNewLoad((prevState) => ({
-        ...prevState,
-        allMiles: distanceMiles.toString(),
-      }));
-    } else {
-      console.error("Failed to fetch distance:", status);
-      setNewLoad((prevState) => ({
-        ...prevState,
-        allMiles: "",
-      }));
-    }
-  }
-);
-    }
-  };
 
   const [sortConfig, setSortConfig] = useState<{
     key: string;
@@ -948,9 +910,7 @@ const Overview: React.FC = () => {
               !selectedLoadNumber ? "hidden" : ""
             }`}
           >
-            <div
-              className="details-table"
-            >
+            <div className="details-table">
               <Table className="">
                 <TableHead className="sticky-header">
                   <TableRow>
@@ -959,7 +919,7 @@ const Overview: React.FC = () => {
                       onClick={() => requestSort("loadNumber")}
                     >
                       {" "}
-                      Load {" "}
+                      Load{" "}
                       {sortConfig.key === "loadNumber" &&
                       sortConfig.direction === "asc"
                         ? "▲"
