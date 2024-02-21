@@ -1041,7 +1041,7 @@ const Overview: React.FC = () => {
                                   setEditingLoadIndex(null);
                                 }}
                               >
-                                <SelectItem value="To Do" />
+                                <SelectItem value="To-Do" />
                                 <SelectItem value="In Progress" />
                                 <SelectItem value="Completed" />
                                 <SelectItem value="Not Invoiced" />
