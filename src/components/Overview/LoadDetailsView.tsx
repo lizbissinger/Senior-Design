@@ -10,9 +10,10 @@ import {
   ListItem,
   TabPanels,
 } from "@tremor/react";
-import { LoadDetail } from "../Types/types";
 import CloseButton from "react-bootstrap/CloseButton";
 import MapWithDirections from "./MapWithDirections";
+import "./Overview.css";
+import { LoadDetail } from "../Types/types"; // Make sure to import your LoadDetail type
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
@@ -29,6 +30,20 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
     setShowMap(false);
   };
 
+  const formatDetailTimes = (timestamp: string | undefined) => {
+    if (!timestamp) return "";
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: "America/New_York",
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    return new Date(timestamp).toLocaleString("en-US", options);
+  }; 
+
   return (
     <Card decoration="left" decorationColor="blue" className="">
       <CloseButton onClick={onClose} className="mb-1 main-button"></CloseButton>
@@ -37,9 +52,9 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
           <Tab value="1">Load Info</Tab>
           <Tab value="2">Directions</Tab>
         </TabList>
-        <TabPanels className="table">
+        <TabPanels>
           <TabPanel>
-            <List className="">
+            <List className="dark-font">
               <ListItem>
                 <strong>Load Number:</strong> {load?.loadNumber}
               </ListItem>
@@ -62,10 +77,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
                 <strong>Driver:</strong> {load?.driverObject}
               </ListItem>
               <ListItem>
-                <strong>Pickup Time:</strong> {load?.pickupTime}
+                <strong>Pickup Time:</strong> {formatDetailTimes(load?.pickupTime)}
               </ListItem>
               <ListItem>
-                <strong>Delivery Time:</strong> {load?.deliveryTime}
+                <strong>Delivery Time:</strong> {formatDetailTimes(load?.deliveryTime)}
               </ListItem>
               <ListItem>
                 <strong>Pickup Location:</strong> {load?.pickupLocation}
@@ -81,6 +96,12 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
               </ListItem>
               <ListItem>
                 <strong>Fuel (Gallons):</strong> {load?.fuelGallons}
+              </ListItem>
+              <ListItem>
+                <strong>Created At:</strong> {formatDetailTimes(load?.createdAt)}
+              </ListItem>
+              <ListItem>
+                <strong>Last Updated At:</strong> {formatDetailTimes(load?.updatedAt)}
               </ListItem>
             </List>
           </TabPanel>

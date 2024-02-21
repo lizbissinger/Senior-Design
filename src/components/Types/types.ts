@@ -22,6 +22,8 @@ export type LoadDetail = {
     company: string;
   };
   comments: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type TruckDetail = {

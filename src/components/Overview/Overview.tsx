@@ -5,14 +5,18 @@ const Google_Maps_Api_Key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
-import GetAllLoads, {
+import {
   CreateNewLoad,
   DeleteLoad,
   UpdateLoad,
 } from "../../routes/loadDetails";
-import GetAllDrivers from "../../routes/driverDetails";
-import GetAllTrucks from "../../routes/truckDetails";
-import GetAllTrailers from "../../routes/trailerDetails";
+import {
+  fetchAllLoads,
+  fetchDrivers,
+  fetchTrucks,
+  fetchTrailers,
+  calculateDistance,
+} from "./OverviewUtils";
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
@@ -85,64 +89,59 @@ const Overview: React.FC = () => {
       company: "",
     },
     comments: "",
+    createdAt: "",
+    updatedAt: "",
   });
 
-  const fetchAllLoads = async () => {
-    let allLoads: any = null;
-    allLoads = await GetAllLoads();
-    if (allLoads) {
-      let loadsArr: LoadDetail[] = [];
-      if (Array.isArray(allLoads)) {
-        allLoads.forEach((element) => {
-          let load: LoadDetail = JSON.parse(JSON.stringify(element));
-          loadsArr.push(load);
-        });
-      }
-      setLoadDetails(loadsArr);
-    }
-  };
+  useEffect(() => {
+    const fetchAndSetTrailers = async () => {
+      const fetchedTrailers = await fetchTrailers();
+      setTrailers(fetchedTrailers);
+    };
 
-  const fetchDrivers = async () => {
-    try {
-      const driverList = await GetAllDrivers();
+    const fetchAndSetTrucks = async () => {
+      const fetchedTrucks = await fetchTrucks();
+      setTrucks(fetchedTrucks);
+    };
 
-      if (driverList) {
-        const driverNames = driverList.map((driver) => driver.name);
-        setDrivers(driverNames);
-      }
-    } catch (error) {}
-  };
+    const fetchAndSetDrivers = async () => {
+      const fetchedDrivers = await fetchDrivers();
+      setDrivers(fetchedDrivers);
+    };
 
-  const fetchTrucks = async () => {
-    try {
-      const truckList = await GetAllTrucks();
-
-      if (truckList) {
-        const truckNames = truckList.map((truck) => truck.truckNumber);
-        setTrucks(truckNames);
-      }
-    } catch (error) {}
-  };
-
-  const fetchTrailers = async () => {
-    try {
-      const trailerList = await GetAllTrailers();
-
-      if (trailerList) {
-        const trailerNames = trailerList.map(
-          (trailer) => trailer.trailerNumber
-        );
-        setTrailers(trailerNames);
-      }
-    } catch (error) {}
-  };
+    const fetchAndSetAllLoads = async () => {
+      const loads = await fetchAllLoads();
+      setLoadDetails(loads);
+    };
+    fetchAndSetTrailers();
+    fetchAndSetTrucks();
+    fetchAndSetDrivers();
+    fetchAndSetAllLoads();
+  }, []);
 
   useEffect(() => {
-    fetchTrucks();
-    fetchTrailers();
-    fetchDrivers();
-    fetchAllLoads();
-  }, []);
+    const handleDistanceCalculation = async () => {
+      if (newLoad.pickupLocation && newLoad.deliveryLocation) {
+        try {
+          const distanceMiles = await calculateDistance(
+            newLoad.pickupLocation,
+            newLoad.deliveryLocation
+          );
+          setNewLoad((prevState) => ({
+            ...prevState,
+            allMiles: distanceMiles,
+          }));
+        } catch (error) {
+          console.error(error);
+          setNewLoad((prevState) => ({
+            ...prevState,
+            allMiles: "",
+          }));
+        }
+      }
+    };
+    handleDistanceCalculation();
+  }, [newLoad.pickupLocation, newLoad.deliveryLocation]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -161,41 +160,6 @@ const Overview: React.FC = () => {
 
     return () => clearInterval(loadingInterval);
   }, []);
-
-  useEffect(() => {
-    if (newLoad.pickupLocation && newLoad.deliveryLocation) {
-      calculateDistance();
-    }
-  }, [newLoad.pickupLocation, newLoad.deliveryLocation]);
-
-  const calculateDistance = async () => {
-    if (newLoad.pickupLocation && newLoad.deliveryLocation) {
-      const service = new google.maps.DistanceMatrixService();
-      service.getDistanceMatrix(
-  {
-    origins: [newLoad.pickupLocation],
-    destinations: [newLoad.deliveryLocation],
-    travelMode: google.maps.TravelMode.DRIVING,
-  },
-  (response: google.maps.DistanceMatrixResponse | null, status: google.maps.DistanceMatrixStatus) => {
-    if (status === "OK" && response && response.rows[0].elements[0].status === "OK") {
-      const distanceMeters = response.rows[0].elements[0].distance.value;
-      const distanceMiles = (distanceMeters * 0.000621371).toFixed(1);
-      setNewLoad((prevState) => ({
-        ...prevState,
-        allMiles: distanceMiles.toString(),
-      }));
-    } else {
-      console.error("Failed to fetch distance:", status);
-      setNewLoad((prevState) => ({
-        ...prevState,
-        allMiles: "",
-      }));
-    }
-  }
-);
-    }
-  };
 
   const [sortConfig, setSortConfig] = useState<{
     key: string;
@@ -316,6 +280,8 @@ const Overview: React.FC = () => {
         company: "",
       },
       comments: "",
+      createdAt: "",
+      updatedAt: "",
     });
     setShowForm(false);
     setIsOpen(false);
@@ -386,6 +352,8 @@ const Overview: React.FC = () => {
         company: "",
       },
       comments: "",
+      createdAt: "",
+      updatedAt: "",
     });
     setFormMode("add");
     setEditableIndex(null);
@@ -550,6 +518,21 @@ const Overview: React.FC = () => {
     setSelectedLoadNumber(null);
   };
 
+  const formatTimes = (timestamp: string | undefined): string => {
+    if (!timestamp) return "";
+
+    const options: Intl.DateTimeFormatOptions = {
+      month: "numeric",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    };
+
+    return new Date(timestamp).toLocaleString("en-US", options);
+  };
+
   return (
     <div className="overview-container">
       {isLoading ? (
@@ -599,13 +582,13 @@ const Overview: React.FC = () => {
           <>
             <div className="main-buttons">
               <DateRangePicker
-                className="DateRangePicker mr-2 max-w-md"
+                className="main-search DateRangePicker mr-2 max-w-md"
                 onValueChange={handleDateRangeChange}
               />
               <SearchSelect
                 placeholder="Search Load..."
                 onValueChange={handleSearchSelectChange}
-                className="mr-2"
+                className="main-search mr-2"
               >
                 {filteredLoads.map((load) => (
                   <SearchSelectItem
@@ -629,7 +612,7 @@ const Overview: React.FC = () => {
                 <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
                   Load Information
                 </h3>
-                <form className="mt-8">
+                <form onSubmit={handleFormSubmit} className="mt-8">
                   <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="col-span-full sm:col-span-3">
                       <label
@@ -647,6 +630,14 @@ const Overview: React.FC = () => {
                           setNewLoad({ ...newLoad, loadNumber: e.target.value })
                         }
                         required
+                        onInvalid={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity(
+                            "Please enter the load number."
+                          )
+                        }
+                        onInput={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity("")
+                        }
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
@@ -707,6 +698,14 @@ const Overview: React.FC = () => {
                           setNewLoad({ ...newLoad, price: e.target.value })
                         }
                         required
+                        onInvalid={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity(
+                            "Please enter the price."
+                          )
+                        }
+                        onInput={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity("")
+                        }
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
@@ -743,6 +742,15 @@ const Overview: React.FC = () => {
                         onChange={(e) =>
                           setNewLoad({ ...newLoad, allMiles: e.target.value })
                         }
+                        required
+                        onInvalid={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity(
+                            "Please enter the miles."
+                          )
+                        }
+                        onInput={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity("")
+                        }
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
@@ -762,7 +770,6 @@ const Overview: React.FC = () => {
                             fuelGallons: e.target.value,
                           })
                         }
-                        required
                       />
                     </div>
 
@@ -928,7 +935,6 @@ const Overview: React.FC = () => {
                         Cancel
                       </button>
                       <button
-                        onClick={handleFormSubmit}
                         type="submit"
                         className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
                       >
@@ -948,9 +954,7 @@ const Overview: React.FC = () => {
               !selectedLoadNumber ? "hidden" : ""
             }`}
           >
-            <div
-              className="details-table"
-            >
+            <div className="details-table">
               <Table className="">
                 <TableHead className="sticky-header">
                   <TableRow>
@@ -959,7 +963,7 @@ const Overview: React.FC = () => {
                       onClick={() => requestSort("loadNumber")}
                     >
                       {" "}
-                      Load {" "}
+                      Load{" "}
                       {sortConfig.key === "loadNumber" &&
                       sortConfig.direction === "asc"
                         ? "▲"
@@ -1017,12 +1021,10 @@ const Overview: React.FC = () => {
                         <div>{load.driverObject}</div>
                       </td>
                       <td className="centered-cell">
-                        <div>{new Date(load.pickupTime).toLocaleString()}</div>
+                        <div>{formatTimes(load.pickupTime)}</div>
                       </td>
                       <td className="centered-cell">
-                        <div>
-                          {new Date(load.deliveryTime).toLocaleString()}
-                        </div>
+                        <div>{formatTimes(load.deliveryTime)}</div>
                       </td>
                       <td className="centered-cell">
                         <div>{load.pickupLocation}</div>
@@ -1061,7 +1063,7 @@ const Overview: React.FC = () => {
                                   setEditingLoadIndex(null);
                                 }}
                               >
-                                <SelectItem value="To Do" />
+                                <SelectItem value="To-Do" />
                                 <SelectItem value="In Progress" />
                                 <SelectItem value="Completed" />
                                 <SelectItem value="Not Invoiced" />
@@ -1110,7 +1112,7 @@ const Overview: React.FC = () => {
               </Table>
             </div>
             <div
-              className="load-table table"
+              className="load-table"
               style={{
                 display: selectedLoadNumber ? "block" : "none",
                 width: "37%",
