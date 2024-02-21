@@ -66,11 +66,18 @@ export type RepairDetail = {
   repairComments: string;
 };
 
-
 export type PayrollDetail = {
   _id: string;
   driver: string;
   payrollDate: string;
   payrollCost: string;
  
+};
+
+export type Fuel = {
+  _id: string;
+  cost: string;
+  truckObject: string;
+  date: string;
+  comments: string;
 };
