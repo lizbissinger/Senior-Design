@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <Disclosure as="nav" className="bg-[#7392e9] sticky top-0 z-50">
+      <Disclosure as="nav" className="bg-slate-100 sticky top-0 z-50">
         {({ open }) => (
           <>
             <div className="max-w-200xl px-2 sm:px-6 lg:px-8">
@@ -70,6 +70,7 @@ const Dashboard: React.FC = () => {
                       <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                     )}
                   </Disclosure.Button>
+                  <DarkModeSwitcher />
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
