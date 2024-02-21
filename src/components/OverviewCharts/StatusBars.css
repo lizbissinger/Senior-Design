@@ -30,3 +30,15 @@
     margin-top: 5px;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .dark .status-boxes {
+    gap: 20px;
+  }
+
+  .dark .status-bar-active,
+  .dark .status-bar:hover {
+    background-color: #2d2d2d;
+    color: #ffffff;
+  }
+}

@@ -112,6 +112,14 @@ h3 {
   height: 80vh;
 }
 
+.details-table table, thead {
+  color: var(--bs-emphasis-color);
+}
+
+.dark-font {
+  color: var(--bs-emphasis-color);
+}
+
 table {
   margin-top: 0 !important;
 }
@@ -185,7 +193,7 @@ table th{
 .main-buttons {
   display: flex;
   justify-content: flex-start;
-  gap: 2px;
+  gap: 5px;
 }
 
 @media screen and (max-width: 768px) {
@@ -208,6 +216,10 @@ table th{
   .main-buttons {
     display: block;
     justify-content: flex-start;
+  }
+
+  .main-search {
+    margin-bottom: 10px;
   }
 }
 

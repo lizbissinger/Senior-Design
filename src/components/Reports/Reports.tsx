@@ -15,7 +15,7 @@ import NoDataToShow from "./NoDataToShow";
 import SparkChartKPICard from "./SparkChartKPICard";
 import GetAllDrivers from "../../routes/driverDetails";
 import GetAllRevenueData from '../../routes/reports';
-import { GetRevenuePerMileData, GetNumberOfMiles } from "../../routes/reports";
+import { GetRevenuePerMileData, GetNumberOfMiles, GetLoadCount } from "../../routes/reports";
 
 const Reports: React.FC = () => {
   const [driver, setDriver] = useState("");
@@ -31,6 +31,8 @@ const Reports: React.FC = () => {
   const [revenuePerMileKpiCardData, setRevenuePerMileKpiCardData] = useState<any>({});
   const [totalMilesChartData, setTotalMilesChartData] = useState<Object[]>([]);
   const [totalMilesKpiCardData, setTotalMilesKpiCardData] = useState<any>({});
+  const [totalLoadsChartData, setTotalLoadsChartData] = useState<Object[]>([]);
+  const [totalLoadsKpiCardData, setTotalLoadsKpiCardData] = useState<any>({});
   const [categories, setCategories] = useState<string[]>(["Cumulative"]);
   const [barChartToolTip, setBarChartToolTip] = useState(null);
   
@@ -122,11 +124,40 @@ const Reports: React.FC = () => {
     } catch (error) {}
   };
 
+  const fetchLoadCountChartData = async () => {
+    try {
+      const loadCountData = await GetLoadCount(driver, date);
+
+      if (loadCountData) {
+        setTotalLoadsChartData(loadCountData);
+
+        const first_value = loadCountData[0].loadCount;
+        const last_value = loadCountData[loadCountData.length-1].loadCount;
+        const _change = Math.round(((last_value - first_value) / last_value) * 100);
+        const change = _change > 0 ? `+${_change}%` : `${_change}%`;
+        const changeType = _change > 0 ? "positive" : "negative";
+        let value = 0;
+        loadCountData.map((r:any) => {
+          value = value + r.loadCount;
+        });
+
+        const kpiCardData = {
+          name: 'Total loads',
+          value: value,
+          change: change,
+          changeType: changeType,
+        };
+        setTotalLoadsKpiCardData(kpiCardData);
+      }
+    } catch (error) {}
+  };
+
   useEffect(() => {
     fetchAllDrivers();
     fetchRevenueOverTimeChartData();
     fetchRevenuePerMileChartData();
     fetchNumberOfMilesChartData();
+    fetchLoadCountChartData();
   }, [driver, date]);
 
   function classNames(...classes: string[]) {
@@ -166,25 +197,6 @@ const Reports: React.FC = () => {
     },
   ];
 
-  const kpiCardData1 = {
-    name: 'Recurring revenue',
-    value: '$34.1K',
-    change: '+6.1%',
-    changeType: 'positive',
-  };  
-  const kpiCardData2 = {
-    name: 'Total users',
-    value: '500.1K',
-    change: '+19.2%',
-    changeType: 'positive',
-  };  
-  const kpiCardData3 = {
-    name: 'User growth',
-    value: '11.3%',
-    change: '-1.2%',
-    changeType: 'negative',
-  };  
-
   return (
     <div>
       <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
@@ -204,31 +216,10 @@ const Reports: React.FC = () => {
               <Title>Revenue Over Time</Title>
               <TabGroup>
                 <TabList>
-                  <Tab icon={PresentationChartLineIcon}></Tab>
                   <Tab icon={ChartBarIcon}></Tab>
+                  <Tab icon={PresentationChartLineIcon}></Tab>
                 </TabList>
                 <TabPanels>
-                  <TabPanel>
-                    { revenueOverTimeChartData.length > 0 ? 
-                      <div>
-                        <AreaChart
-                          className="h-96 mt-4"
-                          data={revenueOverTimeChartData}
-                          index="date"
-                          yAxisWidth={65}
-                          categories={categories}
-                          colors={["indigo-400"]}
-                          valueFormatter={valueFormatter}
-                          showAnimation={true}
-                          animationDuration={1500}
-                          curveType="monotone"
-                        />
-                        <div className="h-2"></div>
-                      </div>
-                      :
-                      <NoDataToShow />
-                    }
-                  </TabPanel>
                   <TabPanel>
                     { revenueOverTimeChartData.length > 0 ? 
                       <div>
@@ -243,6 +234,27 @@ const Reports: React.FC = () => {
                           showAnimation={true}
                           animationDuration={1500}
                           onValueChange={(v:any) => setBarChartToolTip(v)}
+                        />
+                        <div className="h-2"></div>
+                      </div>
+                      :
+                      <NoDataToShow />
+                    }
+                  </TabPanel>
+                  <TabPanel>
+                    { revenueOverTimeChartData.length > 0 ? 
+                      <div>
+                        <AreaChart
+                          className="h-96 mt-4"
+                          data={revenueOverTimeChartData}
+                          index="date"
+                          yAxisWidth={65}
+                          categories={categories}
+                          colors={["indigo-400"]}
+                          valueFormatter={valueFormatter}
+                          showAnimation={true}
+                          animationDuration={1500}
+                          curveType="monotone"
                         />
                         <div className="h-2"></div>
                       </div>
@@ -303,7 +315,7 @@ const Reports: React.FC = () => {
         </Card>
         <SparkChartKPICard kpiCardData={revenuePerMileKpiCardData} chartData={revenuePerMileChartData} categories={["revenuePerMile"]} />
         <SparkChartKPICard kpiCardData={totalMilesKpiCardData} chartData={totalMilesChartData} categories={["miles"]} />
-        <SparkChartKPICard kpiCardData={kpiCardData3} chartData={revenueOverTimeChartData} categories={categories} />
+        <SparkChartKPICard kpiCardData={totalLoadsKpiCardData} chartData={totalLoadsChartData} categories={["loadCount"]} />
       </Grid>
     </div>
   );
