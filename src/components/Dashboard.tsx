@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
       <div className="bg-slate-100 sticky top-0 z-50 dark:bg-slate-950">
         <div className="max-w-200xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between">
