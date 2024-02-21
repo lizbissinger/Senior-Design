@@ -140,7 +140,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
         </TabList>
         <TabPanels>
           <TabPanel>
-            <div className="table">
+            <div className="fleet-tables">
               <Card>
                 <Title>Drivers</Title>
                 <MultiSelect
@@ -199,7 +199,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
             </div>
           </TabPanel>
           <TabPanel>
-            <div className="table">
+            <div  className="fleet-tables">
               <Card>
                 <Title>Trucks</Title>
                 <MultiSelect
@@ -256,7 +256,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
             </div>
           </TabPanel>
           <TabPanel>
-            <div className="table">
+            <div  className="fleet-tables">
               <Card>
                 <Title>Trailers</Title>
                 <MultiSelect
