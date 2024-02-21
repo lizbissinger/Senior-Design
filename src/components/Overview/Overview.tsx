@@ -561,13 +561,13 @@ const Overview: React.FC = () => {
           <>
             <div className="main-buttons">
               <DateRangePicker
-                className="DateRangePicker mr-2 max-w-md"
+                className="main-search DateRangePicker mr-2 max-w-md"
                 onValueChange={handleDateRangeChange}
               />
               <SearchSelect
                 placeholder="Search Load..."
                 onValueChange={handleSearchSelectChange}
-                className="mr-2"
+                className="main-search mr-2"
               >
                 {filteredLoads.map((load) => (
                   <SearchSelectItem
