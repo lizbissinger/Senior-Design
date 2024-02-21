@@ -11,6 +11,13 @@ import { UserButton } from "@clerk/clerk-react";
 import DarkModeSwitcher from "./DarkModeSwitcher";
 
 const Dashboard: React.FC = () => {
+  const logoText = "FLEETWAVE"; 
+
+  useEffect(() => {
+    
+    localStorage.setItem("logoText", logoText);
+  }, []);
+
   const [activeTab, setActiveTab] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -74,7 +81,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
-                    <h1 className="h-8 w-auto select-none ml-1 mb-3">
+                    <h1 className="h-8 w-auto select-none logo-text">
                       <Link
                         to="/dashboard/overview"
                         className="no-underline text-neutral-900 hover:text-neutral-900 hover:no-underline"
@@ -82,7 +89,7 @@ const Dashboard: React.FC = () => {
                           setActiveTab("Overview");
                         }}
                       >
-                        FLEETWAVE
+                        <span>{logoText}</span>
                       </Link>
                     </h1>
                   </div>
