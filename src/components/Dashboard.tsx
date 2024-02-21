@@ -55,13 +55,13 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <Disclosure as="nav" className="bg-slate-100 sticky top-0 z-50">
+      <Disclosure as="nav" className="bg-slate-100 sticky top-0 z-50 dark:bg-slate-950">
         {({ open }) => (
           <>
             <div className="max-w-200xl px-2 sm:px-6 lg:px-8">
               <div className="relative flex h-16 items-center justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-neutral-950 hover:bg-[#6686DC] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-neutral-950 hover:bg-[#6686DC] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:text-white">
                     <span className="absolute -inset-0.5" />
                     <span className="sr-only">Open main menu</span>
                     {open ? (
@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
                     <h1 className="h-8 w-auto select-none ml-1 mb-3">
                       <Link
                         to="/dashboard/overview"
-                        className="no-underline text-neutral-900 hover:text-neutral-900 hover:no-underline"
+                        className="no-underline text-neutral-900 hover:text-neutral-900 hover:no-underline dark:text-white"
                         onClick={() => {
                           setActiveTab("Overview");
                         }}
@@ -99,7 +99,7 @@ const Dashboard: React.FC = () => {
                           className={classNames(
                             item.current
                               ? "bg-[#6686DC] text-neutral-950 no-underline hover:text-neutral-950"
-                              : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:text-neutral-950 hover:no-underline",
+                              : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:text-neutral-950 hover:no-underline dark:text-white dark:hover:text-neutral-950",
                             "rounded-md px-3 py-2 text-50 font-medium"
                           )}
                         >
@@ -195,7 +195,7 @@ const Dashboard: React.FC = () => {
                     className={classNames(
                       item.current
                         ? "bg-[#6686DC] text-neutral-950 no-underline"
-                        : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950",
+                        : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950 dark:text-white dark:hover:text-neutral-950",
                       "block rounded-md px-3 py-2 text-base font-medium"
                     )}
                   >
