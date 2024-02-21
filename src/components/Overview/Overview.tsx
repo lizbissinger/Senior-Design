@@ -90,7 +90,7 @@ const Overview: React.FC = () => {
     },
     comments: "",
     createdAt: "",
-    updatedAt: ""
+    updatedAt: "",
   });
 
   useEffect(() => {
@@ -281,7 +281,7 @@ const Overview: React.FC = () => {
       },
       comments: "",
       createdAt: "",
-      updatedAt: ""
+      updatedAt: "",
     });
     setShowForm(false);
     setIsOpen(false);
@@ -353,7 +353,7 @@ const Overview: React.FC = () => {
       },
       comments: "",
       createdAt: "",
-      updatedAt: ""
+      updatedAt: "",
     });
     setFormMode("add");
     setEditableIndex(null);
@@ -520,7 +520,7 @@ const Overview: React.FC = () => {
 
   const formatTimes = (timestamp: string | undefined): string => {
     if (!timestamp) return "";
-  
+
     const options: Intl.DateTimeFormatOptions = {
       month: "numeric",
       day: "numeric",
@@ -529,10 +529,9 @@ const Overview: React.FC = () => {
       minute: "numeric",
       hour12: true,
     };
-  
+
     return new Date(timestamp).toLocaleString("en-US", options);
   };
-  
 
   return (
     <div className="overview-container">
@@ -613,7 +612,7 @@ const Overview: React.FC = () => {
                 <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
                   Load Information
                 </h3>
-                <form className="mt-8">
+                <form onSubmit={handleFormSubmit} className="mt-8">
                   <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="col-span-full sm:col-span-3">
                       <label
@@ -631,6 +630,14 @@ const Overview: React.FC = () => {
                           setNewLoad({ ...newLoad, loadNumber: e.target.value })
                         }
                         required
+                        onInvalid={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity(
+                            "Please enter the load number."
+                          )
+                        }
+                        onInput={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity("")
+                        }
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
@@ -691,6 +698,14 @@ const Overview: React.FC = () => {
                           setNewLoad({ ...newLoad, price: e.target.value })
                         }
                         required
+                        onInvalid={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity(
+                            "Please enter the price."
+                          )
+                        }
+                        onInput={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity("")
+                        }
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
@@ -727,6 +742,15 @@ const Overview: React.FC = () => {
                         onChange={(e) =>
                           setNewLoad({ ...newLoad, allMiles: e.target.value })
                         }
+                        required
+                        onInvalid={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity(
+                            "Please enter the miles."
+                          )
+                        }
+                        onInput={(e) =>
+                          (e.target as HTMLInputElement).setCustomValidity("")
+                        }
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
@@ -746,7 +770,6 @@ const Overview: React.FC = () => {
                             fuelGallons: e.target.value,
                           })
                         }
-                        required
                       />
                     </div>
 
@@ -912,7 +935,6 @@ const Overview: React.FC = () => {
                         Cancel
                       </button>
                       <button
-                        onClick={handleFormSubmit}
                         type="submit"
                         className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
                       >
