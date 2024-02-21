@@ -2,25 +2,24 @@ import React, { useEffect } from 'react';
 import "./Reports.css";
 import {
   Card, Grid, Col,
-  AreaChart, BarChart, DonutChart, SparkAreaChart,
+  AreaChart, BarChart, DonutChart,
   Title,
   DateRangePicker, DateRangePickerValue,
   SearchSelect, SearchSelectItem,
-  Divider,
   Tab, TabGroup, TabList, TabPanel, TabPanels,
   List, ListItem
 } from "@tremor/react";
 import { useState } from "react";
 import{ UserIcon, PresentationChartLineIcon, ChartBarIcon } from "@heroicons/react/24/solid";
 import NoDataToShow from "./NoDataToShow";
+import SparkChartKPICard from "./SparkChartKPICard";
 import GetAllDrivers from "../../routes/driverDetails";
 import GetAllRevenueData from '../../routes/reports';
-import GetAllLoads from "../../routes/loadDetails";
+import { GetRevenuePerMileData, GetNumberOfMiles } from "../../routes/reports";
 
 const Reports: React.FC = () => {
   const [driver, setDriver] = useState("");
   const [drivers, setDrivers] = useState<string[]>([]);
-  const [allLoads, setAllLoads] = useState(null);
   const fromDate = new Date();
   fromDate.setDate(fromDate.getDate() - 30)
   const [date, setDate] = useState<DateRangePickerValue>({
@@ -28,14 +27,15 @@ const Reports: React.FC = () => {
     from: fromDate
   });
   const [revenueOverTimeChartData, setRevenueOverTimeChartData] = useState([]);
+  const [revenuePerMileChartData, setRevenuePerMileChartData] = useState<Object[]>([]);
+  const [revenuePerMileKpiCardData, setRevenuePerMileKpiCardData] = useState<any>({});
+  const [totalMilesChartData, setTotalMilesChartData] = useState<Object[]>([]);
+  const [totalMilesKpiCardData, setTotalMilesKpiCardData] = useState<any>({});
   const [categories, setCategories] = useState<string[]>(["Cumulative"]);
   const [barChartToolTip, setBarChartToolTip] = useState(null);
   
   const valueFormatter = function (number:number) {
     return "$ " + new Intl.NumberFormat("us").format(number).toString();
-  };
-  const currencyFormatter = (number:number) => {
-    return '$' + Intl.NumberFormat('us').format(number).toString();
   };
 
   const fetchAllDrivers = async () => {
@@ -45,16 +45,6 @@ const Reports: React.FC = () => {
       if (driverList) {
         const driverNames = driverList.map((driver) => driver.name);
         setDrivers(driverNames);
-      }
-    } catch (error) {}
-  };
-
-  const fetchAllLoads = async () => {
-    try {
-      const loads = await GetAllLoads();
-
-      if (loads) {
-        setAllLoads(loads);
       }
     } catch (error) {}
   };
@@ -74,13 +64,69 @@ const Reports: React.FC = () => {
     } catch (error) {}
   };
 
-  useEffect(() => {
-    fetchAllLoads();
-  }, []);
+  const fetchRevenuePerMileChartData = async () => {
+    try {
+      const driverRevenuePerMileData = await GetRevenuePerMileData(driver, date);
+
+      if (driverRevenuePerMileData) {
+        setRevenuePerMileChartData(driverRevenuePerMileData);
+
+        const first_value = driverRevenuePerMileData[0].revenuePerMile;
+        const last_value = driverRevenuePerMileData[driverRevenuePerMileData.length-1].revenuePerMile;
+        const _change = Math.round(((last_value - first_value) / last_value) * 100);
+        const change = _change > 0 ? `+${_change}%` : `${_change}%`;
+        const changeType = _change > 0 ? "positive" : "negative";
+        let revenue = 0;
+        let miles = 0;
+        driverRevenuePerMileData.map((r:any) => {
+          revenue = revenue + r.revenue;
+          miles = miles + r.miles;
+        });
+
+        const kpiCardData = {
+          name: 'Revenue per mile',
+          value: valueFormatter(Math.round(((revenue / miles) + Number.EPSILON) * 100) / 100),
+          change: change,
+          changeType: changeType,
+        };
+        setRevenuePerMileKpiCardData(kpiCardData);
+      }
+    } catch (error) {}
+  };
+
+  const fetchNumberOfMilesChartData = async () => {
+    try {
+      const driverNumberOfMilesData = await GetNumberOfMiles(driver, date);
+
+      if (driverNumberOfMilesData) {
+        setTotalMilesChartData(driverNumberOfMilesData);
+
+        const first_value = driverNumberOfMilesData[0].miles;
+        const last_value = driverNumberOfMilesData[driverNumberOfMilesData.length-1].miles;
+        const _change = Math.round(((last_value - first_value) / last_value) * 100);
+        const change = _change > 0 ? `+${_change}%` : `${_change}%`;
+        const changeType = _change > 0 ? "positive" : "negative";
+        let value = 0;
+        driverNumberOfMilesData.map((r:any) => {
+          value = value + r.miles;
+        });
+
+        const kpiCardData = {
+          name: 'Total miles',
+          value: Math.round(value * 10) / 10,
+          change: change,
+          changeType: changeType,
+        };
+        setTotalMilesKpiCardData(kpiCardData);
+      }
+    } catch (error) {}
+  };
 
   useEffect(() => {
     fetchAllDrivers();
     fetchRevenueOverTimeChartData();
+    fetchRevenuePerMileChartData();
+    fetchNumberOfMilesChartData();
   }, [driver, date]);
 
   function classNames(...classes: string[]) {
@@ -219,7 +265,7 @@ const Reports: React.FC = () => {
               data={data}
               category="amount"
               index="name"
-              valueFormatter={currencyFormatter}
+              valueFormatter={valueFormatter}
               showTooltip={false}
               colors={['cyan', 'blue', 'indigo', 'violet', 'fuchsia']}
             />
@@ -244,7 +290,7 @@ const Reports: React.FC = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="font-medium tabular-nums text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                      {currencyFormatter(item.amount)}
+                      {valueFormatter(item.amount)}
                     </span>
                     <span className="rounded-tremor-small bg-tremor-background-subtle px-1.5 py-0.5 text-tremor-label font-medium tabular-nums text-tremor-content-emphasis dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-emphasis">
                       {item.share}
@@ -255,93 +301,9 @@ const Reports: React.FC = () => {
             </List>
           </Card>
         </Card>
-        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-52">
-          <Card className="rounded-md min-h-full">
-            <p className="flex items-start justify-between">
-              <span className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                {kpiCardData1.value}
-              </span>
-              <span
-                className={classNames(
-                  kpiCardData1.changeType === 'positive'
-                    ? 'bg-emerald-100 text-emerald-800 ring-emerald-600/10 dark:bg-emerald-400/10 dark:text-emerald-500 dark:ring-emerald-400/20'
-                    : 'bg-red-100 text-red-800 ring-red-600/10 dark:bg-red-400/10 dark:text-red-500 dark:ring-red-400/20',
-                  'inline-flex items-center rounded-tremor-small px-2 py-1 text-tremor-label font-medium ring-1 ring-inset'
-                )}
-              >
-                {kpiCardData1.change}
-              </span>
-            </p>
-            <p className="mt-1 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              {kpiCardData1.name}
-            </p>
-            <SparkAreaChart
-              className="min-w-full"
-              data={revenueOverTimeChartData}
-              index="date"
-              categories={categories}
-              colors={kpiCardData1.changeType === 'positive' ? ['emerald'] : ['red']}
-            />
-          </Card>
-        </Card>
-        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-52">
-          <Card className="rounded-md min-h-full">
-            <p className="flex items-start justify-between">
-              <span className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                {kpiCardData2.value}
-              </span>
-              <span
-                className={classNames(
-                  kpiCardData1.changeType === 'positive'
-                    ? 'bg-emerald-100 text-emerald-800 ring-emerald-600/10 dark:bg-emerald-400/10 dark:text-emerald-500 dark:ring-emerald-400/20'
-                    : 'bg-red-100 text-red-800 ring-red-600/10 dark:bg-red-400/10 dark:text-red-500 dark:ring-red-400/20',
-                  'inline-flex items-center rounded-tremor-small px-2 py-1 text-tremor-label font-medium ring-1 ring-inset'
-                )}
-              >
-                {kpiCardData2.change}
-              </span>
-            </p>
-            <p className="mt-1 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              {kpiCardData2.name}
-            </p>
-            <SparkAreaChart
-              className="min-w-full"
-              data={revenueOverTimeChartData}
-              index="date"
-              categories={categories}
-              colors={kpiCardData2.changeType === 'positive' ? ['emerald'] : ['red']}
-            />
-          </Card>
-        </Card>
-        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-52">
-          <Card className="rounded-md min-h-full">
-            <p className="flex items-start justify-between">
-              <span className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                {kpiCardData3.value}
-              </span>
-              <span
-                className={classNames(
-                  kpiCardData3.changeType === 'positive'
-                    ? 'bg-emerald-100 text-emerald-800 ring-emerald-600/10 dark:bg-emerald-400/10 dark:text-emerald-500 dark:ring-emerald-400/20'
-                    : 'bg-red-100 text-red-800 ring-red-600/10 dark:bg-red-400/10 dark:text-red-500 dark:ring-red-400/20',
-                  'inline-flex items-center rounded-tremor-small px-2 py-1 text-tremor-label font-medium ring-1 ring-inset'
-                )}
-              >
-                {kpiCardData3.change}
-              </span>
-            </p>
-            <p className="mt-1 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              {kpiCardData3.name}
-            </p>
-            <SparkAreaChart
-              className="min-w-full"
-              data={revenueOverTimeChartData}
-              index="date"
-              categories={categories}
-              colors={kpiCardData3.changeType === 'positive' ? ['emerald'] : ['red']}
-            />
-          </Card>
-        </Card>
+        <SparkChartKPICard kpiCardData={revenuePerMileKpiCardData} chartData={revenuePerMileChartData} categories={["revenuePerMile"]} />
+        <SparkChartKPICard kpiCardData={totalMilesKpiCardData} chartData={totalMilesChartData} categories={["miles"]} />
+        <SparkChartKPICard kpiCardData={kpiCardData3} chartData={revenueOverTimeChartData} categories={categories} />
       </Grid>
     </div>
   );
