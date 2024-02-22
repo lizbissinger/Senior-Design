@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="bg-slate-200 backdrop-filter backdrop-blur-xl bg-opacity-50 border-b border-gray-200 sticky top-0 z-50 dark:bg-slate-950 dark:border-black dark:bg-opacity-50">
+      <div className="bg-slate-200 backdrop-filter backdrop-blur-lg bg-opacity-50 border-b border-gray-200 sticky top-0 z-50 dark:bg-slate-950 dark:border-black dark:bg-opacity-50">
         <div className="max-w-200xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between">
             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
