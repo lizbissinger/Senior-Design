@@ -431,7 +431,9 @@ const Overview: React.FC = () => {
   const [receivedPaymentCount, setReceivedPaymentCount] = useState(0);
 
   useEffect(() => {
-    fetchAllLoads().then(() => {
+    const fetchData = async () => {
+      await fetchAllLoads();
+
       const inProgressCount = loadDetails.filter(
         (load) => load.status === "In Progress"
       ).length;
@@ -459,7 +461,7 @@ const Overview: React.FC = () => {
       setNotInvoicedCount(notInvoicedCount);
       setInvoicedCount(invoicedCount);
       setReceivedPaymentCount(receivedPaymentCount);
-    });
+    };
     let errorsArr: string[] = [];
     Object.entries(errors).map(([key, value]) => {
       if (typeof value === "string") {
@@ -1052,15 +1054,30 @@ const Overview: React.FC = () => {
                                     ...load,
                                     status: selectedStatus,
                                   };
-                                  setLoadDetails((prevLoadDetails) => {
-                                    const updatedDetails = [...prevLoadDetails];
-                                    updatedDetails[index] = updatedLoad;
-                                    return updatedDetails;
-                                  });
 
-                                  updateLoad(updatedLoad);
-                                  setIsStatusEditing(false);
-                                  setEditingLoadIndex(null);
+                                  setLoadDetails((prevLoadDetails) =>
+                                    prevLoadDetails.filter(
+                                      (prevLoad) =>
+                                        prevLoad.loadNumber !== load.loadNumber
+                                    )
+                                  );
+
+                                  setLoadDetails((prevLoadDetails) => [
+                                    ...prevLoadDetails,
+                                    updatedLoad,
+                                  ]);
+
+                                  updateLoad(updatedLoad)
+                                    .then(() => {
+                                      setIsStatusEditing(false);
+                                      setEditingLoadIndex(null);
+                                    })
+                                    .catch((error) => {
+                                      console.error(
+                                        "Error updating load:",
+                                        error
+                                      );
+                                    });
                                 }}
                               >
                                 <SelectItem value="To-Do" />
