@@ -48,7 +48,7 @@ import {
 
 import _ from "lodash";
 
-import { LoadDetail, Document } from "../Types/types";
+import { LoadDetail } from "../Types/types";
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
@@ -253,11 +253,19 @@ const Overview: React.FC = () => {
   };
 
   const addLoadDetail = async () => {
-    const loadWithToDoStatus = { ...newLoad, status: "To-Do" };
-    const returnedLoad = await CreateNewLoad(loadWithToDoStatus);
+    const { documents, ...loadDetailsWithoutDocuments } = newLoad;
+
+    const loadWithToDoStatus = {
+      ...loadDetailsWithoutDocuments,
+      status: "To-Do",
+    };
+
+    const returnedLoad = await CreateNewLoad(loadWithToDoStatus, documents);
+
     if (returnedLoad) {
       setLoadDetails([...loadDetails, returnedLoad]);
     }
+
     setNewLoad({
       _id: "",
       loadNumber: "",
@@ -285,6 +293,7 @@ const Overview: React.FC = () => {
       createdAt: "",
       updatedAt: "",
     });
+
     setShowForm(false);
     setIsOpen(false);
   };
@@ -481,7 +490,6 @@ const Overview: React.FC = () => {
 
   useEffect(() => {
     // setIsOpen(false); -commenting this out, there should be no need for this - it's interefering with documents
-    
   }, []);
 
   const getBadgeClass = (status: string) => {
@@ -879,7 +887,13 @@ const Overview: React.FC = () => {
                         placeholder="Documents"
                         multiple
                         onChange={(e) => {
-                         
+                          if (e.target.files) {
+                            const filesArray = Array.from(e.target.files);
+                            setNewLoad((current) => ({
+                              ...current,
+                              documents: filesArray,
+                            }));
+                          }
                         }}
                       />
                     </div>

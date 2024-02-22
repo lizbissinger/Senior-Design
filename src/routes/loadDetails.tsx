@@ -23,7 +23,22 @@ export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
       formData.append("documents", file);
     });
   }
-  formData.append("load", JSON.stringify(load));
+
+  (Object.keys(load) as Array<keyof LoadDetail>).forEach((key) => {
+    if (key !== "documents") {
+      // Excluding documents since it's handled separaetly
+      const value = load[key];
+      if (typeof value === "object" && value !== null) {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, String(value));
+      }
+    }
+  });
+
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
 
   const requestOptions: RequestInit = {
     method: "POST",
@@ -42,6 +57,7 @@ export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
     throw error;
   }
 }
+
 export async function DeleteLoad(id: string) {
   let deletedLoad;
   await fetch(`${api}/loadDetails/${id}`, {
