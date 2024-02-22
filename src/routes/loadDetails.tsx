@@ -36,10 +36,6 @@ export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
     }
   });
 
-  for (let [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
-  }
-
   const requestOptions: RequestInit = {
     method: "POST",
     body: formData,
