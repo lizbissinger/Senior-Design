@@ -151,11 +151,7 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
               {load?.documents?.map((document: any, index) => (
                 <ListItem key={index} onClick={() => downloadFile(document)}>
                   <img
-                    src={
-                      document.contentType === "application/pdf"
-                        ? pdfPlaceholder
-                        : "URL_TO_YOUR_DOCUMENT_THUMBNAIL"
-                    }
+                    src={pdfPlaceholder}
                     alt={document.fileName}
                     style={{ width: 100, cursor: "pointer" }}
                   />
