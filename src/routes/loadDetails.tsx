@@ -64,17 +64,48 @@ export async function DeleteLoad(id: string) {
   return deletedLoad;
 }
 
-export async function UpdateLoad(load: LoadDetail) {
-  const requestOptions = {
+export async function UpdateLoad(
+  load: LoadDetail,
+  documents?: File[]
+): Promise<LoadDetail> {
+  const formData = new FormData();
+
+  Object.keys(load).forEach((key) => {
+    const typedKey = key as keyof LoadDetail;
+
+    if (typedKey !== "documents") {
+      const value = load[typedKey];
+      formData.append(
+        typedKey,
+        typeof value === "object" && value !== null
+          ? JSON.stringify(value)
+          : String(value)
+      );
+    }
+  });
+
+  documents?.forEach((document) => {
+    formData.append("documents", document);
+  });
+
+  const requestOptions: RequestInit = {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(load),
+    body: formData,
   };
-  return await fetch(`${api}/loadDetails/${load._id}`, requestOptions).then(
-    (response) => response.json()
-  );
+
+  try {
+    const url = `${api}/loadDetails/${load._id}`;
+    const response = await fetch(url, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating load:", error);
+    throw error;
+  }
 }
 
 export default GetAllLoads;

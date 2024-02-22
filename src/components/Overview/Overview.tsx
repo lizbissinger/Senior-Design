@@ -52,7 +52,6 @@ import { LoadDetail } from "../Types/types";
 
 const Overview: React.FC = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
-  const [documents, setDocuments] = useState<Array<any>>([]);
   const [trucks, setTrucks] = useState<string[]>([]);
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
