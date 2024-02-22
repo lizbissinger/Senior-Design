@@ -64,10 +64,7 @@ export async function DeleteLoad(id: string) {
   return deletedLoad;
 }
 
-export async function UpdateLoad(
-  load: LoadDetail,
-  documents?: File[]
-): Promise<LoadDetail> {
+export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
   const formData = new FormData();
 
   Object.keys(load).forEach((key) => {
@@ -77,15 +74,14 @@ export async function UpdateLoad(
       const value = load[typedKey];
       formData.append(
         typedKey,
-        typeof value === "object" && value !== null
-          ? JSON.stringify(value)
-          : String(value)
+        typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)
       );
+    } else {
+      const documents: File[] = load[typedKey] as unknown as File[];
+      documents.forEach((document) => {
+        formData.append("documents", document);
+      });
     }
-  });
-
-  documents?.forEach((document) => {
-    formData.append("documents", document);
   });
 
   const requestOptions: RequestInit = {
@@ -107,5 +103,6 @@ export async function UpdateLoad(
     throw error;
   }
 }
+
 
 export default GetAllLoads;
