@@ -331,12 +331,24 @@ const Overview: React.FC = () => {
     setIsOpen(true);
   };
 
-  const handleSaveClick = (index: number) => {
-    updateLoad(filteredLoads[index]);
-    const updatedLoadDetails = [...loadDetails];
-    updatedLoadDetails[index] = filteredLoads[index];
-    setLoadDetails(updatedLoadDetails);
-    setEditableIndex(null);
+  const handleSaveClick = async (index: number) => {
+    const loadToUpdate = { ...filteredLoads[index], ...newLoad };
+
+    try {
+      await updateLoad(loadToUpdate);
+
+      setLoadDetails((prevLoadDetails) =>
+        prevLoadDetails.map((load) =>
+          load._id === loadToUpdate._id ? loadToUpdate : load
+        )
+      );
+
+      setEditableIndex(null);
+      setShowForm(false);
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error in handleSaveClick:", error);
+    }
   };
 
   const handleCancelClick = () => {
