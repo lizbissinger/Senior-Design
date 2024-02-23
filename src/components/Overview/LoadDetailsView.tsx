@@ -45,7 +45,6 @@ const downloadFile = (docData: any) => {
 };
 
 const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
-  console.log(load?.documents);
   const [showMap, setShowMap] = useState(false);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
 
