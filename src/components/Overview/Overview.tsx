@@ -760,6 +760,101 @@ const Overview: React.FC = () => {
                         }
                       />
                     </div>
+
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="pickupLocation"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Pick-up Location
+                        <span className="text-red-500">*</span>
+                      </label>
+
+                      <Autocomplete
+                        className="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        apiKey={Google_Maps_Api_Key}
+                        defaultValue={newLoad.pickupLocation}
+                        inputAutocompleteValue={newLoad.pickupLocation}
+                        onPlaceSelected={(place) => {
+                          setNewLoad((newLoad) => ({
+                            ...newLoad,
+                            pickupLocation: place.formatted_address || "",
+                          }));
+                        }}
+                        options={{
+                          types: [],
+                          componentRestrictions: { country: "us" },
+                        }}
+                      />
+                    </div>
+
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="deliveryLocation"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Delivery Location
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <Autocomplete
+                        className=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        apiKey={Google_Maps_Api_Key}
+                        defaultValue={newLoad.deliveryLocation}
+                        inputAutocompleteValue={newLoad.deliveryLocation}
+                        onPlaceSelected={(place) => {
+                          setNewLoad((newLoad) => ({
+                            ...newLoad,
+                            deliveryLocation: place.formatted_address || "",
+                          }));
+                        }}
+                        options={{
+                          types: [],
+                          componentRestrictions: { country: "us" },
+                        }}
+                      />
+                    </div>
+
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="pickupTime"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Pick-up Date & Time
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        id="pickupTime"
+                        type="datetime-local"
+                        placeholder="Pick-Up Time"
+                        value={newLoad.pickupTime}
+                        onChange={(e) =>
+                          setNewLoad({ ...newLoad, pickupTime: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="col-span-full sm:col-span-3">
+                      <label
+                        htmlFor="deliveryTime"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Delivery Date & Time
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        id="deliveryTime"
+                        type="datetime-local"
+                        placeholder="Delivery Time"
+                        value={newLoad.deliveryTime}
+                        onChange={(e) =>
+                          setNewLoad({
+                            ...newLoad,
+                            deliveryTime: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
                     <div className="col-span-full sm:col-span-3">
                       <label
                         htmlFor="Miles"
@@ -805,98 +900,7 @@ const Overview: React.FC = () => {
                         }
                       />
                     </div>
-
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="pickupLocation"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Pick-up Location
-                        <span className="text-red-500">*</span>
-                      </label>
-
-                      <Autocomplete
-                        apiKey={Google_Maps_Api_Key}
-                        defaultValue={newLoad.pickupLocation}
-                        inputAutocompleteValue={newLoad.pickupLocation}
-                        onPlaceSelected={(place) => {
-                          setNewLoad((newLoad) => ({
-                            ...newLoad,
-                            pickupLocation: place.formatted_address || "",
-                          }));
-                        }}
-                        options={{
-                          types: [],
-                          componentRestrictions: { country: "us" },
-                        }}
-                      />
-                    </div>
-
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="deliveryLocation"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Delivery Location
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <Autocomplete
-                        apiKey={Google_Maps_Api_Key}
-                        defaultValue={newLoad.deliveryLocation}
-                        inputAutocompleteValue={newLoad.deliveryLocation}
-                        onPlaceSelected={(place) => {
-                          setNewLoad((newLoad) => ({
-                            ...newLoad,
-                            deliveryLocation: place.formatted_address || "",
-                          }));
-                        }}
-                        options={{
-                          types: [],
-                          componentRestrictions: { country: "us" },
-                        }}
-                      />
-                    </div>
-
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="pickupTime"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Pick-up Date & Time
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id="pickupTime"
-                        type="datetime-local"
-                        placeholder="Pick-Up Time"
-                        value={newLoad.pickupTime}
-                        onChange={(e) =>
-                          setNewLoad({ ...newLoad, pickupTime: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="deliveryTime"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Delivery Date & Time
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id="deliveryTime"
-                        type="datetime-local"
-                        placeholder="Delivery Time"
-                        value={newLoad.deliveryTime}
-                        onChange={(e) =>
-                          setNewLoad({
-                            ...newLoad,
-                            deliveryTime: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
+                    <div className="col-span-full">
                       <label
                         htmlFor="documents"
                         className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -904,12 +908,19 @@ const Overview: React.FC = () => {
                         Documents
                       </label>
                       <input
+                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-sm cursor-pointer  dark:text-gray-400 focus:outline-none dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400"
                         id="documents"
                         type="file"
                         placeholder="Documents"
                         multiple
                         onChange={handleDocumentSelectFile}
                       />
+                      <p
+                        className="mt-1 mb-0 text-xs text-gray-700 dark:text-gray-300"
+                        id="file_input_help"
+                      >
+                        PDF, PNG or JPG (MAX. 5MB).
+                      </p>
                     </div>
                   </div>
                   <Divider />

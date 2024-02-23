@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import pdfPlaceholder from "./PdfThumbnail.jpg";
 import {
   Tab,
   TabGroup,
@@ -15,6 +14,7 @@ import CloseButton from "react-bootstrap/CloseButton";
 import MapWithDirections from "./MapWithDirections";
 import "./Overview.css";
 import { LoadDetail } from "../Types/types";
+import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
@@ -69,10 +69,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   };
 
   return (
-    <Card decoration="left" decorationColor="blue" className="">
+    <Card decoration="left" decorationColor="blue">
       <CloseButton onClick={onClose} className="mb-1 main-button"></CloseButton>
       <TabGroup>
-        <TabList variant="line" defaultValue="1">
+        <TabList className="px-1" variant="line" defaultValue="1">
           <Tab value="1">Load Info</Tab>
           <Tab value="2">Directions</Tab>
           <Tab value="3">Documents</Tab>
@@ -172,12 +172,11 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
                       onClick={() => viewDocumentInTab(document)}
                       style={{ cursor: "pointer" }}
                     >
-                      <img
-                        src={pdfPlaceholder}
-                        alt={document.fileName}
-                        style={{ width: 100 }}
-                      />
-                      <p>{document.fileName || document.name || "Document"}</p>
+                      <p className="mb-0">
+                        {document.fileName || document.name || "Document"}
+                      </p>
+
+                      <DocumentMagnifyingGlassIcon style={{ width: 25 }} />
                     </ListItem>
                   ))}
                 </List>
