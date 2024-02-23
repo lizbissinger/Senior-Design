@@ -251,6 +251,16 @@ const Overview: React.FC = () => {
     setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
   };
 
+  const handleDocumentSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setNewLoad((current) => ({
+        ...current,
+        documents: filesArray,
+      }));
+    }
+  };
+
   const addLoadDetail = async () => {
     const { documents, ...loadDetailsWithoutDocuments } = newLoad;
 
@@ -887,15 +897,7 @@ const Overview: React.FC = () => {
                         type="file"
                         placeholder="Documents"
                         multiple
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            const filesArray = Array.from(e.target.files);
-                            setNewLoad((current) => ({
-                              ...current,
-                              documents: filesArray,
-                            }));
-                          }
-                        }}
+                        onChange={handleDocumentSelectFile}
                       />
                     </div>
                   </div>
