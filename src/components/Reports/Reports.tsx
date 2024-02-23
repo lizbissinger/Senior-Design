@@ -15,7 +15,7 @@ import NoDataToShow from "./NoDataToShow";
 import SparkChartKPICard from "./SparkChartKPICard";
 import GetAllDrivers from "../../routes/driverDetails";
 import GetAllRevenueData from '../../routes/reports';
-import { GetRevenuePerMileData, GetNumberOfMiles, GetLoadCount } from "../../routes/reports";
+import { GetRevenuePerMileData, GetNumberOfMiles, GetLoadCount, GetExpenses } from "../../routes/reports";
 
 const Reports: React.FC = () => {
   const [driver, setDriver] = useState("");
@@ -34,6 +34,7 @@ const Reports: React.FC = () => {
   const [totalLoadsChartData, setTotalLoadsChartData] = useState<Object[]>([]);
   const [totalLoadsKpiCardData, setTotalLoadsKpiCardData] = useState<any>({});
   const [categories, setCategories] = useState<string[]>(["Cumulative"]);
+  const [expenses, setExpenses] = useState<Object[any]>([]);
   const [barChartToolTip, setBarChartToolTip] = useState(null);
   
   const valueFormatter = function (number:number) {
@@ -152,50 +153,28 @@ const Reports: React.FC = () => {
     } catch (error) {}
   };
 
+  const fetchExpenses = async () => {
+    try {
+      const _expenses = await GetExpenses(date);
+
+      if (_expenses) {
+        setExpenses(_expenses);
+      }
+    } catch (error) {}
+  };
+
   useEffect(() => {
     fetchAllDrivers();
     fetchRevenueOverTimeChartData();
     fetchRevenuePerMileChartData();
     fetchNumberOfMilesChartData();
     fetchLoadCountChartData();
+    fetchExpenses();
   }, [driver, date]);
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
   };
-
-  const data = [
-    {
-      name: 'Travel',
-      amount: 6730,
-      share: '32.1%',
-      color: 'bg-cyan-500',
-    },
-    {
-      name: 'IT & equipment',
-      amount: 4120,
-      share: '19.6%',
-      color: 'bg-blue-500',
-    },
-    {
-      name: 'Training & development',
-      amount: 3920,
-      share: '18.6%',
-      color: 'bg-indigo-500',
-    },
-    {
-      name: 'Office supplies',
-      amount: 3210,
-      share: '15.3%',
-      color: 'bg-violet-500',
-    },
-    {
-      name: 'Communication',
-      amount: 3010,
-      share: '14.3%',
-      color: 'bg-fuchsia-500',
-    },
-  ];
 
   return (
     <div>
@@ -213,7 +192,7 @@ const Reports: React.FC = () => {
         <Col numColSpan={1} numColSpanLg={2}>
           <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-full">
             <Card className="rounded-md min-h-full">
-              <Title>Revenue Over Time</Title>
+              <Title>Revenue over time</Title>
               <TabGroup>
                 <TabList>
                   <Tab icon={ChartBarIcon}></Tab>
@@ -272,21 +251,23 @@ const Reports: React.FC = () => {
             <h3 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
               Total expenses by category
             </h3>
+            <div className="h-2"></div>
             <DonutChart
               className="mt-8"
-              data={data}
+              data={expenses}
               category="amount"
               index="name"
               valueFormatter={valueFormatter}
               showTooltip={false}
-              colors={['cyan', 'blue', 'indigo', 'violet', 'fuchsia']}
+              colors={['indigo', 'violet', 'fuchsia']}
             />
+            <div className="h-10"></div>
             <p className="mt-8 flex items-center justify-between text-tremor-label text-tremor-content dark:text-dark-tremor-content">
               <span>Category</span>
               <span>Amount / Share</span>
             </p>
             <List className="mt-2">
-              {data.map((item) => (
+              {expenses.map((item:any) => (
                 <ListItem key={item.name} className="space-x-6">
                   <div className="flex items-center space-x-2.5 truncate">
                     <span
