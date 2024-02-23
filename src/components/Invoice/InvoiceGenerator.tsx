@@ -48,20 +48,19 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
     const pageWidth = doc.internal.pageSize.width;
     const margin = (pageWidth - tableWidth) / 2;
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 77,
       theme: "grid",
       margin: { left: margin },
       styles: {
         fillColor: [0, 0, 0],
-        align: "center",
+        halign: "center",
       },
       columnStyles: {
         0: { halign: "left", cellWidth: 40, fillColor: [255, 255, 255] },
         1: { halign: "left", cellWidth: 40, fillColor: [255, 255, 255] },
         2: { halign: "left", cellWidth: 40, fillColor: [255, 255, 255] },
       },
-      color: "black",
       head: [["Driver", "Truck", "Trailer"]],
       body: [[load.driverObject, load.truckObject, load.trailerObject]],
     });
@@ -94,7 +93,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
 
     body.push(["", "", "Total", `$${totalAmount.toFixed(2)}`]);
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 97,
       theme: "grid",
       styles: {
@@ -107,7 +106,6 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
         2: { halign: "left", cellWidth: 65, fillColor: [255, 255, 255] },
         3: { halign: "left", cellWidth: 25, fillColor: [255, 255, 255] },
       },
-      fillColor: "black",
       head: [["Item", "Load #", "Description", "Amount"]],
       body: body,
     });
