@@ -21,18 +21,25 @@ interface LoadDetailsViewProps {
   onClose: () => void;
 }
 const downloadFile = (docData: any) => {
-  const blob = new Blob([new Uint8Array(docData.data.data)], {
-    type: docData.contentType,
-  });
+  let blob;
+
+  if (docData instanceof File) {
+    blob = new Blob([docData], { type: docData.type });
+  } else if (docData.data && Array.isArray(docData.data.data)) {
+    blob = new Blob([new Uint8Array(docData.data.data)], {
+      type: docData.contentType,
+    });
+  } else {
+    console.error("Unsupported document format");
+    return;
+  }
 
   const url = window.URL.createObjectURL(blob);
-
   const a = document.createElement("a");
   a.href = url;
-  a.download = docData.fileName || "download";
+  a.download = docData.name || docData.fileName || "download";
   document.body.appendChild(a);
   a.click();
-
   window.URL.revokeObjectURL(url);
   a.remove();
 };
@@ -188,6 +195,21 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
                   ))}
                 </List>
               )}
+
+          <TabPanel>
+            <List className="dark-font">
+              {load?.documents?.map((document: any, index) => (
+                <ListItem key={index} onClick={() => downloadFile(document)}>
+                  <img
+                    src={pdfPlaceholder}
+                    alt={document.fileName || document.name || "Document"}
+                    style={{ width: 100, cursor: "pointer" }}
+                  />
+                  <p>{document.fileName || document.name || "Document"}</p>
+                </ListItem>
+              ))}
+            </List>
+          </TabPanel>
         </TabPanels>
       </TabGroup>
     </Card>
