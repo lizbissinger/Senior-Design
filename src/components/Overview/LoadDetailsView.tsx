@@ -40,6 +40,7 @@ const downloadFile = (docData: any) => {
 const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   console.log(load?.documents);
   const [showMap, setShowMap] = useState(false);
+  const [documentUrl, setDocumentUrl] = useState<string | null>(null);
 
   const toggleMapVisibility = () => setShowMap(!showMap);
 
@@ -60,6 +61,19 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
       minute: "numeric",
     };
     return new Date(timestamp).toLocaleString("en-US", options);
+  };
+
+  const viewDocumentInTab = (docData: any) => {
+    const blob = new Blob([new Uint8Array(docData.data.data)], {
+      type: docData.contentType,
+    });
+
+    const url = window.URL.createObjectURL(blob);
+    setDocumentUrl(url);
+  };
+
+  const closeDocumentViewer = () => {
+    setDocumentUrl(null);
   };
 
   return (
@@ -145,21 +159,35 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
               />
             )}
           </TabPanel>
-
-          <TabPanel>
-            <List className="dark-font">
-              {load?.documents?.map((document: any, index) => (
-                <ListItem key={index} onClick={() => downloadFile(document)}>
-                  <img
-                    src={pdfPlaceholder}
-                    alt={document.fileName}
-                    style={{ width: 100, cursor: "pointer" }}
-                  />
-                  <p>{document.fileName}</p>
-                </ListItem>
-              ))}
-            </List>
-          </TabPanel>
+          
+          {documentUrl ? (
+                <>
+                  <Button variant="light" onClick={closeDocumentViewer}>
+                    Close Document
+                  </Button>
+                  <iframe
+                    src={documentUrl}
+                    style={{ width: "100%", height: "600px", border: "none" }}
+                  ></iframe>
+                </>
+              ) : (
+                <List className="dark-font">
+                  {load?.documents?.map((document: any, index) => (
+                    <ListItem
+                      key={index}
+                      onClick={() => viewDocumentInTab(document)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <img
+                        src={pdfPlaceholder}
+                        alt={document.fileName}
+                        style={{ width: 100 }}
+                      />
+                      <p>{document.fileName}</p>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
         </TabPanels>
       </TabGroup>
     </Card>
