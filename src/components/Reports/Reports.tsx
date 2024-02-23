@@ -34,7 +34,7 @@ const Reports: React.FC = () => {
   const [totalLoadsChartData, setTotalLoadsChartData] = useState<Object[]>([]);
   const [totalLoadsKpiCardData, setTotalLoadsKpiCardData] = useState<any>({});
   const [categories, setCategories] = useState<string[]>(["Cumulative"]);
-  const [expenses, setExpenses] = useState<Object[any]>([]);
+  const [expenses, setExpenses] = useState<Object[]>([]);
   const [barChartToolTip, setBarChartToolTip] = useState(null);
   
   const valueFormatter = function (number:number) {
