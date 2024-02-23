@@ -17,6 +17,7 @@ import {
   fetchTrailers,
   calculateDistance,
 } from "./OverviewUtils";
+import { fetchDocuments } from "../../routes/documents"; // Adjust the path as needed
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
@@ -75,7 +76,7 @@ const Overview: React.FC = () => {
     deliveryTime: "",
     pickupLocation: "",
     deliveryLocation: "",
-    documents: "",
+    documents: [],
     price: "",
     detention: "",
     detentionPrice: "",
@@ -251,11 +252,19 @@ const Overview: React.FC = () => {
   };
 
   const addLoadDetail = async () => {
-    const loadWithToDoStatus = { ...newLoad, status: "To-Do" };
-    const returnedLoad = await CreateNewLoad(loadWithToDoStatus);
+    const { documents, ...loadDetailsWithoutDocuments } = newLoad;
+
+    const loadWithToDoStatus = {
+      ...loadDetailsWithoutDocuments,
+      status: "To-Do",
+    };
+
+    const returnedLoad = await CreateNewLoad(loadWithToDoStatus, documents);
+
     if (returnedLoad) {
       setLoadDetails([...loadDetails, returnedLoad]);
     }
+
     setNewLoad({
       _id: "",
       loadNumber: "",
@@ -266,7 +275,7 @@ const Overview: React.FC = () => {
       deliveryTime: "",
       pickupLocation: "",
       deliveryLocation: "",
-      documents: "",
+      documents: [],
       price: "",
       detention: "",
       detentionPrice: "",
@@ -283,6 +292,7 @@ const Overview: React.FC = () => {
       createdAt: "",
       updatedAt: "",
     });
+
     setShowForm(false);
     setIsOpen(false);
   };
@@ -338,7 +348,7 @@ const Overview: React.FC = () => {
       deliveryTime: "",
       pickupLocation: "",
       deliveryLocation: "",
-      documents: "",
+      documents: [],
       price: "",
       detention: "",
       detentionPrice: "",
@@ -480,7 +490,7 @@ const Overview: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   useEffect(() => {
-    setIsOpen(false);
+    // setIsOpen(false); -commenting this out, there should be no need for this - it's interefering with documents
   }, []);
 
   const getBadgeClass = (status: string) => {
@@ -876,10 +886,16 @@ const Overview: React.FC = () => {
                         id="documents"
                         type="file"
                         placeholder="Documents"
-                        value={newLoad.documents}
-                        onChange={(e) =>
-                          setNewLoad({ ...newLoad, documents: e.target.value })
-                        }
+                        multiple
+                        onChange={(e) => {
+                          if (e.target.files) {
+                            const filesArray = Array.from(e.target.files);
+                            setNewLoad((current) => ({
+                              ...current,
+                              documents: filesArray,
+                            }));
+                          }
+                        }}
                       />
                     </div>
                   </div>
