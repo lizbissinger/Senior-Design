@@ -251,6 +251,16 @@ const Overview: React.FC = () => {
     setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
   };
 
+  const handleDocumentSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setNewLoad((current) => ({
+        ...current,
+        documents: filesArray,
+      }));
+    }
+  };
+
   const addLoadDetail = async () => {
     const { documents, ...loadDetailsWithoutDocuments } = newLoad;
 
@@ -321,12 +331,24 @@ const Overview: React.FC = () => {
     setIsOpen(true);
   };
 
-  const handleSaveClick = (index: number) => {
-    updateLoad(filteredLoads[index]);
-    const updatedLoadDetails = [...loadDetails];
-    updatedLoadDetails[index] = filteredLoads[index];
-    setLoadDetails(updatedLoadDetails);
-    setEditableIndex(null);
+  const handleSaveClick = async (index: number) => {
+    const loadToUpdate = { ...filteredLoads[index], ...newLoad };
+
+    try {
+      await updateLoad(loadToUpdate);
+
+      setLoadDetails((prevLoadDetails) =>
+        prevLoadDetails.map((load) =>
+          load._id === loadToUpdate._id ? loadToUpdate : load
+        )
+      );
+
+      setEditableIndex(null);
+      setShowForm(false);
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error in handleSaveClick:", error);
+    }
   };
 
   const handleCancelClick = () => {
@@ -887,15 +909,7 @@ const Overview: React.FC = () => {
                         type="file"
                         placeholder="Documents"
                         multiple
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            const filesArray = Array.from(e.target.files);
-                            setNewLoad((current) => ({
-                              ...current,
-                              documents: filesArray,
-                            }));
-                          }
-                        }}
+                        onChange={handleDocumentSelectFile}
                       />
                     </div>
                   </div>
