@@ -884,7 +884,7 @@ const Overview: React.FC = () => {
                     </div>
                   </div>
                   <Divider />
-                  <Dialog
+                  {/* <Dialog
                     open={isDeleteDialogOpen}
                     onClose={closeDeleteDialog}
                     static={true}
@@ -909,7 +909,7 @@ const Overview: React.FC = () => {
                         </Button>
                       </div>
                     </DialogPanel>
-                  </Dialog>
+                  </Dialog> */}
 
                   <div
                     className={`flex items-center ${
@@ -918,7 +918,7 @@ const Overview: React.FC = () => {
                   >
                     {formMode === "edit" && (
                       <Button
-                        onClick={openDeleteDialog}
+                        onClick={handleDeleteClick}
                         className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
                       >
                         Delete
