@@ -13,9 +13,12 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
     const doc = new jsPDF() as jsPDF & { autoTable: (options: any) => void };
 
     doc.setFontSize(11);
-    doc.text(`LOGO?`, 14, 15);
 
-    doc.setTextColor(128, 128, 128);
+    doc.setTextColor(0, 0, 0);
+
+    doc.text("LOGO?", 14, 15);
+
+    doc.setTextColor(75, 75, 75);
     doc.setFontSize(30);
     doc.text("INVOICE", doc.internal.pageSize.width - 15, 20, {
       align: "right",
@@ -23,8 +26,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(11);
 
-    // Address on the left side
-    doc.text(`FLEETWAVE`, 14, 30);
+    doc.text("FLEETWAVE", 14, 30);
     doc.text("2600 Clifton Ave.", 14, 35);
     doc.text("Cincinnati, OH 45221", 14, 40);
     doc.text("513-556-0000", 14, 45);
@@ -39,39 +41,13 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
       today.getMonth() + 1
     }/${today.getDate()}/${today.getFullYear()}`;
 
-    // invoice info
     doc.text(`Invoice #: ${load.loadNumber}`, 193, 30, { align: "right" });
-    doc.text(`Date: ${formattedDate}`, 193, 35, { align: "right" });
+    doc.text(`Invoice Date: ${formattedDate}`, 193, 35, { align: "right" });
 
-    const tableData = [
-      [
-        "Load #",
-        "Truck #",
-        "Trailer #",
-        "Driver Name",
-        "Pick-up Time",
-        "Delivery Time",
-        "Price",
-        "Detention",
-      ],
-      [
-        load.loadNumber,
-        load.truckObject,
-        load.trailerObject,
-        load.driverObject,
-        load.pickupTime,
-        load.deliveryTime,
-        `$${parseFloat(load.price).toFixed(2)}`,
-        `$${parseFloat(load.detentionPrice).toFixed(2)}`,
-      ],
-    ];
+    const tableWidth = 117;
+    const pageWidth = doc.internal.pageSize.width;
+    const margin = (pageWidth - tableWidth) / 2;
 
-    // set table margin
-    let wantedTableWidth = 117;
-    let pageWidth = doc.internal.pageSize.width;
-    let margin = (pageWidth - wantedTableWidth) / 2;
-
-    // table for driver and truck info
     doc.autoTable({
       startY: 77,
       theme: "grid",
@@ -81,28 +57,43 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
         align: "center",
       },
       columnStyles: {
-        0: {
-          halign: "left",
-          cellWidth: 40,
-          fillColor: [255, 255, 255],
-        },
-        1: {
-          halign: "left",
-          cellWidth: 40,
-          fillColor: [255, 255, 255],
-        },
-        2: {
-          halign: "left",
-          cellWidth: 40,
-          fillColor: [255, 255, 255],
-        },
+        0: { halign: "left", cellWidth: 40, fillColor: [255, 255, 255] },
+        1: { halign: "left", cellWidth: 40, fillColor: [255, 255, 255] },
+        2: { halign: "left", cellWidth: 40, fillColor: [255, 255, 255] },
       },
       color: "black",
       head: [["Driver", "Truck", "Trailer"]],
       body: [[load.driverObject, load.truckObject, load.trailerObject]],
     });
 
-    // table for load info
+    const pickupAddressParts = load.pickupLocation.split(", ");
+    const deliveryAddressParts = load.deliveryLocation.split(", ");
+
+    const pickupCityState = `${
+      pickupAddressParts[pickupAddressParts.length - 3]
+    }, ${pickupAddressParts[pickupAddressParts.length - 2]}`;
+    const deliveryCityState = `${
+      deliveryAddressParts[deliveryAddressParts.length - 3]
+    }, ${deliveryAddressParts[deliveryAddressParts.length - 2]}`;
+
+    const body = [
+      [
+        "Line Haul",
+        `Load # ${load.loadNumber}`,
+        `${pickupCityState} to ${deliveryCityState}`,
+        `$${load.price}`,
+      ],
+    ];
+
+    let totalAmount = parseFloat(load.price);
+
+    if (load.detentionPrice) {
+      body.push(["Detention", "", "", `$${load.detentionPrice}`]);
+      totalAmount += parseFloat(load.detentionPrice);
+    }
+
+    body.push(["", "", "Total", `$${totalAmount.toFixed(2)}`]);
+
     doc.autoTable({
       startY: 97,
       theme: "grid",
@@ -111,34 +102,14 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
         halign: "center",
       },
       columnStyles: {
-        0: {
-          halign: "left",
-          cellWidth: 20,
-          fillColor: [255, 255, 255],
-        },
-        1: {
-          halign: "left",
-          cellWidth: 70,
-          cellLength: 20,
-          fillColor: [255, 255, 255],
-        },
-        2: {
-          halign: "left",
-          cellWidth: 65,
-          fillColor: [255, 255, 255],
-        },
-        3: {
-          halign: "left",
-          cellWidth: 25,
-          fillColor: [255, 255, 255],
-        },
+        0: { halign: "left", cellWidth: 20, fillColor: [255, 255, 255] },
+        1: { halign: "left", cellWidth: 70, fillColor: [255, 255, 255] },
+        2: { halign: "left", cellWidth: 65, fillColor: [255, 255, 255] },
+        3: { halign: "left", cellWidth: 25, fillColor: [255, 255, 255] },
       },
       fillColor: "black",
       head: [["Item", "Load #", "Description", "Amount"]],
-      body: [
-        ["Line Haul", `${load.loadNumber}`, , `$${load.price}`],
-        ["", "", "Total", `$${load.price}`],
-      ],
+      body: body,
     });
 
     doc.save(`FleetWave - Invoice - Load ${load.loadNumber}.pdf`);

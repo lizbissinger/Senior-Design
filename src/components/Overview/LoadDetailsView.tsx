@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import pdfPlaceholder from "./PdfThumbnail.jpg";
 import {
   Tab,
   TabGroup,
@@ -15,31 +14,16 @@ import CloseButton from "react-bootstrap/CloseButton";
 import MapWithDirections from "./MapWithDirections";
 import "./Overview.css";
 import { LoadDetail } from "../Types/types";
+import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
   onClose: () => void;
 }
-const downloadFile = (docData: any) => {
-  const blob = new Blob([new Uint8Array(docData.data.data)], {
-    type: docData.contentType,
-  });
-
-  const url = window.URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = docData.fileName || "download";
-  document.body.appendChild(a);
-  a.click();
-
-  window.URL.revokeObjectURL(url);
-  a.remove();
-};
 
 const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
-  console.log(load?.documents);
   const [showMap, setShowMap] = useState(false);
+  const [documentUrl, setDocumentUrl] = useState<string | null>(null);
 
   const toggleMapVisibility = () => setShowMap(!showMap);
 
@@ -62,11 +46,33 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
     return new Date(timestamp).toLocaleString("en-US", options);
   };
 
+  const viewDocumentInTab = (docData: any) => {
+    let blob;
+
+    if (docData instanceof File) {
+      blob = new Blob([docData], { type: docData.type });
+    } else if (docData.data && Array.isArray(docData.data.data)) {
+      blob = new Blob([new Uint8Array(docData.data.data)], {
+        type: docData.contentType,
+      });
+    } else {
+      console.error("Unsupported document format");
+      return;
+    }
+
+    const url = window.URL.createObjectURL(blob);
+    setDocumentUrl(url);
+  };
+
+  const closeDocumentViewer = () => {
+    setDocumentUrl(null);
+  };
+
   return (
-    <Card decoration="left" decorationColor="blue" className="">
+    <Card decoration="left" decorationColor="blue">
       <CloseButton onClick={onClose} className="mb-1 main-button"></CloseButton>
       <TabGroup>
-        <TabList variant="line" defaultValue="1">
+        <TabList className="px-1" variant="line" defaultValue="1">
           <Tab value="1">Load Info</Tab>
           <Tab value="2">Directions</Tab>
           <Tab value="3">Documents</Tab>
@@ -148,16 +154,33 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
 
           <TabPanel>
             <List className="dark-font">
-              {load?.documents?.map((document: any, index) => (
-                <ListItem key={index} onClick={() => downloadFile(document)}>
-                  <img
-                    src={pdfPlaceholder}
-                    alt={document.fileName}
-                    style={{ width: 100, cursor: "pointer" }}
-                  />
-                  <p>{document.fileName}</p>
-                </ListItem>
-              ))}
+              {documentUrl ? (
+                <>
+                  <Button variant="light" onClick={closeDocumentViewer}>
+                    Close Document
+                  </Button>
+                  <iframe
+                    src={documentUrl}
+                    style={{ width: "100%", height: "600px", border: "none" }}
+                  ></iframe>
+                </>
+              ) : (
+                <List className="dark-font">
+                  {load?.documents?.map((document: any, index) => (
+                    <ListItem
+                      key={index}
+                      onClick={() => viewDocumentInTab(document)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <p className="mb-0">
+                        {document.fileName || document.name || "Document"}
+                      </p>
+
+                      <DocumentMagnifyingGlassIcon style={{ width: 25 }} />
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </List>
           </TabPanel>
         </TabPanels>
