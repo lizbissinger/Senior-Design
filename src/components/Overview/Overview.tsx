@@ -17,7 +17,6 @@ import {
   fetchTrailers,
   calculateDistance,
 } from "./OverviewUtils";
-import { fetchDocuments } from "../../routes/documents"; // Adjust the path as needed
 import TrailerDropdown from "../TrailerForm/TrailerDropdown";
 import TruckDropdown from "../TruckForm/TruckDropdown";
 import StatusBars from "../OverviewCharts/StatusBars";
