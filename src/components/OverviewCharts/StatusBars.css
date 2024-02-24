@@ -15,3 +15,30 @@
   background-color: #f0f0f0;
   cursor: pointer;
 }
+
+@media only screen and (max-width: 600px) {
+  .center-text {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+  }
+
+  .align-p {
+    margin-top: 5px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dark .status-boxes {
+    gap: 20px;
+  }
+
+  .dark .status-bar-active,
+  .dark .status-bar:hover {
+    background-color: #2d2d2d;
+    color: #ffffff;
+  }
+}

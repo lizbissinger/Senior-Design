@@ -32,6 +32,10 @@
         const scriptTag = document.createElement("script");
         scriptTag.type = "module";
         scriptTag.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        scriptTag.onload = () =>
+          window.dispatchEvent(new Event("googleMapsScriptLoaded"));
+        scriptTag.onerror = () =>
+          window.dispatchEvent(new Event("googleMapsScriptError"));
         document.head.appendChild(scriptTag);
       });
     </script>
@@ -50,6 +54,15 @@
     <title>Load Management</title>
   </head>
   <body>
+    <style>
+      html,body {
+        height: 100%;
+        margin: 0;
+
+      }
+
+      /* Add any additional styles you need */
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -1,18 +1,44 @@
 .billing-status-boxes {
+  display: flex;
+  gap: 20px;
+}
+
+.billing-status-bar {
+  cursor: pointer;
+}
+
+.billing-status-bar-active {
+  background-color: #f0f0f0;
+}
+
+.billing-status-bar:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 600px) {
+  .center-text {
+    text-align: center;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+  }
+
+  .align-p {
+    margin-top: 5px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dark .billing-status-boxes {
     gap: 20px;
   }
-  
-  .billing-status-bar {
-    cursor: pointer;
+
+  .dark .billing-status-bar-active,
+  .dark .billing-status-bar:hover {
+    background-color: #2d2d2d;
+    color: #ffffff;
   }
-  
-  .billing-status-bar-active {
-    background-color: #f0f0f0;
-  }
-  
-  .billing-status-bar:hover {
-    background-color: #f0f0f0;
-    cursor: pointer;
-  }
-  
+}
