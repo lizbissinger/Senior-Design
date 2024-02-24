@@ -74,3 +74,12 @@ export type PayrollDetail = {
   payrollCost: string;
  
 };
+
+export type FuelDetail = {
+  _id: string;
+  truckObject: string;
+  fuelCost: string;
+  fuelDate: string;
+  //loadNumber: string;
+  gallons: string;
+};

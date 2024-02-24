@@ -21,7 +21,7 @@ export async function GetAllPayroll(): Promise<PayrollDetail[] | undefined> {
   }
 }
 
-export async function CreateNewPayroll(repair: PayrollDetail): Promise<PayrollDetail | undefined> {
+export async function CreateNewPayroll(payroll: PayrollDetail): Promise<PayrollDetail | undefined> {
   console.log("Createing new payroll");
   try {
     const requestOptions = {
@@ -29,17 +29,17 @@ export async function CreateNewPayroll(repair: PayrollDetail): Promise<PayrollDe
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(repair),
+      body: JSON.stringify(payroll),
     };
 
     const response = await fetch(`${api}/Payroll`, requestOptions);
 
     if (!response.ok) {
-      throw new Error(`Failed to create a new repair: ${response.statusText}`);
+      throw new Error(`Failed to create a new Payroll: ${response.statusText}`);
     }
 
-    const newRepair: PayrollDetail = await response.json();
-    return newRepair;
+    const newPayroll: PayrollDetail = await response.json();
+    return newPayroll;
   } catch (error) {
     console.error(error);
     return undefined;
@@ -53,11 +53,11 @@ export async function DeletePayroll(id: string): Promise<PayrollDetail | undefin
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to delete the repair: ${response.statusText}`);
+      throw new Error(`Failed to delete the Payroll: ${response.statusText}`);
     }
 
-    const deletedRepair: PayrollDetail = await response.json();
-    return deletedRepair;
+    const deletedPayroll: PayrollDetail = await response.json();
+    return deletedPayroll;
   } catch (error) {
     console.error(error);
     return undefined;

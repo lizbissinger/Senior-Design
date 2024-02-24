@@ -3,16 +3,20 @@ import { Card, Grid, Dialog,Title ,Button, DialogPanel } from "@tremor/react";
 import RepairTable from '../Finance-Columns/Repairs-table';
 import Example from '../RepairsForm/RepairsForm';
 import Form from '../RepairsForm/RepairsForm';
-import { PayrollDetail, RepairDetail } from '../Types/types';
+import { FuelDetail, PayrollDetail, RepairDetail } from '../Types/types';
 import RepairsForm from '../RepairsForm/RepairsForm';
 import GetAllRepairs, { CreateNewRepair } from '../../routes/repairDetails';
 import PayrollForm from '../PayrollForm/PayrollForm';
 import PayrollTable from '../Finance-Columns/Payroll-table';
 import GetAllPayroll from '../../routes/payrollDetails';
+import FuelForm from '../FuelForm/FuelForm';
+import FuelTable from '../Finance-Columns/Fuel-table';
+import GetAllFuel from '../../routes/fuelDetails';
 
 const Finance: React.FC= () =>{
   const [repairDetails, setRepairDetails] = useState<RepairDetail[]>([]);
   const [payrollDetail, setPayrollDetails] = useState<PayrollDetail[]>([]);
+  const [fuelDetail, setFuelDetail] = useState<FuelDetail[]>([]);
  const fetchRepairs = async () => {
     try {
       const repairs = await GetAllRepairs();
@@ -64,9 +68,35 @@ const Finance: React.FC= () =>{
       // Handle error as needed
     }
   };
+  //-----Fuel---
+  const fetchFuel = async () => {
+    try {
+      const fuel = await GetAllFuel();
+      if (fuel) {
+        setFuelDetail(fuel);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAddFuel = async (newFuelDetail: FuelDetail) => {
+    try {
+      // Call your backend API to create a new repair
+      const newFuelLog = (newFuelDetail);
+
+      if (newFuelLog) {
+        // Add the new repair detail to the existing list
+        setFuelDetail((prevDetails) => [...prevDetails, newFuelLog]);
+      }
+    } catch (error) {
+      console.error(error);
+      // Handle error as needed
+    }
+  };
 
   useEffect(() => {
-    fetchRepairs(); fetchPayroll();
+    fetchRepairs(); fetchPayroll(); fetchFuel();
   }, []);
 
 
@@ -88,7 +118,8 @@ const Finance: React.FC= () =>{
             </Card>
             <Card>
               <Title>Fuel</Title>
-              
+              <FuelForm onSubmitFuel={handleAddFuel} />
+              <FuelTable fuelDetail={fuelDetail} fetchFuel={fetchFuel}/>
             </Card>
             <Card>
             <Title>Revenue</Title>
