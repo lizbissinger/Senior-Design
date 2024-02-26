@@ -259,7 +259,7 @@ const Reports: React.FC = () => {
               index="name"
               valueFormatter={valueFormatter}
               showTooltip={false}
-              colors={['indigo', 'violet', 'fuchsia']}
+              colors={['cyan', 'indigo', 'fuchsia']}
             />
             <div className="h-10"></div>
             <p className="mt-8 flex items-center justify-between text-tremor-label text-tremor-content dark:text-dark-tremor-content">
