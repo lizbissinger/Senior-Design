@@ -258,7 +258,7 @@ const Reports: React.FC = () => {
               category="amount"
               index="name"
               valueFormatter={valueFormatter}
-              showTooltip={false}
+              showTooltip={true}
               colors={['cyan', 'indigo', 'fuchsia']}
             />
             <div className="h-10"></div>
