@@ -13,7 +13,7 @@ import { Navigate } from "react-router-dom";
 
 const App: React.FC = () => {
   return (
-    <div className="App dark:bg-slate-900">
+    <div className="App dark:bg-slate-900 custom-scrollbar">
       <SignedOut>
         <Router>
           <Routes>
