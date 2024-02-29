@@ -74,8 +74,8 @@ const Reports: React.FC = () => {
       if (driverRevenuePerMileData) {
         setRevenuePerMileChartData(driverRevenuePerMileData);
 
-        const first_value = driverRevenuePerMileData[0].revenuePerMile;
-        const last_value = driverRevenuePerMileData[driverRevenuePerMileData.length-1].revenuePerMile;
+        const first_value = driverRevenuePerMileData[0]["Revenue per mile"];
+        const last_value = driverRevenuePerMileData[driverRevenuePerMileData.length-1]["Revenue per mile"];
         const _change = Math.round(((last_value - first_value) / last_value) * 100);
         const change = _change > 0 ? `+${_change}%` : `${_change}%`;
         const changeType = _change > 0 ? "positive" : "negative";
@@ -104,14 +104,14 @@ const Reports: React.FC = () => {
       if (driverNumberOfMilesData) {
         setTotalMilesChartData(driverNumberOfMilesData);
 
-        const first_value = driverNumberOfMilesData[0].miles;
-        const last_value = driverNumberOfMilesData[driverNumberOfMilesData.length-1].miles;
+        const first_value = driverNumberOfMilesData[0].Miles;
+        const last_value = driverNumberOfMilesData[driverNumberOfMilesData.length-1].Miles;
         const _change = Math.round(((last_value - first_value) / last_value) * 100);
         const change = _change > 0 ? `+${_change}%` : `${_change}%`;
         const changeType = _change > 0 ? "positive" : "negative";
         let value = 0;
         driverNumberOfMilesData.map((r:any) => {
-          value = value + r.miles;
+          value = value + r.Miles;
         });
 
         const kpiCardData = {
@@ -132,14 +132,14 @@ const Reports: React.FC = () => {
       if (loadCountData) {
         setTotalLoadsChartData(loadCountData);
 
-        const first_value = loadCountData[0].loadCount;
-        const last_value = loadCountData[loadCountData.length-1].loadCount;
+        const first_value = loadCountData[0].Loads;
+        const last_value = loadCountData[loadCountData.length-1].Loads;
         const _change = Math.round(((last_value - first_value) / last_value) * 100);
         const change = _change > 0 ? `+${_change}%` : `${_change}%`;
         const changeType = _change > 0 ? "positive" : "negative";
         let value = 0;
         loadCountData.map((r:any) => {
-          value = value + r.loadCount;
+          value = value + r.Loads;
         });
 
         const kpiCardData = {
@@ -294,9 +294,9 @@ const Reports: React.FC = () => {
             </List>
           </Card>
         </Card>
-        <SparkChartKPICard kpiCardData={revenuePerMileKpiCardData} chartData={revenuePerMileChartData} categories={["revenuePerMile"]} />
-        <SparkChartKPICard kpiCardData={totalMilesKpiCardData} chartData={totalMilesChartData} categories={["miles"]} />
-        <SparkChartKPICard kpiCardData={totalLoadsKpiCardData} chartData={totalLoadsChartData} categories={["loadCount"]} />
+        <SparkChartKPICard kpiCardData={revenuePerMileKpiCardData} chartData={revenuePerMileChartData} categories={["Revenue per mile"]} />
+        <SparkChartKPICard kpiCardData={totalMilesKpiCardData} chartData={totalMilesChartData} categories={["Miles"]} />
+        <SparkChartKPICard kpiCardData={totalLoadsKpiCardData} chartData={totalLoadsChartData} categories={["Loads"]} />
       </Grid>
     </div>
   );
