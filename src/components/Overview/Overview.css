@@ -112,8 +112,12 @@ h3 {
   height: 80vh;
 }
 
-.details-table table, thead {
+.details-table table, th {
   color: var(--bs-emphasis-color);
+}
+
+.details-table th {
+  background-color: whitesmoke;
 }
 
 .dark-font {
