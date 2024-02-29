@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Overview.css";
 import Autocomplete from "react-google-autocomplete";
 const Google_Maps_Api_Key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import DriverDropdown from "../DriverDropdown/DriverDropdown";
 import InvoiceGenerator from "../Invoice/InvoiceGenerator";
 import {
@@ -1146,17 +1146,18 @@ const Overview: React.FC = () => {
                           </div>
                         </div>
                       </td>
-                      <td>
+                      <td className="centered-cell">
                         {editableIndex === index ? (
                           <div className="flex items-center">
-                            <Bars3Icon
+                            <PencilIcon
+                              scale={1}
                               className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
                               onClick={() => handleSaveClick(index)}
                             />
                           </div>
                         ) : (
                           <div className="flex items-center">
-                            <Bars3Icon
+                            <PencilIcon
                               className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
                               onClick={() => handleEditClick(index)}
                             />
