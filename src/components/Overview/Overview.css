@@ -124,6 +124,11 @@ h3 {
   color: var(--bs-emphasis-color);
 }
 
+.status-font {
+  color: black !important;
+  padding: 6px !important;
+}
+
 table {
   margin-top: 0 !important;
 }
