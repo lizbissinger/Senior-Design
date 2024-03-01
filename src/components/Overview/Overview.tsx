@@ -1087,6 +1087,7 @@ const Overview: React.FC = () => {
                           <div className="flex items-center space-x-2">
                             {isStatusEditing && editingLoadIndex === index ? (
                               <Select
+                                className="status-font"
                                 id="status"
                                 value={load.status || ""}
                                 onValueChange={(selectedStatus) => {
@@ -1130,7 +1131,7 @@ const Overview: React.FC = () => {
                             ) : (
                               <Tooltip title="Change Status" arrow>
                                 <span
-                                  className={`badge ${getBadgeClass(
+                                  className={`status-font badge ${getBadgeClass(
                                     load.status
                                   )}`}
                                   onClick={() => {
