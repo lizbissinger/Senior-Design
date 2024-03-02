@@ -623,9 +623,9 @@ const Overview: React.FC = () => {
                 onValueChange={handleSearchSelectChange}
                 className="main-search mr-2"
               >
-                {filteredLoads.map((load) => (
+                {filteredLoads.map((load,idx) => (
                   <SearchSelectItem
-                    key={load.loadNumber}
+                    key={idx}
                     value={load.loadNumber}
                   >
                     {load.loadNumber}
