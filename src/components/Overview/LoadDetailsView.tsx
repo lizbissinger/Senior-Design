@@ -15,6 +15,7 @@ import MapWithDirections from "./MapWithDirections";
 import "./Overview.css";
 import { LoadDetail } from "../Types/types";
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import Email from "./Email";
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
@@ -76,6 +77,7 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
           <Tab value="1">Load Info</Tab>
           <Tab value="2">Directions</Tab>
           <Tab value="3">Documents</Tab>
+          <Tab value="4">Update</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -182,6 +184,9 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
                 </List>
               )}
             </List>
+          </TabPanel>
+          <TabPanel>
+            {load && <Email loadDetails={[load]} />}
           </TabPanel>
         </TabPanels>
       </TabGroup>
