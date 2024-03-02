@@ -38,8 +38,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
 
   const generateEmailContent = () => {
     let emailContent = `
-      <h2>Load Details</h2>
-      <table border='1'>
+      <table>
         <thead>
           <tr>
             ${
@@ -132,9 +131,14 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
 
   return (
     <div>
-      <Card className="p-4 bg-white dark:bg-dark-tremor-surface">
+      <Card className="p-4">
         <div className="flex items-center justify-between mb-4">
-          <label htmlFor="loadNumber">Load Number</label>
+          <label
+            className="dark:text-dark-tremor-content-strong"
+            htmlFor="loadNumber"
+          >
+            Load Number
+          </label>
           <Switch
             id="loadNumber"
             checked={selectedDetails.loadNumber}
@@ -142,7 +146,12 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
           />
         </div>
         <div className="flex items-center justify-between mb-4">
-          <label htmlFor="truckObject">Truck</label>
+          <label
+            className="dark:text-dark-tremor-content-strong"
+            htmlFor="truckObject"
+          >
+            Truck
+          </label>
           <Switch
             id="truckObject"
             checked={selectedDetails.truckObject}
@@ -150,7 +159,12 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
           />
         </div>
         <div className="flex items-center justify-between mb-4">
-          <label htmlFor="trailerObject">Trailer</label>
+          <label
+            className="dark:text-dark-tremor-content-strong"
+            htmlFor="trailerObject"
+          >
+            Trailer
+          </label>
           <Switch
             id="trailerObject"
             checked={selectedDetails.trailerObject}
@@ -158,7 +172,12 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
           />
         </div>
         <div className="flex items-center justify-between">
-          <label htmlFor="driverObject">Driver</label>
+          <label
+            className="dark:text-dark-tremor-content-strong"
+            htmlFor="driverObject"
+          >
+            Driver
+          </label>
           <Switch
             id="driverObject"
             checked={selectedDetails.driverObject}
