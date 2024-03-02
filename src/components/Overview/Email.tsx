@@ -18,7 +18,7 @@ interface SelectedDetails {
 }
 
 const Email: React.FC<EmailProps> = ({ loadDetails }) => {
-  const [toEmail, setToEmail] = useState("randhars@mail.uc.edu");
+  const [toEmail, setToEmail] = useState("");
 
   const [selectedDetails, setSelectedDetails] = useState<SelectedDetails>({
     loadNumber: true,
@@ -37,56 +37,82 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
   };
 
   const generateEmailContent = () => {
-    let emailContent = `
-      <table>
-        <thead>
+    const tableHeader = `
+      <thead>
+        <tr>
+          ${
+            selectedDetails.loadNumber
+              ? '<th style="text-align: left;">Load Number</th>'
+              : ""
+          }
+          ${
+            selectedDetails.truckObject
+              ? '<th style="text-align: left;">Truck</th>'
+              : ""
+          }
+          ${
+            selectedDetails.trailerObject
+              ? '<th style="text-align: left;">Trailer</th>'
+              : ""
+          }
+          ${
+            selectedDetails.driverObject
+              ? '<th style="text-align: left;">Driver</th>'
+              : ""
+          }
+          ${
+            selectedDetails.status
+              ? '<th style="text-align: left;">Status</th>'
+              : ""
+          }
+        </tr>
+      </thead>
+    `;
+
+    const tableBody = loadDetails
+      .map((load) => {
+        return `
           <tr>
             ${
               selectedDetails.loadNumber
-                ? '<th style="text-align: left;">Load Number</th>'
+                ? `<td style="text-align: left;">${load.loadNumber}</td>`
                 : ""
             }
             ${
               selectedDetails.truckObject
-                ? '<th style="text-align: left;">Truck</th>'
+                ? `<td style="text-align: left;">${load.truckObject}</td>`
                 : ""
             }
             ${
               selectedDetails.trailerObject
-                ? '<th style="text-align: left;">Trailer</th>'
+                ? `<td style="text-align: left;">${load.trailerObject}</td>`
                 : ""
             }
             ${
               selectedDetails.driverObject
-                ? '<th style="text-align: left;">Driver</th>'
+                ? `<td style="text-align: left;">${load.driverObject}</td>`
+                : ""
+            }
+            ${
+              selectedDetails.status
+                ? `<td style="text-align: left;">${load.status}</td>`
                 : ""
             }
           </tr>
-        </thead>
+        `;
+      })
+      .join("");
+
+    const emailContent = `
+      <table style="width: 100%; border-collapse: collapse;">
+        ${tableHeader}
         <tbody>
-    `;
-
-    loadDetails.forEach((load) => {
-      emailContent += "<tr>";
-
-      if (selectedDetails.loadNumber)
-        emailContent += `<td>${load.loadNumber}</td>`;
-      if (selectedDetails.truckObject)
-        emailContent += `<td>${load.truckObject}</td>`;
-      if (selectedDetails.trailerObject)
-        emailContent += `<td>${load.trailerObject}</td>`;
-      if (selectedDetails.driverObject)
-        emailContent += `<td>${load.driverObject}</td>`;
-
-      emailContent += "</tr>";
-    });
-
-    emailContent += `
+          ${tableBody}
         </tbody>
       </table>
     `;
 
-    return emailContent;
+    return emailContent.replace(/\n/g, "");
   };
 
   const sendEmail = () => {
@@ -105,9 +131,11 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
   const confirmSendEmail = () => {
     const templateParams = {
       to_email: toEmail,
+      to_content: emailContent,
       to_name: "Broker",
       subject: "Load Details Email",
       load: loadDetails[0],
+      is_html: true,
     };
 
     emailjs
@@ -132,7 +160,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
   return (
     <div>
       <Card className="p-4">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center text-sm justify-between mb-2">
           <label
             className="dark:text-dark-tremor-content-strong"
             htmlFor="loadNumber"
@@ -145,7 +173,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
             onChange={() => toggleDetailSelection("loadNumber")}
           />
         </div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center text-sm justify-between mb-2">
           <label
             className="dark:text-dark-tremor-content-strong"
             htmlFor="truckObject"
@@ -158,7 +186,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
             onChange={() => toggleDetailSelection("truckObject")}
           />
         </div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center text-sm justify-between mb-2">
           <label
             className="dark:text-dark-tremor-content-strong"
             htmlFor="trailerObject"
@@ -171,7 +199,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
             onChange={() => toggleDetailSelection("trailerObject")}
           />
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center text-sm justify-between mb-2">
           <label
             className="dark:text-dark-tremor-content-strong"
             htmlFor="driverObject"
@@ -182,6 +210,19 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
             id="driverObject"
             checked={selectedDetails.driverObject}
             onChange={() => toggleDetailSelection("driverObject")}
+          />
+        </div>
+        <div className="flex items-center text-sm justify-between">
+          <label
+            className="dark:text-dark-tremor-content-strong"
+            htmlFor="status"
+          >
+            Status
+          </label>
+          <Switch
+            id="status"
+            checked={selectedDetails.status}
+            onChange={() => toggleDetailSelection("status")}
           />
         </div>
       </Card>
