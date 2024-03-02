@@ -19,6 +19,7 @@ interface SelectedDetails {
 
 const Email: React.FC<EmailProps> = ({ loadDetails }) => {
   const [toEmail, setToEmail] = useState("");
+  const [comment, setComment] = useState("");
 
   const [selectedDetails, setSelectedDetails] = useState<SelectedDetails>({
     loadNumber: true,
@@ -37,79 +38,44 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
   };
 
   const generateEmailContent = () => {
-    const tableHeader = `
-      <thead>
-        <tr>
+    const listItems = loadDetails
+      .map((load) => {
+        const loadDetailsContent = `
           ${
             selectedDetails.loadNumber
-              ? '<th style="text-align: left;">Load Number</th>'
+              ? `<strong>Load Number:</strong> ${load.loadNumber}`
               : ""
           }
           ${
             selectedDetails.truckObject
-              ? '<th style="text-align: left;">Truck</th>'
+              ? `<br><strong>Truck:</strong> ${load.truckObject}`
               : ""
           }
           ${
             selectedDetails.trailerObject
-              ? '<th style="text-align: left;">Trailer</th>'
+              ? `<br><strong>Trailer:</strong> ${load.trailerObject}`
               : ""
           }
           ${
             selectedDetails.driverObject
-              ? '<th style="text-align: left;">Driver</th>'
+              ? `<br><strong>Driver:</strong> ${load.driverObject}`
               : ""
           }
           ${
             selectedDetails.status
-              ? '<th style="text-align: left;">Status</th>'
+              ? `<br><strong>Status:</strong> ${load.status}`
               : ""
           }
-        </tr>
-      </thead>
-    `;
-
-    const tableBody = loadDetails
-      .map((load) => {
-        return `
-          <tr>
-            ${
-              selectedDetails.loadNumber
-                ? `<td style="text-align: left;">${load.loadNumber}</td>`
-                : ""
-            }
-            ${
-              selectedDetails.truckObject
-                ? `<td style="text-align: left;">${load.truckObject}</td>`
-                : ""
-            }
-            ${
-              selectedDetails.trailerObject
-                ? `<td style="text-align: left;">${load.trailerObject}</td>`
-                : ""
-            }
-            ${
-              selectedDetails.driverObject
-                ? `<td style="text-align: left;">${load.driverObject}</td>`
-                : ""
-            }
-            ${
-              selectedDetails.status
-                ? `<td style="text-align: left;">${load.status}</td>`
-                : ""
-            }
-          </tr>
+          ${comment ? `<br><strong>Comment:</strong> ${comment}` : ""}
         `;
+        return `<li>${loadDetailsContent}</li>`;
       })
       .join("");
 
     const emailContent = `
-      <table style="width: 100%; border-collapse: collapse;">
-        ${tableHeader}
-        <tbody>
-          ${tableBody}
-        </tbody>
-      </table>
+      <ul style="list-style-type: none; padding: 0;">
+        ${listItems}
+      </ul>
     `;
 
     return emailContent.replace(/\n/g, "");
@@ -232,6 +198,12 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
         type="email"
         value={toEmail}
         onChange={(e) => setToEmail(e.target.value)}
+      />
+      <TextInput
+        className="mt-2"
+        placeholder="Add a comment..."
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
       />
       <div className="flex justify-end">
         <Button
