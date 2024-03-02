@@ -112,12 +112,21 @@ h3 {
   height: 80vh;
 }
 
-.details-table table, thead {
+.details-table table, th {
   color: var(--bs-emphasis-color);
+}
+
+.details-table th {
+  background-color: whitesmoke;
 }
 
 .dark-font {
   color: var(--bs-emphasis-color);
+}
+
+.status-font {
+  color: black !important;
+  padding: 6px !important;
 }
 
 table {

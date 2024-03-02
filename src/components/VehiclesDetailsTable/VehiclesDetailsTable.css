@@ -45,6 +45,11 @@
   overflow: auto;
 }
 
+.table-head th{
+  color: var(--bs-emphasis-color);
+  background-color: whitesmoke;
+}
+
 @media (max-width: 767px) {
   .vehicles-details-container {
     display: block;

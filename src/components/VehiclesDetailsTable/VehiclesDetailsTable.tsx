@@ -131,7 +131,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
   });
 
   return (
-    <Grid className="vehicles-details-container">
+    <Grid className="vehicles-details-container table-head">
       <TabGroup>
         <TabList variant="line" defaultValue="1">
           <Tab value="1">Drivers</Tab>
