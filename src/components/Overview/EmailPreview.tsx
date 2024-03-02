@@ -22,7 +22,7 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({
         <Button className="mt-8 w-full" onClick={onSend}>
           Send Email
         </Button>
-        <Button className="mt-4 w-full" onClick={onClose}>
+        <Button variant="light" className="mt-4 w-full" onClick={onClose}>
           Close
         </Button>
       </DialogPanel>
