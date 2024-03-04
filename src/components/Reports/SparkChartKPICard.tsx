@@ -17,7 +17,6 @@ const SparkChartKPICard: React.FC<SparkChartKPICardProps> = ({
   chartData,
   categories,
 }) => {
-  
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
