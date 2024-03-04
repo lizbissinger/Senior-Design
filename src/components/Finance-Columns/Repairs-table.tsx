@@ -1,31 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { Dialog, DialogPanel } from "@tremor/react";
 import {
-    Table,
-    TableHead,
-    TableHeaderCell,
-    TableBody,
-    TableRow,
-    TableCell,
-  } from "@tremor/react";
-import { RepairDetail } from '../Types/types';
+  Table,
+  TableHead,
+  TableHeaderCell,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@tremor/react";
+import { RepairDetail } from "../Types/types";
 
-import GetAllRepairs,{
+import GetAllRepairs, {
   CreateNewRepair,
   DeleteRepair,
-} from '../../routes/repairDetails';
-
-
+} from "../../routes/repairDetails";
 
 interface RepairTableProps {
   repairDetails: RepairDetail[];
   fetchRepairs: () => void;
 }
 
-  const RepairTable: React.FC<RepairTableProps> = ({ repairDetails, fetchRepairs }) => {
-    
-  return(
-    
+const RepairTable: React.FC<RepairTableProps> = ({
+  repairDetails,
+  fetchRepairs,
+}) => {
+  return (
     <Table className="mt-5">
       <TableHead>
         <TableRow>
@@ -38,18 +37,13 @@ interface RepairTableProps {
         {repairDetails.map((item) => (
           <TableRow key={item.repair}>
             <TableCell>{item.repair}</TableCell>
-            <TableCell>
-              {item.repairCost}
-            </TableCell>
-          <TableCell>
-            {item.truckObject}
-          </TableCell>
-           
+            <TableCell>{item.repairCost}</TableCell>
+            <TableCell>{item.truckObject}</TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
   );
-        }
+};
 
-  export default RepairTable;
+export default RepairTable;

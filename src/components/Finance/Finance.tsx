@@ -72,7 +72,7 @@ const Finance: React.FC = () => {
       console.error(error);
     }
   };
-  const handleAddForm = async (newFuel: Fuel) => {
+  const handleAddFuel = async (newFuel: Fuel) => {
     try {
       const newFuelRow = newFuel;
 
@@ -111,8 +111,11 @@ const Finance: React.FC = () => {
         </Card>
         <Card>
           <Title>Fuel</Title>
-          <FuelForm onSubmitFuel={handleAddForm} />
-          <FuelTable fuel={fuel} fetchFuel={fetchFuelRows} />
+          <FuelForm onSubmitFuel={handleAddFuel} />
+          <FuelTable 
+            fuel={fuel}
+            fetchFuel={fetchFuelRows}
+          />
         </Card>
         <Card>
           <Title>Revenue</Title>
