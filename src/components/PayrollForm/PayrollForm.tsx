@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Divider, TextInput } from "@tremor/react";
 import { PayrollDetail } from "../Types/types";
 import { CreateNewPayroll } from "../../routes/payrollDetails";
+import DriverDropdown from "../../components/DriverDropdown/DriverDropdown";
+import { fetchDrivers } from "../../components/Overview/OverviewUtils";
 
 interface PayrollsFormProps {
   onSubmitPayroll: (payrollDetail: PayrollDetail) => void;
@@ -13,6 +15,18 @@ export default function PayrollForm({ onSubmitPayroll }: PayrollsFormProps) {
     payrollDate: "",
     payrollCost: "",
   });
+
+  const [drivers, setDrivers] = useState<string[]>([]);
+
+  const fetchAndSetDrivers = async () => {
+    const fetchedDrivers = await fetchDrivers();
+    setDrivers(fetchedDrivers);
+  };
+
+  useEffect(() => {
+    fetchAndSetDrivers();
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPayrollDetail((prevDetail) => ({ ...prevDetail, [name]: value }));
@@ -35,23 +49,24 @@ export default function PayrollForm({ onSubmitPayroll }: PayrollsFormProps) {
     }
   };
 
+  const handleDriverSelect = (selectedDriver: string) => {
+    setPayrollDetail({ ...payrollDetail, driver: selectedDriver });
+  };
+
   return (
     <form className="payroll-form" onSubmit={handleSubmit}>
-      <div className="col-span-full">
+      <div className="col-span-full sm:col-span-3">
         <label
-          htmlFor="driver"
+          htmlFor="driverDropdown"
           className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
         >
-          Driver name - Add Dropdown here
+          Driver
           <span className="text-red-500">*</span>
         </label>
-        <TextInput
-          placeholder="Driver Name"
-          type="text"
-          name="driver"
-          value={payrollDetail.driver}
-          onChange={handleInputChange}
-          required
+        <DriverDropdown
+          driverList={drivers}
+          selectedDriver={payrollDetail.driver || ""}
+          onSelectDriver={handleDriverSelect}
         />
       </div>
       <Divider></Divider>
