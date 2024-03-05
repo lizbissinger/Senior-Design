@@ -41,11 +41,11 @@ export default function PayrollForm({ onSubmitPayroll }: PayrollsFormProps) {
     if (newPayroll) {
       onSubmitPayroll(newPayroll);
 
-      setPayrollDetail({
-        driver: "",
-        payrollDate: "",
-        payrollCost: "",
-      });
+      // setPayrollDetail({
+      //   driver: "",
+      //   payrollDate: "",
+      //   payrollCost: "",
+      // });
     }
   };
 
