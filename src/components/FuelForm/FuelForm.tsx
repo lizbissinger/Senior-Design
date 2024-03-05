@@ -43,11 +43,11 @@ export default function FuelForm({ onSubmitFuel }: FuelFormProps) {
       onSubmitFuel(newFuelRow);
 
       // Clear the form - commenting this out fixed the bug of showing add af
-      setFuel({
-        cost: "",
-        truckObject: "",
-        date: "",
-      });
+      // setFuel({
+      //   cost: "",
+      //   truckObject: "",
+      //   date: "",
+      // });
     }
   };
 
