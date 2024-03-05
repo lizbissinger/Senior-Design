@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Dialog, DialogPanel } from "@tremor/react";
+import React from "react";
 import {
   Table,
   TableHead,
@@ -9,11 +8,6 @@ import {
   TableCell,
 } from "@tremor/react";
 import { RepairDetail } from "../Types/types";
-
-import GetAllRepairs, {
-  CreateNewRepair,
-  DeleteRepair,
-} from "../../routes/repairDetails";
 
 interface RepairTableProps {
   repairDetails: RepairDetail[];
