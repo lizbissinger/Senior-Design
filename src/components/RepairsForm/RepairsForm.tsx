@@ -36,14 +36,14 @@ export default function RepairsForm({ onSubmitRepair }: RepairsFormProps) {
     if (newRepair) {
       onSubmitRepair(newRepair);
 
-      setRepairDetail({
-        repair: "",
-        truckObject: "",
-        trailerObject: "",
-        repairDate: "",
-        repairCost: "",
-        repairComments: "",
-      });
+      // setRepairDetail({
+      //   repair: "",
+      //   truckObject: "",
+      //   trailerObject: "",
+      //   repairDate: "",
+      //   repairCost: "",
+      //   repairComments: "",
+      // });
     }
   };
 
