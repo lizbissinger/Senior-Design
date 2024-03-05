@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Divider, TextInput } from "@tremor/react";
 import { Fuel } from "../Types/types";
 import { CreateNewFuelRow } from "../../routes/fuel";
+import TruckDropdown from "../TruckForm/TruckDropdown";
+import { fetchTrucks } from "../Overview/OverviewUtils";
 
 interface FuelFormProps {
   onSubmitFuel: (fuel: Fuel) => void;
@@ -13,9 +15,21 @@ export default function FuelForm({ onSubmitFuel }: FuelFormProps) {
     truckObject: "",
     date: "",
   });
+
+  const [trucks, setTrucks] = useState<string[]>([]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFuel((prevDetail) => ({ ...prevDetail, [name]: value }));
+  };
+
+  useEffect(() => {
+    fetchAndSetTrucks();
+  }, []);
+
+  const fetchAndSetTrucks = async () => {
+    const fetchedTrucks = await fetchTrucks();
+    setTrucks(fetchedTrucks);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,13 +42,17 @@ export default function FuelForm({ onSubmitFuel }: FuelFormProps) {
       // Update the parent component state or perform any other actions as needed
       onSubmitFuel(newFuelRow);
 
-      // Clear the form
+      // Clear the form - commenting this out fixed the bug of showing add af
       setFuel({
         cost: "",
         truckObject: "",
         date: "",
       });
     }
+  };
+
+  const handleTruckSelect = (selectedTruck: string) => {
+    setFuel({ ...fuel, truckObject: selectedTruck });
   };
 
   return (
@@ -57,21 +75,18 @@ export default function FuelForm({ onSubmitFuel }: FuelFormProps) {
         />
       </div>
       <Divider></Divider>
-      <div className="col-span-full">
+      <div className="col-span-full sm:col-span-3">
         <label
-          htmlFor="truckObject"
+          htmlFor="truckDropdown"
           className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
         >
           Truck
           <span className="text-red-500">*</span>
         </label>
-        <TextInput
-          placeholder="Truck"
-          type="text"
-          name="truckObject"
-          value={fuel.truckObject}
-          onChange={handleInputChange}
-          required
+        <TruckDropdown
+          truckList={trucks}
+          selectedTruck={fuel.truckObject || ""}
+          onSelectTruck={handleTruckSelect}
         />
       </div>
       <Divider></Divider>
