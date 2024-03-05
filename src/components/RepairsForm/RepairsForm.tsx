@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Divider, TextInput } from "@tremor/react";
-
+import { fetchTrucks, fetchTrailers } from "../Overview/OverviewUtils";
 import { RepairDetail } from "../Types/types";
 import { CreateNewRepair } from "../../routes/repairDetails";
+import TrailerDropdown from "../TrailerForm/TrailerDropdown";
+import TruckDropdown from "../TruckForm/TruckDropdown";
 interface RepairsFormProps {
   onSubmitRepair: (repairDetail: RepairDetail) => void;
 }
@@ -16,6 +18,10 @@ export default function RepairsForm({ onSubmitRepair }: RepairsFormProps) {
     repairCost: "",
     repairComments: "",
   });
+
+  const [trucks, setTrucks] = useState<string[]>([]);
+  const [trailers, setTrailers] = useState<string[]>([]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setRepairDetail((prevDetail) => ({ ...prevDetail, [name]: value }));
@@ -30,15 +36,38 @@ export default function RepairsForm({ onSubmitRepair }: RepairsFormProps) {
     if (newRepair) {
       onSubmitRepair(newRepair);
 
-      setRepairDetail({
-        repair: "",
-        truckObject: "",
-        trailerObject: "",
-        repairDate: "",
-        repairCost: "",
-        repairComments: "",
-      });
+      // setRepairDetail({
+      //   repair: "",
+      //   truckObject: "",
+      //   trailerObject: "",
+      //   repairDate: "",
+      //   repairCost: "",
+      //   repairComments: "",
+      // });
     }
+  };
+
+  useEffect(() => {
+    const fetchAndSetTrailers = async () => {
+      const fetchedTrailers = await fetchTrailers();
+      setTrailers(fetchedTrailers);
+    };
+
+    const fetchAndSetTrucks = async () => {
+      const fetchedTrucks = await fetchTrucks();
+      setTrucks(fetchedTrucks);
+    };
+
+    fetchAndSetTrailers();
+    fetchAndSetTrucks();
+  }, []);
+
+  const handleTruckSelect = (selectedTruck: string) => {
+    setRepairDetail({ ...repairDetail, truckObject: selectedTruck });
+  };
+
+  const handleTrailerSelect = (selectedTrailer: string) => {
+    setRepairDetail({ ...repairDetail, trailerObject: selectedTrailer });
   };
 
   return (
@@ -98,21 +127,36 @@ export default function RepairsForm({ onSubmitRepair }: RepairsFormProps) {
       </div>
 
       <Divider></Divider>
-      <TextInput
-        placeholder="Select Truck (Make This deopdown)"
-        type="text"
-        name="truckObject"
-        value={repairDetail.truckObject}
-        onChange={handleInputChange}
-      />
+      <div className="col-span-full sm:col-span-3">
+        <label
+          htmlFor="truckDropdown"
+          className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+        >
+          Truck
+          <span className="text-red-500">*</span>
+        </label>
+        <TruckDropdown
+          truckList={trucks}
+          selectedTruck={repairDetail.truckObject || ""}
+          onSelectTruck={handleTruckSelect}
+        />
+      </div>
+
       <Divider></Divider>
-      <TextInput
-        placeholder="Select Trailer (Make This deopdown)"
-        type="text"
-        name="trailerObject"
-        value={repairDetail.trailerObject}
-        onChange={handleInputChange}
-      />
+      <div className="col-span-full sm:col-span-3">
+        <label
+          htmlFor="trailerDropdown"
+          className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+        >
+          Trailer
+          <span className="text-red-500">*</span>
+        </label>
+        <TrailerDropdown
+          trailerList={trailers}
+          selectedTrailer={repairDetail.trailerObject || ""}
+          onSelectTrailer={handleTrailerSelect}
+        />
+      </div>
       <Divider></Divider>
       <TextInput
         placeholder="Comments"
