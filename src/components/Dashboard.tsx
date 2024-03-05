@@ -79,7 +79,7 @@ const Dashboard: React.FC = () => {
           <div className="relative flex h-16 items-center justify-between">
             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
               <button
-                className="relative inline-flex items-center justify-center rounded-md p-2 text-neutral-950 hover:bg-[#6686DC] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:text-white"
+                className="relative inline-flex items-center justify-center rounded-md p-2 text-neutral-950 hover:bg-[#779BFB] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:hover:bg-[#6686DC] dark:text-white"
                 onClick={handleMobileMenuToggle}
               >
                 <span className="absolute -inset-0.5" />
@@ -115,8 +115,8 @@ const Dashboard: React.FC = () => {
                       onClick={() => handleLinkClick(item)}
                       className={classNames(
                         item.current
-                          ? "bg-[#6686DC] text-neutral-950 no-underline hover:text-neutral-950"
-                          : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950 dark:text-white dark:hover:text-neutral-950",
+                          ? "bg-[#779BFB] text-neutral-950 no-underline hover:text-neutral-950 dark:bg-[#6686DC]"
+                          : "no-underline text-neutral-950 hover:bg-[#779BFB] hover:no-underline hover:text-neutral-950 dark:hover:bg-[#6686DC] dark:text-white dark:hover:text-neutral-950",
                         "rounded-md px-3 py-2 text-50 font-medium"
                       )}
                     >
@@ -209,8 +209,8 @@ const Dashboard: React.FC = () => {
                 onClick={() => handleLinkClick(item)}
                 className={classNames(
                   item.current
-                    ? "bg-[#6686DC] text-neutral-950 no-underline"
-                    : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950 dark:text-white dark:hover:text-neutral-950",
+                    ? "bg-[#779BFB] text-neutral-950 no-underline dark:bg-[#6686DC]"
+                    : "no-underline text-neutral-950 hover:bg-[#779BFB] hover:no-underline hover:text-neutral-950 dark:text-white dark:hover:bg-[#6686DC] dark:hover:text-neutral-950",
                   "block rounded-md px-3 py-2 text-base font-medium"
                 )}
               >
