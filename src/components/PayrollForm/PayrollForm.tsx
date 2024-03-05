@@ -1,30 +1,35 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Dialog,
-  DialogPanel,
-  Divider,
-  TextInput,
-  Title,
-} from "@tremor/react";
+import React, { useState, useEffect } from "react";
+import { Button, Divider, TextInput } from "@tremor/react";
 import { PayrollDetail } from "../Types/types";
 import { CreateNewPayroll } from "../../routes/payrollDetails";
+import DriverDropdown from "../../components/DriverDropdown/DriverDropdown";
+import { fetchDrivers } from "../../components/Overview/OverviewUtils";
 
 interface PayrollsFormProps {
   onSubmitPayroll: (payrollDetail: PayrollDetail) => void;
 }
 
 export default function PayrollForm({ onSubmitPayroll }: PayrollsFormProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  const [payrollDetail, setpayrollDetail] = useState<Partial<PayrollDetail>>({
+  const [payrollDetail, setPayrollDetail] = useState<Partial<PayrollDetail>>({
     driver: "",
     payrollDate: "",
     payrollCost: "",
   });
+
+  const [drivers, setDrivers] = useState<string[]>([]);
+
+  const fetchAndSetDrivers = async () => {
+    const fetchedDrivers = await fetchDrivers();
+    setDrivers(fetchedDrivers);
+  };
+
+  useEffect(() => {
+    fetchAndSetDrivers();
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setpayrollDetail((prevDetail) => ({ ...prevDetail, [name]: value }));
+    setPayrollDetail((prevDetail) => ({ ...prevDetail, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,92 +41,77 @@ export default function PayrollForm({ onSubmitPayroll }: PayrollsFormProps) {
     if (newPayroll) {
       onSubmitPayroll(newPayroll);
 
-      setpayrollDetail({
-        driver: "",
-        payrollDate: "",
-        payrollCost: "",
-      });
-
-      setIsOpen(false);
+      // setPayrollDetail({
+      //   driver: "",
+      //   payrollDate: "",
+      //   payrollCost: "",
+      // });
     }
   };
 
+  const handleDriverSelect = (selectedDriver: string) => {
+    setPayrollDetail({ ...payrollDetail, driver: selectedDriver });
+  };
+
   return (
-    <>
-      <div className="text-center">
-        <Button onClick={() => setIsOpen(true)}>Add Payroll</Button>
+    <form className="payroll-form" onSubmit={handleSubmit}>
+      <div className="col-span-full sm:col-span-3">
+        <label
+          htmlFor="driverDropdown"
+          className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+        >
+          Driver
+          <span className="text-red-500">*</span>
+        </label>
+        <DriverDropdown
+          driverList={drivers}
+          selectedDriver={payrollDetail.driver || ""}
+          onSelectDriver={handleDriverSelect}
+        />
       </div>
-      <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
-        <DialogPanel>
-          <Button variant="light" onClick={() => setIsOpen(false)}>
-            Close
-          </Button>
-          <Title className="mb-3">Add Payroll Form</Title>
-          <Divider />
-          <form className="payroll-form" onSubmit={handleSubmit}>
-            <div className="col-span-full">
-              <label
-                htmlFor="driver"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Driver name - Add Dropdown here
-                <span className="text-red-500">*</span>
-              </label>
-              <TextInput
-                placeholder="Driver Name"
-                type="text"
-                name="driver"
-                value={payrollDetail.driver}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <Divider></Divider>
-            <div className="col-span-full">
-              <label
-                htmlFor="payrollCost"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Pay
-                <span className="text-red-500">*</span>
-              </label>
-              <TextInput
-                placeholder="Cost"
-                type="text"
-                name="payrollCost"
-                value={payrollDetail.payrollCost}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <Divider></Divider>
-            <label
-              htmlFor="payrollDate"
-              className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-            >
-              Date
-              <span className="text-red-500">*</span>
-            </label>
-            <div className="col-span-full">
-              <input
-                id="pickupTime"
-                name="payrollDate"
-                type="datetime-local"
-                placeholder="Payroll Date"
-                value={payrollDetail.payrollDate}
-                onChange={handleInputChange}
-              />
-            </div>
+      <Divider></Divider>
+      <div className="col-span-full">
+        <label
+          htmlFor="payrollCost"
+          className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+        >
+          Pay
+          <span className="text-red-500">*</span>
+        </label>
+        <TextInput
+          placeholder="Cost"
+          type="text"
+          name="payrollCost"
+          value={payrollDetail.payrollCost}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+      <Divider></Divider>
+      <label
+        htmlFor="payrollDate"
+        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+      >
+        Date
+        <span className="text-red-500">*</span>
+      </label>
+      <div className="col-span-full">
+        <input
+          id="pickupTime"
+          name="payrollDate"
+          type="datetime-local"
+          placeholder="Payroll Date"
+          value={payrollDetail.payrollDate}
+          onChange={handleInputChange}
+        />
+      </div>
 
-            <Divider></Divider>
+      <Divider></Divider>
 
-            <Button className="mt-3" type="submit">
-              {/* onClick={() => setIsOpen(false)}     -- To close form on creation*/}
-              Create
-            </Button>
-          </form>
-        </DialogPanel>
-      </Dialog>
-    </>
+      <Button className="mt-3" type="submit">
+        {/* onClick={() => setIsOpen(false)}     -- To close form on creation*/}
+        Create
+      </Button>
+    </form>
   );
 }

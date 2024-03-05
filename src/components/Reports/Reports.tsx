@@ -1,34 +1,57 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import "./Reports.css";
 import {
-  Card, Grid, Col,
-  AreaChart, BarChart, DonutChart,
+  Card,
+  Grid,
+  Col,
+  AreaChart,
+  BarChart,
+  DonutChart,
   Title,
-  DateRangePicker, DateRangePickerValue,
-  SearchSelect, SearchSelectItem,
-  Tab, TabGroup, TabList, TabPanel, TabPanels,
-  List, ListItem
+  DateRangePicker,
+  DateRangePickerValue,
+  SearchSelect,
+  SearchSelectItem,
+  Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
+  List,
+  ListItem,
 } from "@tremor/react";
 import { useState } from "react";
-import{ UserIcon, PresentationChartLineIcon, ChartBarIcon } from "@heroicons/react/24/solid";
+import {
+  UserIcon,
+  PresentationChartLineIcon,
+  ChartBarIcon,
+} from "@heroicons/react/24/solid";
 import NoDataToShow from "./NoDataToShow";
 import SparkChartKPICard from "./SparkChartKPICard";
 import GetAllDrivers from "../../routes/driverDetails";
-import GetAllRevenueData from '../../routes/reports';
-import { GetRevenuePerMileData, GetNumberOfMiles, GetLoadCount, GetExpenses } from "../../routes/reports";
+import GetAllRevenueData from "../../routes/reports";
+import {
+  GetRevenuePerMileData,
+  GetNumberOfMiles,
+  GetLoadCount,
+  GetExpenses,
+} from "../../routes/reports";
 
 const Reports: React.FC = () => {
   const [driver, setDriver] = useState("");
   const [drivers, setDrivers] = useState<string[]>([]);
   const fromDate = new Date();
-  fromDate.setDate(fromDate.getDate() - 30)
+  fromDate.setDate(fromDate.getDate() - 30);
   const [date, setDate] = useState<DateRangePickerValue>({
     to: new Date(),
-    from: fromDate
+    from: fromDate,
   });
   const [revenueOverTimeChartData, setRevenueOverTimeChartData] = useState([]);
-  const [revenuePerMileChartData, setRevenuePerMileChartData] = useState<Object[]>([]);
-  const [revenuePerMileKpiCardData, setRevenuePerMileKpiCardData] = useState<any>({});
+  const [revenuePerMileChartData, setRevenuePerMileChartData] = useState<
+    Object[]
+  >([]);
+  const [revenuePerMileKpiCardData, setRevenuePerMileKpiCardData] =
+    useState<any>({});
   const [totalMilesChartData, setTotalMilesChartData] = useState<Object[]>([]);
   const [totalMilesKpiCardData, setTotalMilesKpiCardData] = useState<any>({});
   const [totalLoadsChartData, setTotalLoadsChartData] = useState<Object[]>([]);
@@ -36,8 +59,8 @@ const Reports: React.FC = () => {
   const [categories, setCategories] = useState<string[]>(["Cumulative"]);
   const [expenses, setExpenses] = useState<Object[]>([]);
   const [barChartToolTip, setBarChartToolTip] = useState(null);
-  
-  const valueFormatter = function (number:number) {
+
+  const valueFormatter = function (number: number) {
     return "$ " + new Intl.NumberFormat("us").format(number).toString();
   };
 
@@ -69,26 +92,36 @@ const Reports: React.FC = () => {
 
   const fetchRevenuePerMileChartData = async () => {
     try {
-      const driverRevenuePerMileData = await GetRevenuePerMileData(driver, date);
+      const driverRevenuePerMileData = await GetRevenuePerMileData(
+        driver,
+        date
+      );
 
       if (driverRevenuePerMileData) {
         setRevenuePerMileChartData(driverRevenuePerMileData);
 
         const first_value = driverRevenuePerMileData[0]["Revenue per mile"];
-        const last_value = driverRevenuePerMileData[driverRevenuePerMileData.length-1]["Revenue per mile"];
-        const _change = Math.round(((last_value - first_value) / last_value) * 100);
+        const last_value =
+          driverRevenuePerMileData[driverRevenuePerMileData.length - 1][
+            "Revenue per mile"
+          ];
+        const _change = Math.round(
+          ((last_value - first_value) / last_value) * 100
+        );
         const change = _change > 0 ? `+${_change}%` : `${_change}%`;
         const changeType = _change > 0 ? "positive" : "negative";
         let revenue = 0;
         let miles = 0;
-        driverRevenuePerMileData.map((r:any) => {
+        driverRevenuePerMileData.map((r: any) => {
           revenue = revenue + r.revenue;
           miles = miles + r.miles;
         });
 
         const kpiCardData = {
-          name: 'Revenue per mile',
-          value: valueFormatter(Math.round(((revenue / miles) + Number.EPSILON) * 100) / 100),
+          name: "Revenue per mile",
+          value: valueFormatter(
+            Math.round((revenue / miles + Number.EPSILON) * 100) / 100
+          ),
           change: change,
           changeType: changeType,
         };
@@ -105,17 +138,20 @@ const Reports: React.FC = () => {
         setTotalMilesChartData(driverNumberOfMilesData);
 
         const first_value = driverNumberOfMilesData[0].Miles;
-        const last_value = driverNumberOfMilesData[driverNumberOfMilesData.length-1].Miles;
-        const _change = Math.round(((last_value - first_value) / last_value) * 100);
+        const last_value =
+          driverNumberOfMilesData[driverNumberOfMilesData.length - 1].Miles;
+        const _change = Math.round(
+          ((last_value - first_value) / last_value) * 100
+        );
         const change = _change > 0 ? `+${_change}%` : `${_change}%`;
         const changeType = _change > 0 ? "positive" : "negative";
         let value = 0;
-        driverNumberOfMilesData.map((r:any) => {
+        driverNumberOfMilesData.map((r: any) => {
           value = value + r.Miles;
         });
 
         const kpiCardData = {
-          name: 'Total miles',
+          name: "Total miles",
           value: Math.round(value * 10) / 10,
           change: change,
           changeType: changeType,
@@ -133,17 +169,19 @@ const Reports: React.FC = () => {
         setTotalLoadsChartData(loadCountData);
 
         const first_value = loadCountData[0].Loads;
-        const last_value = loadCountData[loadCountData.length-1].Loads;
-        const _change = Math.round(((last_value - first_value) / last_value) * 100);
+        const last_value = loadCountData[loadCountData.length - 1].Loads;
+        const _change = Math.round(
+          ((last_value - first_value) / last_value) * 100
+        );
         const change = _change > 0 ? `+${_change}%` : `${_change}%`;
         const changeType = _change > 0 ? "positive" : "negative";
         let value = 0;
-        loadCountData.map((r:any) => {
+        loadCountData.map((r: any) => {
           value = value + r.Loads;
         });
 
         const kpiCardData = {
-          name: 'Total loads',
+          name: "Total loads",
           value: value,
           change: change,
           changeType: changeType,
@@ -173,17 +211,31 @@ const Reports: React.FC = () => {
   }, [driver, date]);
 
   function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ');
-  };
+    return classes.filter(Boolean).join(" ");
+  }
 
   return (
     <div>
       <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
-        <DateRangePicker className="DateRangePicker min-w-sm" value={date} onValueChange={setDate}/>
+        <DateRangePicker
+          className="DateRangePicker min-w-sm"
+          value={date}
+          onValueChange={setDate}
+        />
         <div className="max-w-sm mx-auto space-y-6">
-          <SearchSelect value={driver} onValueChange={setDriver} placeholder="Filter by driver" icon={UserIcon}>
+          <SearchSelect
+            value={driver}
+            onValueChange={setDriver}
+            placeholder="Filter by driver"
+            icon={UserIcon}
+          >
             {drivers.map((d) => (
-              <SearchSelectItem className="cursor-pointer" key={d} value={d} icon={UserIcon} />
+              <SearchSelectItem
+                className="cursor-pointer"
+                key={d}
+                value={d}
+                icon={UserIcon}
+              />
             ))}
           </SearchSelect>
         </div>
@@ -200,7 +252,7 @@ const Reports: React.FC = () => {
                 </TabList>
                 <TabPanels>
                   <TabPanel>
-                    { revenueOverTimeChartData.length > 0 ? 
+                    {revenueOverTimeChartData.length > 0 ? (
                       <div>
                         <BarChart
                           className="h-96 mt-4"
@@ -212,16 +264,16 @@ const Reports: React.FC = () => {
                           valueFormatter={valueFormatter}
                           showAnimation={true}
                           animationDuration={1500}
-                          onValueChange={(v:any) => setBarChartToolTip(v)}
+                          onValueChange={(v: any) => setBarChartToolTip(v)}
                         />
                         <div className="h-2"></div>
                       </div>
-                      :
+                    ) : (
                       <NoDataToShow />
-                    }
+                    )}
                   </TabPanel>
                   <TabPanel>
-                    { revenueOverTimeChartData.length > 0 ? 
+                    {revenueOverTimeChartData.length > 0 ? (
                       <div>
                         <AreaChart
                           className="h-96 mt-4"
@@ -237,9 +289,9 @@ const Reports: React.FC = () => {
                         />
                         <div className="h-2"></div>
                       </div>
-                      :
+                    ) : (
                       <NoDataToShow />
-                    }
+                    )}
                   </TabPanel>
                 </TabPanels>
               </TabGroup>
@@ -259,7 +311,7 @@ const Reports: React.FC = () => {
               index="name"
               valueFormatter={valueFormatter}
               showTooltip={true}
-              colors={['cyan', 'indigo', 'fuchsia']}
+              colors={["cyan", "indigo", "fuchsia"]}
             />
             <div className="h-10"></div>
             <p className="mt-8 flex items-center justify-between text-tremor-label text-tremor-content dark:text-dark-tremor-content">
@@ -267,13 +319,13 @@ const Reports: React.FC = () => {
               <span>Amount / Share</span>
             </p>
             <List className="mt-2">
-              {expenses.map((item:any) => (
+              {expenses.map((item: any) => (
                 <ListItem key={item.name} className="space-x-6">
                   <div className="flex items-center space-x-2.5 truncate">
                     <span
                       className={classNames(
                         item.color,
-                        'w-1 h-4 shrink-0 rounded',
+                        "w-1 h-4 shrink-0 rounded"
                       )}
                       aria-hidden={true}
                     />
@@ -294,9 +346,21 @@ const Reports: React.FC = () => {
             </List>
           </Card>
         </Card>
-        <SparkChartKPICard kpiCardData={revenuePerMileKpiCardData} chartData={revenuePerMileChartData} categories={["Revenue per mile"]} />
-        <SparkChartKPICard kpiCardData={totalMilesKpiCardData} chartData={totalMilesChartData} categories={["Miles"]} />
-        <SparkChartKPICard kpiCardData={totalLoadsKpiCardData} chartData={totalLoadsChartData} categories={["Loads"]} />
+        <SparkChartKPICard
+          kpiCardData={revenuePerMileKpiCardData}
+          chartData={revenuePerMileChartData}
+          categories={["Revenue per mile"]}
+        />
+        <SparkChartKPICard
+          kpiCardData={totalMilesKpiCardData}
+          chartData={totalMilesChartData}
+          categories={["Miles"]}
+        />
+        <SparkChartKPICard
+          kpiCardData={totalLoadsKpiCardData}
+          chartData={totalLoadsChartData}
+          categories={["Loads"]}
+        />
       </Grid>
     </div>
   );
