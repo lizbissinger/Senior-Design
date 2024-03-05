@@ -130,7 +130,7 @@ const Dashboard: React.FC = () => {
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               <button
                 type="button"
-                className="relative rounded-full p-1 text-neutral-800 hover:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-[#6686DC] focus:ring-offset-0.5 dark:text-neutral-300 dark:hover:text-white"
+                className="relative rounded-full p-1 text-neutral-800 hover:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-[#6686DC] focus:ring-offset-0.5 focus:text-neutral-800 dark:text-neutral-300 dark:hover:text-white dark:focus:text-white"
               >
                 <span className="absolute -inset-1.5" />
                 <span className="sr-only">View notifications</span>
