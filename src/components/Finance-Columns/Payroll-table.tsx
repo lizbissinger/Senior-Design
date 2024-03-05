@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Dialog, DialogPanel } from "@tremor/react";
+import React from "react";
 import {
   Table,
   TableHead,
