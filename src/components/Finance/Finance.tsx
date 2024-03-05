@@ -105,14 +105,14 @@ const Finance: React.FC = () => {
           Add
         </Dropdown.Toggle>
 
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => setIsOpenRepairDialog(true)}>
+        <Dropdown.Menu className="dark:bg-slate-950 dark:border-gray-200">
+          <Dropdown.Item onClick={() => setIsOpenRepairDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
             Add Repair
           </Dropdown.Item>
-          <Dropdown.Item onClick={() => setIsOpenPayrollDialog(true)}>
+          <Dropdown.Item onClick={() => setIsOpenPayrollDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
             Add Payroll
           </Dropdown.Item>
-          <Dropdown.Item onClick={() => setIsOpenFuelDialog(true)}>
+          <Dropdown.Item onClick={() => setIsOpenFuelDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
             Add Fuel
           </Dropdown.Item>
         </Dropdown.Menu>
@@ -127,7 +127,7 @@ const Finance: React.FC = () => {
               onClick={() => {
                 setIsOpenRepairDialog(false);
               }}
-              className="main-button"
+              className="main-button dark:bg-white"
             ></CloseButton>
             <RepairsForm onSubmitRepair={handleAddRepair} />
           </DialogPanel>
