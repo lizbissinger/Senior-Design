@@ -67,8 +67,8 @@ const Overview: React.FC = () => {
   const [selectedLoadNumber, setSelectedLoadNumber] = useState<string | null>(
     null
   );
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   useEffect(() => {
     setCurrentPage(1);
@@ -81,6 +81,12 @@ const Overview: React.FC = () => {
 
   const handlePageChange = (newPage: React.SetStateAction<number>) => {
     setCurrentPage(newPage);
+  };
+  const handleItemsPerPageChange = (
+    newItemsPerPage: React.SetStateAction<number>
+  ) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
   };
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
@@ -1215,11 +1221,39 @@ const Overview: React.FC = () => {
               </div>
               <Divider className="mb-0 mt-0" />
               <nav
-                className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-3"
+                className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0 p-3"
                 aria-label="Table navigation"
               >
                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Showing
+                  <label className="text-sm font-normal text-gray-500 dark:text-gray-400 bg-transparent mr-2">
+                    Loads per page
+                  </label>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) =>
+                      handleItemsPerPageChange(Number(e.target.value))
+                    }
+                    className="text-sm dark:text-white dark:bg-gray-800 dark:border-gray-400 bg-transparent border-b border-gray-500"
+                  >
+                    <option
+                      value={10}
+                      className=" dark:text-white bg-transparent text-gray-900"
+                    >
+                      10
+                    </option>
+                    <option
+                      value={20}
+                      className="dark:bg-gray-800 dark:text-white bg-transparent text-gray-900"
+                    >
+                      20
+                    </option>
+                    <option
+                      value={50}
+                      className="dark:bg-gray-800 dark:text-white bg-transparent text-gray-900"
+                    >
+                      50
+                    </option>
+                  </select>
                   <span className="mx-1 font-semibold text-gray-900 dark:text-white">
                     {startIndex + 1}-{Math.min(endIndex, filteredLoads.length)}
                   </span>
