@@ -43,7 +43,10 @@ import {
   DateRangePickerValue,
   SelectItem,
   Select,
+  Card,
 } from "@tremor/react";
+
+import CustomPagination from "./CustomPagination";
 
 import _ from "lodash";
 
@@ -64,6 +67,21 @@ const Overview: React.FC = () => {
   const [selectedLoadNumber, setSelectedLoadNumber] = useState<string | null>(
     null
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredLoads]);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const totalPages = Math.ceil(filteredLoads.length / itemsPerPage);
+
+  const handlePageChange = (newPage: React.SetStateAction<number>) => {
+    setCurrentPage(newPage);
+  };
   const [loadDetails, setLoadDetails] = useState<LoadDetail[]>([]);
   const [newLoad, setNewLoad] = useState<LoadDetail>({
     _id: "",
@@ -510,9 +528,7 @@ const Overview: React.FC = () => {
   const isMobileView = window.innerWidth <= 767;
   const [isOpen, setIsOpen] = React.useState(false);
 
-  useEffect(() => {
-    // setIsOpen(false); -commenting this out, there should be no need for this - it's interefering with documents
-  }, []);
+  useEffect(() => {}, []);
 
   const getBadgeClass = (status: string) => {
     switch (status) {
@@ -612,319 +628,344 @@ const Overview: React.FC = () => {
             />
           </Grid>
           <Divider />
-          <>
-            <div className="main-buttons">
-              <DateRangePicker
-                className="main-search DateRangePicker mr-2 max-w-md"
-                onValueChange={handleDateRangeChange}
-              />
-              <SearchSelect
-                placeholder="Search Load..."
-                onValueChange={handleSearchSelectChange}
-                className="main-search mr-2"
-              >
-                {filteredLoads.map((load,idx) => (
-                  <SearchSelectItem
-                    key={idx}
-                    value={load.loadNumber}
+          <></>
+
+          <Grid
+            numItems={isMobileView ? 1 : 2}
+            numItemsLg={2}
+            className={`gap-4 load-details-container ${
+              !selectedLoadNumber ? "hidden" : ""
+            }`}
+          >
+            <Card className="mb-0 pt-3 pb-0 pl-0 pr-0">
+              <div className="details-table">
+                <div className="main-buttons mt-1 px-3 mb-3">
+                  <DateRangePicker
+                    className="main-search DateRangePicker mr-2 max-w-md"
+                    onValueChange={handleDateRangeChange}
+                  />
+                  <SearchSelect
+                    placeholder="Search Load..."
+                    onValueChange={handleSearchSelectChange}
+                    className="main-search mr-2"
                   >
-                    {load.loadNumber}
-                  </SearchSelectItem>
-                ))}
-              </SearchSelect>
-              <Button className="main-button" onClick={() => setIsOpen(true)}>
-                {formMode === "add" ? "Add Load" : "Update Load"}
-              </Button>{" "}
-            </div>
-            <Dialog
-              open={isOpen}
-              onClose={(val) => setIsOpen(val)}
-              static={true}
-            >
-              <DialogPanel>
-                <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                  Load Information
-                </h3>
-                <form onSubmit={handleFormSubmit} className="mt-8">
-                  <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="loadNumber"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Load Number<span className="text-red-500">*</span>
-                      </label>
-                      <TextInput
-                        type="text"
-                        id="loadNumber"
-                        placeholder="Load #"
-                        value={newLoad.loadNumber}
-                        onChange={(e) =>
-                          setNewLoad({ ...newLoad, loadNumber: e.target.value })
-                        }
-                        required
-                        onInvalid={(e) =>
-                          (e.target as HTMLInputElement).setCustomValidity(
-                            "Please enter the load number."
-                          )
-                        }
-                        onInput={(e) =>
-                          (e.target as HTMLInputElement).setCustomValidity("")
-                        }
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="driverDropdown"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Driver
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <DriverDropdown
-                        driverList={drivers}
-                        selectedDriver={newLoad.driverObject}
-                        onSelectDriver={handleDriverSelect}
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="truckDropdown"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Truck
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <TruckDropdown
-                        truckList={trucks}
-                        selectedTruck={newLoad.truckObject}
-                        onSelectTruck={handleTruckSelect}
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="trailerDropdown"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Trailer
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <TrailerDropdown
-                        trailerList={trailers}
-                        selectedTrailer={newLoad.trailerObject}
-                        onSelectTrailer={handleTrailerSelect}
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="price"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Price
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <NumberInput
-                        id="price"
-                        placeholder="Price"
-                        value={newLoad.price}
-                        onChange={(e) =>
-                          setNewLoad({ ...newLoad, price: e.target.value })
-                        }
-                        required
-                        onInvalid={(e) =>
-                          (e.target as HTMLInputElement).setCustomValidity(
-                            "Please enter the price."
-                          )
-                        }
-                        onInput={(e) =>
-                          (e.target as HTMLInputElement).setCustomValidity("")
-                        }
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="detentionPrice"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Detention Price
-                      </label>
-                      <NumberInput
-                        id="detentionPrice"
-                        placeholder="Detention"
-                        value={newLoad.detentionPrice}
-                        onChange={(e) =>
-                          setNewLoad({
-                            ...newLoad,
-                            detentionPrice: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
+                    {filteredLoads.map((load, idx) => (
+                      <SearchSelectItem key={idx} value={load.loadNumber}>
+                        {load.loadNumber}
+                      </SearchSelectItem>
+                    ))}
+                  </SearchSelect>
+                  <Button
+                    className="main-button"
+                    onClick={() => setIsOpen(true)}
+                  >
+                    {formMode === "add" ? "Add Load" : "Update Load"}
+                  </Button>{" "}
+                </div>
+                <Dialog
+                  open={isOpen}
+                  onClose={(val) => setIsOpen(val)}
+                  static={true}
+                >
+                  <DialogPanel>
+                    <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                      Load Information
+                    </h3>
+                    <form onSubmit={handleFormSubmit} className="mt-8">
+                      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="loadNumber"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Load Number<span className="text-red-500">*</span>
+                          </label>
+                          <TextInput
+                            type="text"
+                            id="loadNumber"
+                            placeholder="Load #"
+                            value={newLoad.loadNumber}
+                            onChange={(e) =>
+                              setNewLoad({
+                                ...newLoad,
+                                loadNumber: e.target.value,
+                              })
+                            }
+                            required
+                            onInvalid={(e) =>
+                              (e.target as HTMLInputElement).setCustomValidity(
+                                "Please enter the load number."
+                              )
+                            }
+                            onInput={(e) =>
+                              (e.target as HTMLInputElement).setCustomValidity(
+                                ""
+                              )
+                            }
+                          />
+                        </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="driverDropdown"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Driver
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <DriverDropdown
+                            driverList={drivers}
+                            selectedDriver={newLoad.driverObject}
+                            onSelectDriver={handleDriverSelect}
+                          />
+                        </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="truckDropdown"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Truck
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <TruckDropdown
+                            truckList={trucks}
+                            selectedTruck={newLoad.truckObject}
+                            onSelectTruck={handleTruckSelect}
+                          />
+                        </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="trailerDropdown"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Trailer
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <TrailerDropdown
+                            trailerList={trailers}
+                            selectedTrailer={newLoad.trailerObject}
+                            onSelectTrailer={handleTrailerSelect}
+                          />
+                        </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="price"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Price
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <NumberInput
+                            id="price"
+                            placeholder="Price"
+                            value={newLoad.price}
+                            onChange={(e) =>
+                              setNewLoad({ ...newLoad, price: e.target.value })
+                            }
+                            required
+                            onInvalid={(e) =>
+                              (e.target as HTMLInputElement).setCustomValidity(
+                                "Please enter the price."
+                              )
+                            }
+                            onInput={(e) =>
+                              (e.target as HTMLInputElement).setCustomValidity(
+                                ""
+                              )
+                            }
+                          />
+                        </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="detentionPrice"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Detention Price
+                          </label>
+                          <NumberInput
+                            id="detentionPrice"
+                            placeholder="Detention"
+                            value={newLoad.detentionPrice}
+                            onChange={(e) =>
+                              setNewLoad({
+                                ...newLoad,
+                                detentionPrice: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
 
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="pickupLocation"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Pick-up Location
-                        <span className="text-red-500">*</span>
-                      </label>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="pickupLocation"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Pick-up Location
+                            <span className="text-red-500">*</span>
+                          </label>
 
-                      <Autocomplete
-                        className="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        apiKey={Google_Maps_Api_Key}
-                        defaultValue={newLoad.pickupLocation}
-                        inputAutocompleteValue={newLoad.pickupLocation}
-                        onPlaceSelected={(place) => {
-                          setNewLoad((newLoad) => ({
-                            ...newLoad,
-                            pickupLocation: place.formatted_address || "",
-                          }));
-                        }}
-                        options={{
-                          types: [],
-                          componentRestrictions: { country: "us" },
-                        }}
-                      />
-                    </div>
+                          <Autocomplete
+                            className="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            apiKey={Google_Maps_Api_Key}
+                            defaultValue={newLoad.pickupLocation}
+                            inputAutocompleteValue={newLoad.pickupLocation}
+                            onPlaceSelected={(place) => {
+                              setNewLoad((newLoad) => ({
+                                ...newLoad,
+                                pickupLocation: place.formatted_address || "",
+                              }));
+                            }}
+                            options={{
+                              types: [],
+                              componentRestrictions: { country: "us" },
+                            }}
+                          />
+                        </div>
 
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="deliveryLocation"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Delivery Location
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <Autocomplete
-                        className=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        apiKey={Google_Maps_Api_Key}
-                        defaultValue={newLoad.deliveryLocation}
-                        inputAutocompleteValue={newLoad.deliveryLocation}
-                        onPlaceSelected={(place) => {
-                          setNewLoad((newLoad) => ({
-                            ...newLoad,
-                            deliveryLocation: place.formatted_address || "",
-                          }));
-                        }}
-                        options={{
-                          types: [],
-                          componentRestrictions: { country: "us" },
-                        }}
-                      />
-                    </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="deliveryLocation"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Delivery Location
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <Autocomplete
+                            className=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            apiKey={Google_Maps_Api_Key}
+                            defaultValue={newLoad.deliveryLocation}
+                            inputAutocompleteValue={newLoad.deliveryLocation}
+                            onPlaceSelected={(place) => {
+                              setNewLoad((newLoad) => ({
+                                ...newLoad,
+                                deliveryLocation: place.formatted_address || "",
+                              }));
+                            }}
+                            options={{
+                              types: [],
+                              componentRestrictions: { country: "us" },
+                            }}
+                          />
+                        </div>
 
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="pickupTime"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Pick-up Date & Time
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        id="pickupTime"
-                        type="datetime-local"
-                        placeholder="Pick-Up Time"
-                        value={newLoad.pickupTime}
-                        onChange={(e) =>
-                          setNewLoad({ ...newLoad, pickupTime: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="deliveryTime"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Delivery Date & Time
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        id="deliveryTime"
-                        type="datetime-local"
-                        placeholder="Delivery Time"
-                        value={newLoad.deliveryTime}
-                        onChange={(e) =>
-                          setNewLoad({
-                            ...newLoad,
-                            deliveryTime: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="Miles"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Miles
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <NumberInput
-                        id="allMiles"
-                        placeholder="Miles"
-                        value={newLoad.allMiles}
-                        onChange={(e) =>
-                          setNewLoad({ ...newLoad, allMiles: e.target.value })
-                        }
-                        required
-                        onInvalid={(e) =>
-                          (e.target as HTMLInputElement).setCustomValidity(
-                            "Please enter the miles."
-                          )
-                        }
-                        onInput={(e) =>
-                          (e.target as HTMLInputElement).setCustomValidity("")
-                        }
-                      />
-                    </div>
-                    <div className="col-span-full sm:col-span-3">
-                      <label
-                        htmlFor="Fuel"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Fuel
-                      </label>
-                      <NumberInput
-                        id="fuelGallons"
-                        placeholder="Fuel"
-                        value={newLoad.fuelGallons}
-                        onChange={(e) =>
-                          setNewLoad({
-                            ...newLoad,
-                            fuelGallons: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-span-full">
-                      <label
-                        htmlFor="documents"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Documents
-                      </label>
-                      <input
-                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-sm cursor-pointer  dark:text-gray-400 focus:outline-none dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400"
-                        id="documents"
-                        type="file"
-                        placeholder="Documents"
-                        multiple
-                        onChange={handleDocumentSelectFile}
-                      />
-                      <p
-                        className="mt-1 mb-0 text-xs text-gray-700 dark:text-gray-300"
-                        id="file_input_help"
-                      >
-                        PDF, PNG or JPG (MAX. 5MB).
-                      </p>
-                    </div>
-                  </div>
-                  <Divider />
-                  {/* <Dialog
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="pickupTime"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Pick-up Date & Time
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            id="pickupTime"
+                            type="datetime-local"
+                            placeholder="Pick-Up Time"
+                            value={newLoad.pickupTime}
+                            onChange={(e) =>
+                              setNewLoad({
+                                ...newLoad,
+                                pickupTime: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="deliveryTime"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Delivery Date & Time
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            id="deliveryTime"
+                            type="datetime-local"
+                            placeholder="Delivery Time"
+                            value={newLoad.deliveryTime}
+                            onChange={(e) =>
+                              setNewLoad({
+                                ...newLoad,
+                                deliveryTime: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="Miles"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Miles
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <NumberInput
+                            id="allMiles"
+                            placeholder="Miles"
+                            value={newLoad.allMiles}
+                            onChange={(e) =>
+                              setNewLoad({
+                                ...newLoad,
+                                allMiles: e.target.value,
+                              })
+                            }
+                            required
+                            onInvalid={(e) =>
+                              (e.target as HTMLInputElement).setCustomValidity(
+                                "Please enter the miles."
+                              )
+                            }
+                            onInput={(e) =>
+                              (e.target as HTMLInputElement).setCustomValidity(
+                                ""
+                              )
+                            }
+                          />
+                        </div>
+                        <div className="col-span-full sm:col-span-3">
+                          <label
+                            htmlFor="Fuel"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Fuel
+                          </label>
+                          <NumberInput
+                            id="fuelGallons"
+                            placeholder="Fuel"
+                            value={newLoad.fuelGallons}
+                            onChange={(e) =>
+                              setNewLoad({
+                                ...newLoad,
+                                fuelGallons: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-span-full">
+                          <label
+                            htmlFor="documents"
+                            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Documents
+                          </label>
+                          <input
+                            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-sm cursor-pointer  dark:text-gray-400 focus:outline-none dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400"
+                            id="documents"
+                            type="file"
+                            placeholder="Documents"
+                            multiple
+                            onChange={handleDocumentSelectFile}
+                          />
+                          <p
+                            className="mt-1 mb-0 text-xs text-gray-700 dark:text-gray-300"
+                            id="file_input_help"
+                          >
+                            PDF, PNG or JPG (MAX. 5MB).
+                          </p>
+                        </div>
+                      </div>
+                      <Divider />
+                      {/* <Dialog
                     open={isDeleteDialogOpen}
                     onClose={closeDeleteDialog}
                     static={true}
@@ -951,225 +992,262 @@ const Overview: React.FC = () => {
                     </DialogPanel>
                   </Dialog> */}
 
-                  <div
-                    className={`flex items-center ${
-                      formMode === "edit" ? "justify-between" : "justify-end"
-                    } space-x-4`}
-                  >
-                    {formMode === "edit" && (
-                      <Button
-                        onClick={handleDeleteClick}
-                        className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+                      <div
+                        className={`flex items-center ${
+                          formMode === "edit"
+                            ? "justify-between"
+                            : "justify-end"
+                        } space-x-4`}
                       >
-                        Delete
-                      </Button>
-                    )}
-                    {formMode === "edit" && editableIndex !== null && (
-                      <InvoiceGenerator
-                        loadDetails={[filteredLoads[editableIndex]]}
-                      />
-                    )}
-                    <div className="flex items-center space-x-4">
-                      <button
-                        onClick={handleCancelClick}
-                        className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
-                      >
-                        {formMode === "add" ? "Add" : "Update"}
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </DialogPanel>
-            </Dialog>
-          </>
-
-          <Grid
-            numItems={isMobileView ? 1 : 2}
-            numItemsLg={2}
-            className={`gap-4 pt-3 load-details-container ${
-              !selectedLoadNumber ? "hidden" : ""
-            }`}
-          >
-            <div className="details-table">
-              <Table className="">
-                <TableHead className="sticky-header">
-                  <TableRow>
-                    <th
-                      className="sort"
-                      onClick={() => requestSort("loadNumber")}
-                    >
-                      {" "}
-                      Load{" "}
-                      {sortConfig.key === "loadNumber" &&
-                      sortConfig.direction === "asc"
-                        ? "▲"
-                        : "▼"}
-                    </th>
-                    <th>Truck</th>
-                    <th>Trailer</th>
-                    <th>Driver</th>
-                    <th>Pick-up Date-Time</th>
-                    <th>Delivery Date-Time</th>
-                    <th>Pick-up Location</th>
-                    <th>Delivery Location</th>
-                    <th className="sort" onClick={() => requestSort("price")}>
-                      {" "}
-                      Price{" "}
-                      {sortConfig.key === "price" &&
-                      sortConfig.direction === "asc"
-                        ? "▲"
-                        : "▼"}
-                    </th>
-                    <th>Loaded miles</th>
-                    <th className="sort" onClick={() => requestSort("status")}>
-                      {" "}
-                      Status{" "}
-                      {sortConfig.key === "status" &&
-                      sortConfig.direction === "asc"
-                        ? "▲"
-                        : "▼"}
-                    </th>
-                    <th></th>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredLoads.map((load, index) => (
-                    <TableRow key={index}>
-                      <td className="centered-cell">
-                        <Tooltip title="Show details">
-                          <div
-                            onClick={() =>
-                              handleLoadNumberClick(load.loadNumber)
-                            }
-                            style={{ cursor: "pointer" }}
+                        {formMode === "edit" && (
+                          <Button
+                            onClick={handleDeleteClick}
+                            className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
                           >
-                            {load.loadNumber}
-                          </div>
-                        </Tooltip>
-                      </td>
-                      <td className="centered-cell">
-                        <div>{load.truckObject}</div>
-                      </td>
-                      <td className="centered-cell">
-                        <div>{load.trailerObject}</div>
-                      </td>
-                      <td className="centered-cell">
-                        <div>{load.driverObject}</div>
-                      </td>
-                      <td className="centered-cell">
-                        <div>{formatTimes(load.pickupTime)}</div>
-                      </td>
-                      <td className="centered-cell">
-                        <div>{formatTimes(load.deliveryTime)}</div>
-                      </td>
-                      <td className="centered-cell">
-                        <div>{load.pickupLocation}</div>
-                      </td>
-                      <td className="centered-cell">
-                        <div>{load.deliveryLocation}</div>
-                      </td>
-                      <td className="centered-cell">
-                        <div>{`$${load.price}`}</div>
-                      </td>
-                      <td className="centered-cell">
-                        <div>
-                          {load.allMiles !== null && `${load.allMiles} mi`}
-                        </div>
-                      </td>
-                      <td className="centered-cell">
-                        <div className="col-span-full sm:col-span-3">
-                          <div className="flex items-center space-x-2">
-                            {isStatusEditing && editingLoadIndex === index ? (
-                              <Select
-                                className="status-font"
-                                id="status"
-                                value={load.status || ""}
-                                onValueChange={(selectedStatus) => {
-                                  const updatedLoad = {
-                                    ...load,
-                                    status: selectedStatus,
-                                  };
-
-                                  setLoadDetails((prevLoadDetails) =>
-                                    prevLoadDetails.filter(
-                                      (prevLoad) =>
-                                        prevLoad.loadNumber !== load.loadNumber
-                                    )
-                                  );
-
-                                  setLoadDetails((prevLoadDetails) => [
-                                    ...prevLoadDetails,
-                                    updatedLoad,
-                                  ]);
-
-                                  updateLoad(updatedLoad)
-                                    .then(() => {
-                                      setIsStatusEditing(false);
-                                      setEditingLoadIndex(null);
-                                    })
-                                    .catch((error) => {
-                                      console.error(
-                                        "Error updating load:",
-                                        error
-                                      );
-                                    });
-                                }}
-                              >
-                                <SelectItem value="To-Do" />
-                                <SelectItem value="In Progress" />
-                                <SelectItem value="Completed" />
-                                <SelectItem value="Not Invoiced" />
-                                <SelectItem value="Invoiced" />
-                                <SelectItem value="Received Payment" />
-                              </Select>
-                            ) : (
-                              <Tooltip title="Change Status" arrow>
-                                <span
-                                  className={`status-font badge ${getBadgeClass(
-                                    load.status
-                                  )}`}
-                                  onClick={() => {
-                                    setIsStatusEditing(true);
-                                    setEditingLoadIndex(index);
-                                  }}
-                                  style={{ cursor: "pointer" }}
-                                >
-                                  {load.status || "Add Status"}
-                                </span>
-                              </Tooltip>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="centered-cell">
-                        {editableIndex === index ? (
-                          <div className="flex items-center">
-                            <PencilIcon
-                              scale={1}
-                              className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
-                              onClick={() => handleSaveClick(index)}
-                            />
-                          </div>
-                        ) : (
-                          <div className="flex items-center">
-                            <PencilIcon
-                              className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
-                              onClick={() => handleEditClick(index)}
-                            />
-                          </div>
+                            Delete
+                          </Button>
                         )}
-                      </td>
+                        {formMode === "edit" && editableIndex !== null && (
+                          <InvoiceGenerator
+                            loadDetails={[filteredLoads[editableIndex]]}
+                          />
+                        )}
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={handleCancelClick}
+                            className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="whitespace-nowrap rounded-tremor-default bg-tremor-brand px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis"
+                          >
+                            {formMode === "add" ? "Add" : "Update"}
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </DialogPanel>
+                </Dialog>
+                <Table className="">
+                  <TableHead className="sticky-header">
+                    <TableRow>
+                      <th
+                        className="sort"
+                        onClick={() => requestSort("loadNumber")}
+                      >
+                        {" "}
+                        Load{" "}
+                        {sortConfig.key === "loadNumber" &&
+                        sortConfig.direction === "asc"
+                          ? "▲"
+                          : "▼"}
+                      </th>
+                      <th>Truck</th>
+                      <th>Trailer</th>
+                      <th>Driver</th>
+                      <th>Pick-up Date-Time</th>
+                      <th>Delivery Date-Time</th>
+                      <th>Pick-up Location</th>
+                      <th>Delivery Location</th>
+                      <th className="sort" onClick={() => requestSort("price")}>
+                        {" "}
+                        Price{" "}
+                        {sortConfig.key === "price" &&
+                        sortConfig.direction === "asc"
+                          ? "▲"
+                          : "▼"}
+                      </th>
+                      <th>Loaded miles</th>
+                      <th
+                        className="sort"
+                        onClick={() => requestSort("status")}
+                      >
+                        {" "}
+                        Status{" "}
+                        {sortConfig.key === "status" &&
+                        sortConfig.direction === "asc"
+                          ? "▲"
+                          : "▼"}
+                      </th>
+                      <th></th>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHead>
+                  <TableBody>
+                    {filteredLoads
+                      .slice(startIndex, endIndex)
+                      .map((load, index) => (
+                        <TableRow
+                          className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                          key={index}
+                        >
+                          <td className="centered-cell">
+                            <Tooltip title="Show details">
+                              <div
+                                onClick={() =>
+                                  handleLoadNumberClick(load.loadNumber)
+                                }
+                                style={{ cursor: "pointer" }}
+                              >
+                                {load.loadNumber}
+                              </div>
+                            </Tooltip>
+                          </td>
+                          <td className="centered-cell">
+                            <div>{load.truckObject}</div>
+                          </td>
+                          <td className="centered-cell">
+                            <div>{load.trailerObject}</div>
+                          </td>
+                          <td className="centered-cell">
+                            <div>{load.driverObject}</div>
+                          </td>
+                          <td className="centered-cell">
+                            <div>{formatTimes(load.pickupTime)}</div>
+                          </td>
+                          <td className="centered-cell">
+                            <div>{formatTimes(load.deliveryTime)}</div>
+                          </td>
+                          <td className="centered-cell">
+                            <div>{load.pickupLocation}</div>
+                          </td>
+                          <td className="centered-cell">
+                            <div>{load.deliveryLocation}</div>
+                          </td>
+                          <td className="centered-cell">
+                            <div>{`$${load.price}`}</div>
+                          </td>
+                          <td className="centered-cell">
+                            <div>
+                              {load.allMiles !== null && `${load.allMiles} mi`}
+                            </div>
+                          </td>
+                          <td className="centered-cell">
+                            <div className="col-span-full sm:col-span-3">
+                              <div className="flex items-center space-x-2">
+                                {isStatusEditing &&
+                                editingLoadIndex === index ? (
+                                  <Select
+                                    className="status-font"
+                                    id="status"
+                                    value={load.status || ""}
+                                    onValueChange={(selectedStatus) => {
+                                      const updatedLoad = {
+                                        ...load,
+                                        status: selectedStatus,
+                                      };
+
+                                      setLoadDetails((prevLoadDetails) =>
+                                        prevLoadDetails.filter(
+                                          (prevLoad) =>
+                                            prevLoad.loadNumber !==
+                                            load.loadNumber
+                                        )
+                                      );
+
+                                      setLoadDetails((prevLoadDetails) => [
+                                        ...prevLoadDetails,
+                                        updatedLoad,
+                                      ]);
+
+                                      updateLoad(updatedLoad)
+                                        .then(() => {
+                                          setIsStatusEditing(false);
+                                          setEditingLoadIndex(null);
+                                        })
+                                        .catch((error) => {
+                                          console.error(
+                                            "Error updating load:",
+                                            error
+                                          );
+                                        });
+                                    }}
+                                  >
+                                    <SelectItem value="To-Do" />
+                                    <SelectItem value="In Progress" />
+                                    <SelectItem value="Completed" />
+                                    <SelectItem value="Not Invoiced" />
+                                    <SelectItem value="Invoiced" />
+                                    <SelectItem value="Received Payment" />
+                                  </Select>
+                                ) : (
+                                  <Tooltip title="Change Status" arrow>
+                                    <span
+                                      className={`status-font badge ${getBadgeClass(
+                                        load.status
+                                      )}`}
+                                      onClick={() => {
+                                        setIsStatusEditing(true);
+                                        setEditingLoadIndex(index);
+                                      }}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      {load.status || "Add Status"}
+                                    </span>
+                                  </Tooltip>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="centered-cell">
+                            {editableIndex === index ? (
+                              <div className="flex items-center">
+                                <PencilIcon
+                                  scale={1}
+                                  className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
+                                  onClick={() => handleSaveClick(index)}
+                                />
+                              </div>
+                            ) : (
+                              <div className="flex items-center">
+                                <PencilIcon
+                                  className="w-6 mr-2 ml-1 mb-1 cursor-pointer"
+                                  onClick={() => handleEditClick(index)}
+                                />
+                              </div>
+                            )}
+                          </td>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <Divider className="mb-0 mt-0" />
+              <nav
+                className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-3"
+                aria-label="Table navigation"
+              >
+                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                  Showing
+                  <span className="mx-1 font-semibold text-gray-900 dark:text-white">
+                    {startIndex + 1}-{Math.min(endIndex, filteredLoads.length)}
+                  </span>
+                  of
+                  <span className="mx-1 font-semibold text-gray-900 dark:text-white">
+                    {filteredLoads.length}
+                  </span>
+                </span>
+                {/* <Pagination>
+            <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <Pagination.Item
+                key={index + 1}
+                active={currentPage === index + 1}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+          </Pagination> */}
+                <CustomPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  handlePageChange={handlePageChange}
+                />
+              </nav>
+            </Card>
             <div
               className="load-table"
               style={{
