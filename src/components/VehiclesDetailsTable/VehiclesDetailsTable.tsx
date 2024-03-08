@@ -134,9 +134,9 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
     <Grid className="vehicles-details-container table-head">
       <TabGroup>
         <TabList variant="line" defaultValue="1">
-          <Tab value="1">Drivers</Tab>
-          <Tab value="2">Trucks</Tab>
-          <Tab value="3">Trailers</Tab>
+          <Tab value="1" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Drivers</Tab>
+          <Tab value="2" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Trucks</Tab>
+          <Tab value="3" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Trailers</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>

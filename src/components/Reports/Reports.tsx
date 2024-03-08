@@ -247,8 +247,8 @@ const Reports: React.FC = () => {
               <Title>Revenue over time</Title>
               <TabGroup>
                 <TabList>
-                  <Tab icon={ChartBarIcon}></Tab>
-                  <Tab icon={PresentationChartLineIcon}></Tab>
+                  <Tab icon={ChartBarIcon} className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"></Tab>
+                  <Tab icon={PresentationChartLineIcon} className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"></Tab>
                 </TabList>
                 <TabPanels>
                   <TabPanel>
