@@ -4,12 +4,43 @@ import { SignIn, SignInButton, SignUp } from "@clerk/clerk-react";
 export default function SignInPage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  
   const toggleDarkMode = () => {
     setIsDarkMode((prevMode) => !prevMode);
   };
 
+  const handleDemoLogin = () => {
+    const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
+    let continueButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+    if (emailInput) {
+      const descriptor = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');
+      if (descriptor && descriptor.set) {
+        const setValue = descriptor.set;
+        setValue.call(emailInput, 'Fleetwave@outlook.com');
+        emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+        continueButton.click();
+
+        const intervalId = setInterval(() => {
+          const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
+          if (passwordInput) {
+            setValue.call(passwordInput, 'SeniorDesignDemo$');
+            passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+  
+            clearInterval(intervalId);
+            continueButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
+          if (continueButton) {
+            continueButton.click();
+          }
+          }
+        }, 1000);
+       
+      }
+    }
+  };
   return (
     <>
+    <div><button className="text-sm ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9" onClick={handleDemoLogin}>Click Here For Demo Login</button></div>
       <section
         id="home"
         className={`${
