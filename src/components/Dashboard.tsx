@@ -115,8 +115,8 @@ const Dashboard: React.FC = () => {
                       onClick={() => handleLinkClick(item)}
                       className={classNames(
                         item.current
-                          ? "bg-[#779BFB] text-neutral-950 no-underline hover:text-neutral-950 dark:bg-[#6686DC]"
-                          : "no-underline text-neutral-950 hover:bg-[#779BFB] hover:no-underline hover:text-neutral-950 dark:hover:bg-[#6686DC] dark:text-white dark:hover:text-neutral-950",
+                          ? "text-[#6686DC] hover:text-[#6686DC]"
+                          : "text-neutral-950 hover:text-[#6686DC] dark:text-white dark:hover:text-[#6686DC]",
                         "rounded-md px-3 py-2 text-50 font-medium"
                       )}
                     >
