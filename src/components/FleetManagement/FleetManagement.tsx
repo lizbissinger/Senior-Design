@@ -383,7 +383,7 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowTrailerForm(false);
-      setIsOpenTruckDialog(false);
+      setIsOpenTrailerDialog(false);
       setEditingTrailer(null);
     } catch (error) {
       console.error("Error updating trailer:", error);
