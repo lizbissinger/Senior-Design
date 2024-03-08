@@ -125,16 +125,18 @@ const Header = () => {
                       to="/login"
                       className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
                     >
-                      Sign In
+                      Sign In / Demo
                     </Link>
                   </div>
+                  
                   <div className="absolute inset-y-0 right-0 flex font-medium items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <Link to="/login" className=" md:hidden">
-                      Sign In
+                      Sign In / Demo
                     </Link>
                   </div>
                 </Disclosure.Button>
               </div>
+              
             </div>
 
             <Disclosure.Panel className="sm:hidden">
