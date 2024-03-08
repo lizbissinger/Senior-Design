@@ -21,18 +21,18 @@ import { Navigate } from "react-router-dom";
 const App: React.FC = () => {
   return (
     <div className="App dark:bg-slate-900">
-      <SignedOut>
-        <Router>
+      {/* <SignedOut> */}
+        {/* <Router>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/login" element={<SignInPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </Router>
-      </SignedOut>
+        </Router> */}
+      {/* </SignedOut> */}
 
-      <SignedIn>
+      {/* <SignedIn> */}
         <Router>
           <Routes>
             <Route index element={<Dashboard />} />
@@ -43,7 +43,7 @@ const App: React.FC = () => {
             <Route path="/reports" element={<Reports />} />
           </Routes>
         </Router>
-      </SignedIn>
+      {/* </SignedIn> */}
     </div>
   );
 };
