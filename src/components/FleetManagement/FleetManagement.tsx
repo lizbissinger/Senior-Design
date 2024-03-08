@@ -408,14 +408,14 @@ const FleetManagement: React.FC = () => {
             Add
           </Dropdown.Toggle>
 
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setIsOpenDriverDialog(true)}>
+          <Dropdown.Menu className="dark:bg-slate-950 dark:border-gray-200">
+            <Dropdown.Item onClick={() => setIsOpenDriverDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
               Add Driver
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)}>
+            <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
               Add Truck
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setIsOpenTrailerDialog(true)}>
+            <Dropdown.Item onClick={() => setIsOpenTrailerDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
               Add Trailer
             </Dropdown.Item>
           </Dropdown.Menu>
