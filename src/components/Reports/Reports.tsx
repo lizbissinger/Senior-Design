@@ -260,7 +260,7 @@ const Reports: React.FC = () => {
                           index="date"
                           yAxisWidth={65}
                           categories={categories}
-                          colors={["indigo-400"]}
+                          colors={["#6686DC"]}
                           valueFormatter={valueFormatter}
                           showAnimation={true}
                           animationDuration={1500}
@@ -281,7 +281,7 @@ const Reports: React.FC = () => {
                           index="date"
                           yAxisWidth={65}
                           categories={categories}
-                          colors={["indigo-400"]}
+                          colors={["#6686DC"]}
                           valueFormatter={valueFormatter}
                           showAnimation={true}
                           animationDuration={1500}
@@ -311,7 +311,7 @@ const Reports: React.FC = () => {
               index="name"
               valueFormatter={valueFormatter}
               showTooltip={true}
-              colors={["cyan", "indigo", "fuchsia"]}
+              colors={["cyan", "#6686DC", "fuchsia"]}
             />
             <div className="h-10"></div>
             <p className="mt-8 flex items-center justify-between text-tremor-label text-tremor-content dark:text-dark-tremor-content">

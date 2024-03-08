@@ -71,7 +71,7 @@ const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({
 
   return (
     <div className="chart-container">
-      <Card className="min-w-xs" decoration="top" decorationColor="blue">
+      <Card className="min-w-xs" decoration="top" decorationColor="#6686DC">
         <div>
           <Text>Total Revenue</Text>
           <Metric>{`$ ${new Intl.NumberFormat("us")
