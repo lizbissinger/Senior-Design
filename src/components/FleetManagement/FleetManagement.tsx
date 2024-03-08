@@ -404,18 +404,18 @@ const FleetManagement: React.FC = () => {
     <div className="fleet-management-container">
       <div>
         <Dropdown className="main-button mb-3">
-          <Dropdown.Toggle variant="primary" id="dropdown-basic">
+          <Dropdown.Toggle className="!bg-[#779BFB] focus:!outline-none focus:!ring-0 !border-none hover:!bg-[#6686DC] dark:!bg-[#6686DC] dark:hover:!bg-[#779BFB] dark:!text-neutral-950">
             Add
           </Dropdown.Toggle>
 
           <Dropdown.Menu className="dark:bg-slate-950 dark:border-gray-200">
-            <Dropdown.Item onClick={() => setIsOpenDriverDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
+            <Dropdown.Item onClick={() => setIsOpenDriverDialog(true)} className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100">
               Add Driver
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
+            <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)} className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100">
               Add Truck
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setIsOpenTrailerDialog(true)} className="dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100">
+            <Dropdown.Item onClick={() => setIsOpenTrailerDialog(true)} className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100">
               Add Trailer
             </Dropdown.Item>
           </Dropdown.Menu>

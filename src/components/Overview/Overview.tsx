@@ -662,7 +662,7 @@ const Overview: React.FC = () => {
                     ))}
                   </SearchSelect>
                   <Button
-                    className="main-button bg-[#779BFB] hover:bg-[#6686DC] dark:bg-[#6686DC] dark:hover:bg-[#779BFB]"
+                    className="main-button bg-[#779BFB] hover:bg-[#6686DC] dark:bg-[#6686DC] dark:hover:bg-[#779BFB] dark:!border-none"
                     onClick={() => setIsOpen(true)}
                   >
                     {formMode === "add" ? "Add Load" : "Update Load"}
