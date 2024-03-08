@@ -157,11 +157,11 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                 <Table className="mt-2">
                   <TableHead>
                     <TableRow>
-                      <TableHeaderCell>Name</TableHeaderCell>
-                      <TableHeaderCell>License #</TableHeaderCell>
-                      <TableHeaderCell>Phone #</TableHeaderCell>
-                      <TableHeaderCell>Email</TableHeaderCell>
-                      <TableHeaderCell>Action</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Name</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">License #</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Phone #</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Email</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -216,12 +216,12 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                 <Table className="mt-2">
                   <TableHead>
                     <TableRow>
-                      <TableHeaderCell>Number</TableHeaderCell>
-                      <TableHeaderCell>Make</TableHeaderCell>
-                      <TableHeaderCell>Model</TableHeaderCell>
-                      <TableHeaderCell>Year</TableHeaderCell>
-                      <TableHeaderCell>VIN</TableHeaderCell>
-                      <TableHeaderCell>Action</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Number</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Make</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Model</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Year</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">VIN</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -273,12 +273,12 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                 <Table className="mt-2">
                   <TableHead>
                     <TableRow>
-                      <TableHeaderCell>Number</TableHeaderCell>
-                      <TableHeaderCell>Make</TableHeaderCell>
-                      <TableHeaderCell>Model</TableHeaderCell>
-                      <TableHeaderCell>Year</TableHeaderCell>
-                      <TableHeaderCell>VIN</TableHeaderCell>
-                      <TableHeaderCell>Action</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Number</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Make</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Model</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Year</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">VIN</TableHeaderCell>
+                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
