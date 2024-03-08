@@ -633,13 +633,12 @@ const Overview: React.FC = () => {
               onDateRangeChange={handleDateRangeChange}
             />
           </Grid>
-          <Divider />
           <></>
 
           <Grid
             numItems={isMobileView ? 1 : 2}
             numItemsLg={2}
-            className={`gap-4 load-details-container ${
+            className={`gap-4 load-details-container mt-10 ${
               !selectedLoadNumber ? "hidden" : ""
             }`}
           >

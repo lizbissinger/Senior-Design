@@ -80,10 +80,10 @@ const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({
         </div>
         <TabGroup>
           <TabList className="mt-2 p-1">
-            <Tab onClick={() => setSelectedTab("week")}>Week</Tab>
-            <Tab onClick={() => setSelectedTab("month")}>Month</Tab>
-            <Tab onClick={() => setSelectedTab("quarter")}>Quarter</Tab>
-            <Tab onClick={() => setSelectedTab("year")}>Year</Tab>
+            <Tab onClick={() => setSelectedTab("week")} className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Week</Tab>
+            <Tab onClick={() => setSelectedTab("month")} className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Month</Tab>
+            <Tab onClick={() => setSelectedTab("quarter")} className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Quarter</Tab>
+            <Tab onClick={() => setSelectedTab("year")} className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Year</Tab>
           </TabList>
         </TabGroup>
       </Card>
