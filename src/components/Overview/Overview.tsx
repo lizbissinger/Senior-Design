@@ -1040,7 +1040,7 @@ const Overview: React.FC = () => {
                   <TableHead className="sticky-header">
                     <TableRow>
                       <th
-                        className="sort"
+                        className="sort dark:text-dark-tremor-content-strong dark:bg-gray-800"
                         onClick={() => requestSort("loadNumber")}
                       >
                         {" "}
@@ -1050,14 +1050,14 @@ const Overview: React.FC = () => {
                           ? "▲"
                           : "▼"}
                       </th>
-                      <th>Truck</th>
-                      <th>Trailer</th>
-                      <th>Driver</th>
-                      <th>Pick-up Date-Time</th>
-                      <th>Delivery Date-Time</th>
-                      <th>Pick-up Location</th>
-                      <th>Delivery Location</th>
-                      <th className="sort" onClick={() => requestSort("price")}>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Truck</th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Trailer</th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Driver</th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Pick-up Date-Time</th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Delivery Date-Time</th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Pick-up Location</th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Delivery Location</th>
+                      <th className="sort dark:text-dark-tremor-content-strong dark:bg-gray-800" onClick={() => requestSort("price")}>
                         {" "}
                         Price{" "}
                         {sortConfig.key === "price" &&
@@ -1065,9 +1065,9 @@ const Overview: React.FC = () => {
                           ? "▲"
                           : "▼"}
                       </th>
-                      <th>Loaded miles</th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Loaded miles</th>
                       <th
-                        className="sort"
+                        className="sort dark:text-dark-tremor-content-strong dark:bg-gray-800"
                         onClick={() => requestSort("status")}
                       >
                         {" "}
@@ -1077,7 +1077,7 @@ const Overview: React.FC = () => {
                           ? "▲"
                           : "▼"}
                       </th>
-                      <th></th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800"></th>
                     </TableRow>
                   </TableHead>
                   <TableBody>
