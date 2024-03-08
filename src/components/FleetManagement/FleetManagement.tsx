@@ -255,24 +255,6 @@ const FleetManagement: React.FC = () => {
     }
   };
 
-  const handleAddButtonClick = (type: string) => {
-    switch (type) {
-      case "driver":
-        setShowDriverForm(true);
-        setEditingDriver(null);
-        break;
-      case "truck":
-        setShowTruckForm(true);
-        setEditingTruck(null);
-        break;
-      case "trailer":
-        setShowTrailerForm(true);
-        setEditingTrailer(null);
-        break;
-      default:
-        break;
-    }
-  };
 
   const handleEdit = (
     type: string,
