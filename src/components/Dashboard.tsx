@@ -99,7 +99,7 @@ const Dashboard: React.FC = () => {
                     to="/dashboard/overview"
                     className="no-underline text-neutral-900 hover:text-neutral-900 hover:no-underline dark:text-white"
                     onClick={() => {
-                      setActiveTab("Overview");
+                      setActiveTab("overview");
                     }}
                   >
                     <span>{logoText}</span>

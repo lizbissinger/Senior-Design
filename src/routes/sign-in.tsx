@@ -58,7 +58,7 @@ export default function SignInPage() {
           <SignIn
             path="/login"
             signUpUrl="/sign-up"
-            afterSignInUrl={"dashboard/Overview"}
+            afterSignInUrl={"dashboard/overview"}
             appearance={{
               elements: {
                 formButtonPrimary: {

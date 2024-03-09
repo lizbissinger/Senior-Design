@@ -28,8 +28,7 @@ const App: React.FC = () => {
       <SignedIn>
         <Router>
           <Routes>
-            <Route index element={<Dashboard />} />
-            <Route index element={<Overview />} />
+            <Route path="*" element={<Navigate to="/dashboard/overview"/>} />
             <Route path="/dashboard/*" element={<Dashboard />} />
             <Route path="/overview" element={<Overview />} />
             <Route path="/fleet" element={<FleetManagement />} />
