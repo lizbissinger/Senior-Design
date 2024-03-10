@@ -8,7 +8,7 @@ export type LoadDetail = {
   deliveryTime: string;
   pickupLocation: string;
   deliveryLocation: string;
-  documents?: File[];
+  documents?: CustomFile[];
   price: string;
   detention: string;
   detentionPrice: string;
@@ -82,3 +82,8 @@ export type Fuel = {
   date: string;
   comments: string;
 };
+
+
+export interface CustomFile extends File {
+  id?: string; // Make the id optional to accommodate pre-upload files
+}
