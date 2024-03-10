@@ -25,23 +25,7 @@ import GetAllTrucks, {
   DeleteTruck,
   UpdateTruck,
 } from "../../routes/truckDetails";
-import { de } from "@faker-js/faker";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
 import {
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-  Title,
-  MultiSelect,
-  MultiSelectItem,
-  Grid,
-  Button,
   Dialog,
   DialogPanel,
 } from "@tremor/react";
