@@ -70,14 +70,14 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   };
 
   return (
-    <Card decoration="left" decorationColor="blue">
+    <Card decoration="left" decorationColor="#6686DC">
       <CloseButton onClick={onClose} className="mb-1 main-button"></CloseButton>
       <TabGroup>
         <TabList className="px-1" variant="line" defaultValue="1">
-          <Tab value="1">Load Info</Tab>
-          <Tab value="2">Directions</Tab>
-          <Tab value="3">Documents</Tab>
-          <Tab value="4">Update</Tab>
+          <Tab value="1" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Load Info</Tab>
+          <Tab value="2" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Directions</Tab>
+          <Tab value="3" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Documents</Tab>
+          <Tab value="4" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Update</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -143,7 +143,7 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
                 alignItems: "center",
               }}
             >
-              <Button variant="light">View Directions</Button>
+              <Button variant="light" className="text-[#779BFB] focus:!outline-none focus:!ring-0 !border-none hover:text-[#6686DC] dark:text-[#6686DC] dark:hover:text-[#779BFB]">View Directions</Button>
               {showMap && <CloseButton onClick={handleMapCloseClick} />}
             </div>
             {showMap && load?.pickupLocation && load?.deliveryLocation && (
