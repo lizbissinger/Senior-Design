@@ -1,4 +1,4 @@
-import { LoadDetail, CustomFile} from "../components/Types/types";
+import { LoadDetail, CustomFile } from "../components/Types/types";
 
 const api = import.meta.env.VITE_API_URL;
 
@@ -20,14 +20,12 @@ export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
 
   if (files) {
     files.forEach((file) => {
-      // Ensure you're appending the actual File object here
-      formData.append("documents", file.file); // Assuming the actual file is under the 'file' property
+      formData.append("documents", file.file);
     });
   }
 
   (Object.keys(load) as Array<keyof LoadDetail>).forEach((key) => {
     if (key !== "documents") {
-      // Excluding documents since it's handled separaetly
       const value = load[key];
       if (typeof value === "object" && value !== null) {
         formData.append(key, JSON.stringify(value));
@@ -37,17 +35,12 @@ export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
     }
   });
 
- 
-  
- 
-
   const requestOptions: RequestInit = {
     method: "POST",
     body: formData,
   };
 
   try {
-    
     const response = await fetch(`${api}/loadDetails`, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -79,19 +72,18 @@ export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
       const value = load[typedKey];
       formData.append(
         typedKey,
-        typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)
+        typeof value === "object" && value !== null
+          ? JSON.stringify(value)
+          : String(value)
       );
     } else {
-      // Assuming `documents` is an array of `CustomFile` and each `CustomFile` has a `file` property
       const documents: CustomFile[] = load[typedKey] as unknown as CustomFile[];
       documents.forEach((document) => {
-        // Append the actual File object
         formData.append("documents", document.file);
       });
     }
   });
 
-  // Debugging: Log FormData entries
   for (let [key, value] of formData.entries()) {
     console.log(key, value);
   }
@@ -115,7 +107,5 @@ export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
     throw error;
   }
 }
-
-
 
 export default GetAllLoads;
