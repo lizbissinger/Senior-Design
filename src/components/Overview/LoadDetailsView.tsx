@@ -27,16 +27,8 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   const [showMap, setShowMap] = useState(false);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
   const [documents, setDocuments] = useState<CustomFile[]>([]); // Updated to use CustomFile[]
-
+///set the metadata yk
   const toggleMapVisibility = () => setShowMap(!showMap);
-
-  // useEffect(() => {
-  //   if (load) {
-  //     fetchDocuments(load._id).then((fetchedDocs) => {
-  //       setDocuments(fetchedDocs);
-  //     });
-  //   }
-  // }, [load, documents]);
 
   useEffect(() => {
     const fetchAndSetDocuments = async () => {
