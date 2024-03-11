@@ -321,7 +321,9 @@ const Overview: React.FC = () => {
                       .map((load, index) => (
                         <TableRow
                           className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                          onClick={() => handleLoadNumberClick(load.loadNumber)}
                           key={index}
+                          style={{ cursor: 'pointer' }}
                         >
                           <td className="centered-cell">
                             <Tooltip title="Show details">
