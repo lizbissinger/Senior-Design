@@ -1,4 +1,4 @@
-import { LoadDetail } from "../components/Types/types";
+import { LoadDetail, CustomFile} from "../components/Types/types";
 
 const api = import.meta.env.VITE_API_URL;
 
@@ -15,12 +15,13 @@ async function GetAllLoads() {
   return loads;
 }
 
-export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
+export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
   const formData = new FormData();
 
   if (files) {
     files.forEach((file) => {
-      formData.append("documents", file);
+      // Ensure you're appending the actual File object here
+      formData.append("documents", file.file); // Assuming the actual file is under the 'file' property
     });
   }
 
@@ -36,12 +37,17 @@ export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
     }
   });
 
+ 
+  
+ 
+
   const requestOptions: RequestInit = {
     method: "POST",
     body: formData,
   };
 
   try {
+    
     const response = await fetch(`${api}/loadDetails`, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -63,7 +69,6 @@ export async function DeleteLoad(id: string) {
     .then((data) => (deletedLoad = data));
   return deletedLoad;
 }
-
 export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
   const formData = new FormData();
 
@@ -77,12 +82,19 @@ export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
         typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)
       );
     } else {
-      const documents: File[] = load[typedKey] as unknown as File[];
+      // Assuming `documents` is an array of `CustomFile` and each `CustomFile` has a `file` property
+      const documents: CustomFile[] = load[typedKey] as unknown as CustomFile[];
       documents.forEach((document) => {
-        formData.append("documents", document);
+        // Append the actual File object
+        formData.append("documents", document.file);
       });
     }
   });
+
+  // Debugging: Log FormData entries
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
 
   const requestOptions: RequestInit = {
     method: "PATCH",
@@ -103,6 +115,7 @@ export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
     throw error;
   }
 }
+
 
 
 export default GetAllLoads;

@@ -83,7 +83,10 @@ export type Fuel = {
   comments: string;
 };
 
-
 export interface CustomFile extends File {
-  id?: string; // Make the id optional to accommodate pre-upload files
+  _id?: string;
+  fileName: string;
+  contentType: string;
+  file: File;
+  data?: any;
 }
