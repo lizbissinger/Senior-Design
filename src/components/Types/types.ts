@@ -8,7 +8,7 @@ export type LoadDetail = {
   deliveryTime: string;
   pickupLocation: string;
   deliveryLocation: string;
-  documents?: File[];
+  documents?: CustomFile[];
   price: string;
   detention: string;
   detentionPrice: string;
@@ -82,3 +82,11 @@ export type Fuel = {
   date: string;
   comments: string;
 };
+
+export interface CustomFile extends File {
+  _id?: string;
+  fileName: string;
+  contentType: string;
+  file: File;
+  data?: any;
+}
