@@ -136,6 +136,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
           <Switch
             id="loadNumber"
             checked={selectedDetails.loadNumber}
+            color={"#6686DC"}
             onChange={() => toggleDetailSelection("loadNumber")}
           />
         </div>
@@ -149,6 +150,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
           <Switch
             id="truckObject"
             checked={selectedDetails.truckObject}
+            color={"#6686DC"}
             onChange={() => toggleDetailSelection("truckObject")}
           />
         </div>
@@ -162,6 +164,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
           <Switch
             id="trailerObject"
             checked={selectedDetails.trailerObject}
+            color={"#6686DC"}
             onChange={() => toggleDetailSelection("trailerObject")}
           />
         </div>
@@ -175,6 +178,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
           <Switch
             id="driverObject"
             checked={selectedDetails.driverObject}
+            color={"#6686DC"}
             onChange={() => toggleDetailSelection("driverObject")}
           />
         </div>
@@ -188,6 +192,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
           <Switch
             id="status"
             checked={selectedDetails.status}
+            color={"#6686DC"}
             onChange={() => toggleDetailSelection("status")}
           />
         </div>
@@ -207,7 +212,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
       />
       <div className="flex justify-end">
         <Button
-          className="mt-2 bg-tremor-primary text-white hover:bg-tremor-primary-dark py-1 px-2 rounded text-sm"
+          className="mt-2 !bg-[#779BFB] text-white hover:!bg-[#6686DC] py-1 px-2 rounded text-sm dark:!bg-[#6686DC] dark:!text-black dark:hover:!bg-[#779BFB]"
           onClick={sendEmail}
         >
           Send Update

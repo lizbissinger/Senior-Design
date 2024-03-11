@@ -247,31 +247,16 @@ const Reports: React.FC = () => {
               <Title>Revenue over time</Title>
               <TabGroup>
                 <TabList>
-                  <Tab icon={ChartBarIcon} className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"></Tab>
-                  <Tab icon={PresentationChartLineIcon} className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"></Tab>
+                  <Tab
+                    icon={PresentationChartLineIcon}
+                    className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
+                  ></Tab>
+                  <Tab
+                    icon={ChartBarIcon}
+                    className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
+                  ></Tab>
                 </TabList>
                 <TabPanels>
-                  <TabPanel>
-                    {revenueOverTimeChartData.length > 0 ? (
-                      <div>
-                        <BarChart
-                          className="h-96 mt-4"
-                          data={revenueOverTimeChartData}
-                          index="date"
-                          yAxisWidth={65}
-                          categories={categories}
-                          colors={["#6686DC"]}
-                          valueFormatter={valueFormatter}
-                          showAnimation={true}
-                          animationDuration={1500}
-                          onValueChange={(v: any) => setBarChartToolTip(v)}
-                        />
-                        <div className="h-2"></div>
-                      </div>
-                    ) : (
-                      <NoDataToShow />
-                    )}
-                  </TabPanel>
                   <TabPanel>
                     {revenueOverTimeChartData.length > 0 ? (
                       <div>
@@ -286,6 +271,27 @@ const Reports: React.FC = () => {
                           showAnimation={true}
                           animationDuration={1500}
                           curveType="monotone"
+                        />
+                        <div className="h-2"></div>
+                      </div>
+                    ) : (
+                      <NoDataToShow />
+                    )}
+                  </TabPanel>
+                  <TabPanel>
+                    {revenueOverTimeChartData.length > 0 ? (
+                      <div>
+                        <BarChart
+                          className="h-96 mt-4"
+                          data={revenueOverTimeChartData}
+                          index="date"
+                          yAxisWidth={65}
+                          categories={categories}
+                          colors={["#6686DC"]}
+                          valueFormatter={valueFormatter}
+                          showAnimation={true}
+                          animationDuration={1500}
+                          onValueChange={(v: any) => setBarChartToolTip(v)}
                         />
                         <div className="h-2"></div>
                       </div>
