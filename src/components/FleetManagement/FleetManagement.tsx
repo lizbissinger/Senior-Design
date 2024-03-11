@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./FleetManagement.css";
-import DriverForm from "../DriverForm/DriverForm";
-import TruckForm from "../TruckForm/TruckForm";
-import TrailerForm from "../TrailerForm/TrailerForm";
+import { AddDriverForm, EditDriverForm } from "../DriverForm/DriverForm";
+import { EditTruckForm } from "../TruckForm/TruckForm";
+import { AddTrailerForm, EditTrailerForm } from "../TrailerForm/TrailerForm";
 import VehiclesDetailsTable from "../VehiclesDetailsTable/VehiclesDetailsTable";
 import {
   DriverDetail,
@@ -25,27 +25,8 @@ import GetAllTrucks, {
   DeleteTruck,
   UpdateTruck,
 } from "../../routes/truckDetails";
-import { de } from "@faker-js/faker";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import {
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-  Title,
-  MultiSelect,
-  MultiSelectItem,
-  Grid,
-  Button,
-  Dialog,
-  DialogPanel,
-} from "@tremor/react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dialog, DialogPanel } from "@tremor/react";
+import { Dropdown } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 
 const FleetManagement: React.FC = () => {
@@ -75,22 +56,31 @@ const FleetManagement: React.FC = () => {
     null
   );
 
-  const [editingDriver, setEditingDriver] = useState<DriverDetail | null>(null);
-  const [editingTruck, setEditingTruck] = useState<TruckDetail | null>(null);
-  const [editingTrailer, setEditingTrailer] = useState<TrailerDetail | null>(
+  const [isEditingDriver, setIsEditingDriver] = useState(false);
+  const [isEditingTruck, setIsEditingTruck] = useState(false);
+  const [isEditingTrailer, setIsEditingTrailer] = useState(false);
+
+  const [editedDriver, setEditedDriver] = useState<DriverDetail | null>(null);
+  const [editedTruck, setEditedTruck] = useState<TruckDetail | null>(null);
+  const [editedTrailer, setEditedTrailer] = useState<TrailerDetail | null>(
     null
   );
 
-  const [isOpenDriverDialog, setIsOpenDriverDialog] = useState(false);
-  const [isOpenTruckDialog, setIsOpenTruckDialog] = useState(false);
-  const [isOpenTrailerDialog, setIsOpenTrailerDialog] = useState(false);
-  const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const [isOpenAddDriverDialog, setIsOpenAddDriverDialog] = useState(false);
+  const [isOpenAddTruckDialog, setIsOpenAddTruckDialog] = useState(false);
+  const [isOpenAddTrailerDialog, setIsOpenAddTrailerDialog] = useState(false);
+
+  const [isOpenEditDriverDialog, setIsOpenEditDriverDialog] = useState(false);
+  const [isOpenEditTruckDialog, setIsOpenEditTruckDialog] = useState(false);
+  const [isOpenEditTrailerDialog, setIsOpenEditTrailerDialog] = useState(false);
 
   useEffect(() => {
-    setIsOpenDriverDialog(false);
-    setIsOpenTruckDialog(false);
-    setIsOpenTrailerDialog(false);
-    setIsOpenDialog(false);
+    setIsOpenEditDriverDialog(false);
+    setIsOpenEditTruckDialog(false);
+    setIsOpenEditTrailerDialog(false);
+    setIsOpenAddDriverDialog(false);
+    setIsOpenAddTruckDialog(false);
+    setIsOpenAddTrailerDialog(false);
   }, []);
 
   const fetchDriverDetails = async () => {
@@ -151,7 +141,8 @@ const FleetManagement: React.FC = () => {
         drivers: [...prevDetails.drivers, addedDriver],
       }));
     }
-    setIsOpenDriverDialog(false);
+    setShowDriverForm(false);
+    setIsOpenAddDriverDialog(false);
   };
 
   const handleAddTruck = async (truck: TruckDetail) => {
@@ -164,7 +155,8 @@ const FleetManagement: React.FC = () => {
         trucks: [...prevDetails.trucks, addedTruck],
       }));
     }
-    setIsOpenTruckDialog(false);
+    setShowTruckForm(false);
+    setIsOpenAddTruckDialog(false);
   };
 
   const handleAddTrailer = async (trailer: TrailerDetail) => {
@@ -177,7 +169,8 @@ const FleetManagement: React.FC = () => {
         trailers: [...prevDetails.trailers, addedTrailer],
       }));
     }
-    setIsOpenTrailerDialog(false);
+    setShowTrailerForm(false);
+    setIsOpenAddTrailerDialog(false);
   };
 
   const handleDeleteDriver = async (driver: DriverDetail, index: number) => {
@@ -255,7 +248,6 @@ const FleetManagement: React.FC = () => {
     }
   };
 
-
   const handleEdit = (
     type: string,
     item: DriverDetail | TruckDetail | TrailerDetail
@@ -263,32 +255,31 @@ const FleetManagement: React.FC = () => {
     switch (type) {
       case "driver":
         setSelectedDriver(item as DriverDetail);
-        setEditingDriver(item as DriverDetail);
-        setShowDriverForm(true);
+        setEditedDriver(item as DriverDetail);
+        setShowDriverForm(false);
         setShowTruckForm(false);
         setShowTrailerForm(false);
-        setIsOpenDriverDialog(true);
+        setIsOpenEditDriverDialog(true);
         break;
       case "truck":
         setSelectedTruck(item as TruckDetail);
-        setEditingTruck(item as TruckDetail);
+        setEditedTruck(item as TruckDetail);
         setShowDriverForm(false);
         setShowTruckForm(true);
         setShowTrailerForm(false);
-        setIsOpenTruckDialog(true);
+        setIsOpenEditTruckDialog(true);
         break;
       case "trailer":
         setSelectedTrailer(item as TrailerDetail);
-        setEditingTrailer(item as TrailerDetail);
+        setEditedTrailer(item as TrailerDetail);
         setShowDriverForm(false);
         setShowTruckForm(false);
         setShowTrailerForm(true);
-        setIsOpenTrailerDialog(true);
+        setIsOpenEditTrailerDialog(true);
         break;
       default:
         break;
     }
-    setIsOpenDialog(false);
   };
 
   const handleEditDriver = async (editedDriver: DriverDetail) => {
@@ -311,8 +302,8 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowDriverForm(false);
-      setIsOpenDriverDialog(false);
-      setEditingDriver(null);
+      setIsOpenEditDriverDialog(false);
+      setEditedDriver(null);
     } catch (error) {
       console.error("Error updating driver:", error);
     }
@@ -338,8 +329,8 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowTruckForm(false);
-      setIsOpenTruckDialog(false);
-      setEditingTruck(null);
+      setIsOpenEditTruckDialog(false);
+      setEditedTruck(null);
     } catch (error) {
       console.error("Error updating truck:", error);
     }
@@ -365,21 +356,24 @@ const FleetManagement: React.FC = () => {
       }
 
       setShowTrailerForm(false);
-      setIsOpenTrailerDialog(false);
-      setEditingTrailer(null);
+      setIsOpenEditTrailerDialog(false);
+      setEditedTrailer(null);
     } catch (error) {
       console.error("Error updating trailer:", error);
     }
   };
 
   const handleCloseDriverDialog = () => {
-    setIsOpenDriverDialog(false);
+    setIsOpenEditDriverDialog(false);
+    setIsOpenAddDriverDialog(false);
   };
   const handleCloseTruckDialog = () => {
-    setIsOpenTruckDialog(false);
+    setIsOpenEditTruckDialog(false);
+    setIsOpenAddTruckDialog(false);
   };
   const handleCloseTrailerDialog = () => {
-    setIsOpenTrailerDialog(false);
+    setIsOpenEditTrailerDialog(false);
+    setIsOpenAddTrailerDialog(false);
   };
 
   return (
@@ -391,71 +385,131 @@ const FleetManagement: React.FC = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu className="dark:bg-slate-950 dark:border-gray-200">
-            <Dropdown.Item onClick={() => setIsOpenDriverDialog(true)} className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100">
+            <Dropdown.Item
+              onClick={() => setIsOpenAddDriverDialog(true)}
+              className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100"
+            >
               Add Driver
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setIsOpenTruckDialog(true)} className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100">
+            <Dropdown.Item
+              onClick={() => setIsOpenAddTruckDialog(true)}
+              className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100"
+            >
               Add Truck
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setIsOpenTrailerDialog(true)} className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100">
+            <Dropdown.Item
+              onClick={() => setIsOpenAddTrailerDialog(true)}
+              className="focus:!bg-gray-50 focus:!text-neutral-950 dark:text-gray-200 dark:hover:bg-slate-900 dark:hover:text-gray-100 dark:focus:!bg-slate-900 dark:focus:!text-gray-100"
+            >
               Add Trailer
             </Dropdown.Item>
           </Dropdown.Menu>
-
-          <Dialog
-            open={isOpenDriverDialog}
-            onClose={() => setIsOpenDriverDialog(false)}
-            static={true}
-          >
-            <DialogPanel>
-              <CloseButton
-                onClick={handleCloseDriverDialog}
-                className="main-button"
-              ></CloseButton>
-              <DriverForm
-                onAddDriver={handleAddDriver}
-                onEditDriver={handleEditDriver}
-                editingDriver={editingDriver}
-              />
-            </DialogPanel>
-          </Dialog>
-
-          <Dialog
-            open={isOpenTruckDialog}
-            onClose={() => setIsOpenTruckDialog(false)}
-            static={true}
-          >
-            <DialogPanel>
-              <CloseButton
-                onClick={handleCloseTruckDialog}
-                className="main-button"
-              ></CloseButton>
-              <TruckForm
-                onAddTruck={handleAddTruck}
-                onEditTruck={handleEditTruck}
-                editingTruck={editingTruck}
-              />
-            </DialogPanel>
-          </Dialog>
-
-          <Dialog
-            open={isOpenTrailerDialog}
-            onClose={() => setIsOpenTrailerDialog(false)}
-            static={true}
-          >
-            <DialogPanel>
-              <CloseButton
-                onClick={handleCloseTrailerDialog}
-                className="main-button"
-              ></CloseButton>
-              <TrailerForm
-                onAddTrailer={handleAddTrailer}
-                onEditTrailer={handleEditTrailer}
-                editingTrailer={editingTrailer}
-              />
-            </DialogPanel>
-          </Dialog>
         </Dropdown>
+      </div>
+
+      <div>
+        <Dialog
+          open={isOpenAddDriverDialog && !isEditingDriver}
+          onClose={() => setIsOpenAddDriverDialog(false)}
+          static={true}
+        >
+          <DialogPanel>
+            <CloseButton
+              onClick={() => setIsOpenAddDriverDialog(false)}
+              className="main-button"
+            />
+            <AddDriverForm onAddDriver={handleAddDriver} />
+          </DialogPanel>
+        </Dialog>
+
+        <Dialog
+          open={isOpenAddTrailerDialog}
+          onClose={() => setIsOpenAddTrailerDialog(false)}
+          static={true}
+        >
+          <DialogPanel>
+            <CloseButton
+              onClick={() => setIsOpenAddTrailerDialog(false)}
+              className="main-button"
+            />
+            <AddTrailerForm onAddTrailer={handleAddTrailer} />
+          </DialogPanel>
+        </Dialog>
+
+        <Dialog
+          open={isOpenEditDriverDialog}
+          onClose={() => {
+            setIsOpenEditDriverDialog(false);
+            setEditedDriver(null);
+            setIsEditingDriver(false);
+          }}
+          static={true}
+        >
+          <DialogPanel>
+            <CloseButton
+              onClick={() => {
+                setIsOpenEditDriverDialog(false);
+                setEditedDriver(null);
+                setIsEditingDriver(false);
+              }}
+              className="main-button"
+            />
+            <EditDriverForm
+              onEditDriver={handleEditDriver}
+              editingDriver={editedDriver}
+            />
+          </DialogPanel>
+        </Dialog>
+
+        <Dialog
+          open={isOpenEditTruckDialog}
+          onClose={() => {
+            setIsOpenEditTruckDialog(false);
+            setEditedTruck(null);
+            setIsEditingTruck(false);
+          }}
+          static={true}
+        >
+          <DialogPanel>
+            <CloseButton
+              onClick={() => {
+                setIsOpenEditTruckDialog(false);
+                setEditedTruck(null);
+                setIsEditingTruck(false);
+              }}
+              className="main-button"
+            />
+            <EditTruckForm
+              onEditTruck={handleEditTruck}
+              editingTruck={editedTruck}
+            />
+          </DialogPanel>
+        </Dialog>
+
+        <Dialog
+          open={isOpenEditTrailerDialog}
+          onClose={() => {
+            setIsOpenEditTrailerDialog(false);
+            setEditedTrailer(null);
+            setIsEditingTrailer(false);
+          }}
+          static={true}
+        >
+          <DialogPanel>
+            <CloseButton
+              onClick={() => {
+                setIsOpenEditTrailerDialog(false);
+                setEditedTrailer(null);
+                setIsEditingTrailer(false);
+              }}
+              className="main-button"
+            />
+            <EditTrailerForm
+              onEditTrailer={handleEditTrailer}
+              editingTrailer={editedTrailer}
+            />
+          </DialogPanel>
+        </Dialog>
       </div>
 
       <div>
