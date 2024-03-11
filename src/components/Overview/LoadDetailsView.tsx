@@ -30,13 +30,29 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
 
   const toggleMapVisibility = () => setShowMap(!showMap);
 
+  // useEffect(() => {
+  //   if (load) {
+  //     fetchDocuments(load._id).then((fetchedDocs) => {
+  //       setDocuments(fetchedDocs);
+  //     });
+  //   }
+  // }, [load, documents]);
+
   useEffect(() => {
-    if (load) {
-      fetchDocuments(load._id).then((fetchedDocs) => {
-        setDocuments(fetchedDocs);
-      });
-    }
-  }, [load, documents]);
+    const fetchAndSetDocuments = async () => {
+      if (load) {
+        try {
+          const fetchedDocs = await fetchDocuments(load._id);
+          setDocuments(fetchedDocs);
+        } catch (error) {
+          console.error("Error fetching documents:", error);
+        }
+      }
+    };
+  
+    fetchAndSetDocuments();
+  }, [load]); 
+  
 
   const handleDeleteDocument = async (documentId: string) => {
     const loadId = load?._id;
