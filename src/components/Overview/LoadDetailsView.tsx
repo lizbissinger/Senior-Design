@@ -199,11 +199,11 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
                   {documents.map((document, index) => (
                     <ListItem
                       key={document._id || index}
-                      onClick={() => viewDocumentInTab(document)}
                       style={{ cursor: "pointer" }}
                     >
                       <p
                         className="mb-0"
+                        onClick={() => viewDocumentInTab(document)}
                       >
                         {document.fileName}
                       </p>
@@ -213,7 +213,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
                         Delete
                       </Button>
 
-                      <DocumentMagnifyingGlassIcon style={{ width: 25 }} />
+                      <DocumentMagnifyingGlassIcon
+                        style={{ width: 25 }}
+                        onClick={() => viewDocumentInTab(document)}
+                      />
                     </ListItem>
                   ))}
                 </List>
