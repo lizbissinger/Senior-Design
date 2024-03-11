@@ -154,14 +154,14 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </MultiSelectItem>
                   ))}
                 </MultiSelect>
-                <Table className="mt-2">
+                <Table className="mt-2 max-h-table">
                   <TableHead>
                     <TableRow>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Name</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">License #</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Phone #</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Email</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Name</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">License #</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Phone #</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Email</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -213,15 +213,15 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </MultiSelectItem>
                   ))}
                 </MultiSelect>
-                <Table className="mt-2">
+                <Table className="mt-2 max-h-table">
                   <TableHead>
                     <TableRow>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Number</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Make</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Model</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Year</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">VIN</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Number</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Make</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Model</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Year</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">VIN</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -270,15 +270,15 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </MultiSelectItem>
                   ))}
                 </MultiSelect>
-                <Table className="mt-2">
+                <Table className="mt-2 max-h-table">
                   <TableHead>
                     <TableRow>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Number</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Make</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Model</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Year</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">VIN</TableHeaderCell>
-                      <TableHeaderCell className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Number</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Make</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Model</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Year</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">VIN</TableHeaderCell>
+                      <TableHeaderCell className="sticky-header sticky-header-background dark:text-dark-tremor-content-strong dark:bg-gray-800">Action</TableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
