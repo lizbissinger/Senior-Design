@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DriverDetail, TruckDetail, TrailerDetail } from "../Types/types";
 import "./VehiclesDetailsTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,7 @@ import {
   TabPanels,
   TabPanel,
   Button,
+  Divider,
 } from "@tremor/react";
 import { Tab, TabGroup, TabList } from "@tremor/react";
 
@@ -33,6 +34,20 @@ type VehiclesDetailsTableProps = {
     item: DriverDetail | TruckDetail | TrailerDetail
   ) => void;
 };
+
+const SkeletonLoading = () => (
+  <div role="status" >
+    {[...Array(1)].map((_, index) => (
+      <div>  
+      <div className="h-3.5 bg-gray-300 rounded-full dark:bg-gray-700 max-w-full mb-2.5"></div>
+      {/* <Divider/> */}
+
+      </div>
+    ))}
+    <span className="sr-only">Loading...</span>
+  </div>
+);
+
 
 const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
   drivers,
@@ -130,6 +145,17 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
     );
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Grid className="vehicles-details-container table-head">
       <TabGroup>
@@ -154,6 +180,7 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </MultiSelectItem>
                   ))}
                 </MultiSelect>
+                
                 <Table className="mt-2 max-h-table">
                   <TableHead>
                     <TableRow>
@@ -165,35 +192,44 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredDrivers.map((driver, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{driver.name}</TableCell>
-                        <TableCell>{driver.licenseNumber}</TableCell>
-                        <TableCell>{driver.phoneNumber}</TableCell>
-                        <TableCell>{driver.email}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="light"
-                            color="blue"
-                            onClick={() => onEdit("driver", driver)}
-                            className="edit-button"
-                          >
-                            <FontAwesomeIcon icon={faPenAlt} />{" "}
-                            {/* Edit Icon */}
-                          </Button>
-                          <Button
-                            variant="light"
-                            color="pink"
-                            onClick={() => onDeleteDriver(driver, index)}
-                            className="delete-button"
-                          >
-                            <FontAwesomeIcon icon={faTrash} />{" "}
-                            {/* Delete Icon */}
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
+                  {filteredDrivers.map((driver, index) => (
+                    <TableRow key={index}>
+                      {isLoading ? (
+                        <>
+                          {/* <SkeletonLoading /> */}
+                        </>
+                      ) : (
+                        <><TableCell>{driver.name}</TableCell><TableCell>{driver.licenseNumber}</TableCell><TableCell>{driver.phoneNumber}</TableCell><TableCell>{driver.email}</TableCell><TableCell>
+                            <Button
+                              variant="light"
+                              color="blue"
+                              onClick={() => onEdit("driver", driver)}
+                              className="edit-button"
+                            >
+                              <FontAwesomeIcon icon={faPenAlt} />{" "}
+                              {/* Edit Icon */}
+                            </Button>
+                            <Button
+                              variant="light"
+                              color="pink"
+                              onClick={() => onDeleteDriver(driver, index)}
+                              className="delete-button"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />{" "}
+                              {/* Delete Icon */}
+                            </Button>
+                          </TableCell></>
+                      )}
+                    </TableRow>
+                  ))}
+                  {isLoading && [...Array(8)].map((_, index) => (
+                    <TableRow key={index}>
+                      <TableCell colSpan={5}>
+                        <SkeletonLoading />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
                 </Table>
               </Card>
             </div>

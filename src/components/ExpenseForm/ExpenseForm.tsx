@@ -26,7 +26,15 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
   const repair = "Repair";
   const payroll = "Payroll";
   const fuel = "Fuel";
-  const [newExpense, setNewExpense] = useState<any>({});
+  const [newExpense, setNewExpense] = useState<any>({
+    _id: "",
+    type: "",
+    cost: "",
+    date: new Date(),
+    truck: "",
+    driver: "",
+    additionalName: ""
+  });
   const [categoryValue, setCategoryValue] = useState<string>();
   const [trucks, setTrucks] = useState<Object[]>([]);
   const [drivers, setDrivers] = useState<Object[]>([]);
@@ -54,6 +62,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
   useEffect(() => {
     if (editingExpense) {
       setCategoryValue(editingExpense.type);
+      setNewExpense({ ...newExpense, date: new Date(newExpense.date) });
     }
     fetchTrucks();
     fetchDrivers();
@@ -257,7 +266,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
               <DatePicker
                 id="date"
                 placeholder="Date"
-                value={editingExpense || newExpense.date ? new Date(newExpense.date) : new Date()}
+                value={new Date(newExpense.date)}
                 onValueChange={(newDate) =>
                   setNewExpense({ ...newExpense, date: newDate })
                 }

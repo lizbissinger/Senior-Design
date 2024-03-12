@@ -172,7 +172,7 @@ export const useOverviewState = () => {
         }
         return newProgress;
       });
-    }, 60);
+    }, 100);
 
     return () => clearInterval(loadingInterval);
   }, []);

@@ -46,4 +46,28 @@ export async function CreateNewFuelRow(fuel: Fuel): Promise<Fuel | undefined> {
   }
 }
 
+export async function UpdateFuel(fuel: Fuel): Promise<Fuel | undefined> {
+  try {
+    const requestOptions = {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(fuel),
+    };
+
+    const response = await fetch(`${api}/fuel/${fuel._id}`, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`Failed to update the fuel: ${response.statusText}`);
+    }
+
+    const updatedFuel: Fuel = await response.json();
+    return updatedFuel;
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
+
 export default GetAllFuelRows;
