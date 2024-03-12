@@ -285,8 +285,6 @@ export const useOverviewState = () => {
         ...current,
         documents: [...(current.documents || []), ...filesArray],
       }));
-
-      handleDocumentsUpdated();
     }
   };
 
@@ -350,6 +348,7 @@ export const useOverviewState = () => {
 
   const updateLoad = async (load: LoadDetail) => {
     await UpdateLoad(load);
+    handleDocumentsUpdated();
   };
 
   const handleEditClick = (index: number) => {
@@ -829,7 +828,6 @@ export const useOverviewState = () => {
                 multiple
                 onChange={(e) => {
                   handleDocumentSelectFile(e);
-                  handleDocumentsUpdated();
                 }}
               />
 
