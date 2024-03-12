@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import "./Finance.css";
 import {
   Card,
   Grid,
   Button,
+  Badge,
   Dialog,
   DialogPanel,
   Table,
@@ -12,6 +14,11 @@ import {
   TableHeaderCell,
   TableRow,
 } from "@tremor/react";
+import {
+  WrenchIcon,
+  BanknotesIcon,
+  FunnelIcon,
+} from "@heroicons/react/24/solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenAlt } from "@fortawesome/free-solid-svg-icons";
 import { PayrollDetail, RepairDetail, Fuel } from "../Types/types";
@@ -397,7 +404,28 @@ const Finance: React.FC = () => {
                       <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
                     </Button>
                   </TableCell>
-                  <TableCell>{expense.type}</TableCell>
+                  <TableCell>
+                    <Badge
+                      size="md"
+                      className="type-badge rounded align-middle"
+                      icon={
+                        expense.type == REPAIR
+                          ? WrenchIcon
+                          : expense.type == PAYROLL
+                          ? BanknotesIcon
+                          : FunnelIcon
+                      }
+                      color={
+                        expense.type == REPAIR
+                          ? "cyan"
+                          : expense.type == PAYROLL
+                          ? "#6686DC"
+                          : "fuchsia"
+                      }
+                    >
+                      {expense.type}
+                    </Badge>
+                  </TableCell>
                   <TableCell>{valueFormatter(expense.cost)}</TableCell>
                   <TableCell>
                     {new Date(expense.date).toLocaleDateString()}
