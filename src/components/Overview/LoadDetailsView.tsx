@@ -66,7 +66,6 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose, update
     await deleteDocument(loadId, documentId);
     const fetchedDocs = await fetchDocuments(loadId);
     setDocuments(fetchedDocs);
-    // Use the prop to update the parent state for documents
     updateLoadDocuments(loadId, fetchedDocs);
   } catch (error) {
     console.error("Error deleting document:", error);
