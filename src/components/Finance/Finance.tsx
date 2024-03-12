@@ -15,9 +15,21 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenAlt } from "@fortawesome/free-solid-svg-icons";
 import { PayrollDetail, RepairDetail, Fuel } from "../Types/types";
-import { GetAllRepairs, CreateNewRepair } from "../../routes/repairDetails";
-import { GetAllPayroll, CreateNewPayroll } from "../../routes/payrollDetails";
-import { GetAllFuelRows, CreateNewFuelRow } from "../../routes/fuel";
+import {
+  GetAllRepairs,
+  CreateNewRepair,
+  UpdateRepair,
+} from "../../routes/repairDetails";
+import {
+  GetAllPayroll,
+  CreateNewPayroll,
+  UpdatePayroll,
+} from "../../routes/payrollDetails";
+import {
+  GetAllFuelRows,
+  CreateNewFuelRow,
+  UpdateFuel,
+} from "../../routes/fuel";
 import ExpenseForm from "../ExpenseForm/ExpenseForm";
 import CloseButton from "react-bootstrap/CloseButton";
 
@@ -32,7 +44,7 @@ const Finance: React.FC = () => {
   const valueFormatter = function (number: number) {
     return "$ " + new Intl.NumberFormat("us").format(number).toString();
   };
-  
+
   const fetchExpenseData = async () => {
     try {
       let repairs = await GetAllRepairs();
@@ -43,7 +55,7 @@ const Finance: React.FC = () => {
       if (repairs) {
         repairs.map((repair: any) => {
           data.push({
-            key: repair._id,
+            _id: repair._id,
             type: REPAIR,
             cost: repair.repairCost,
             truck: repair.truckObject,
@@ -57,7 +69,7 @@ const Finance: React.FC = () => {
       if (payroll) {
         payroll.map((payroll: any) => {
           data.push({
-            key: payroll._id,
+            _id: payroll._id,
             type: PAYROLL,
             cost: payroll.payrollCost,
             truck: "",
@@ -71,7 +83,7 @@ const Finance: React.FC = () => {
       if (fuel) {
         fuel.map((fuel: any) => {
           data.push({
-            key: fuel._id,
+            _id: fuel._id,
             type: FUEL,
             cost: fuel.cost,
             truck: fuel.truckObject,
@@ -135,28 +147,60 @@ const Finance: React.FC = () => {
     }
   };
 
-  const handleEditExpense = async (editedExpense: any) => {
-    // try {
-    //   const updatedTrailer = await UpdateTrailer(editedTrailer);
-    //   if (updatedTrailer) {
-    //     const updatedTrailerDetails = trailerDetails.map((trailer) =>
-    //       trailer._id === updatedTrailer._id ? updatedTrailer : trailer
-    //     );
-    //     setTrailerDetails(updatedTrailerDetails);
-    //     const updatedVehiclesDetails = {
-    //       ...vehiclesDetails,
-    //       trailers: vehiclesDetails.trailers.map((trailer) =>
-    //         trailer._id === updatedTrailer._id ? updatedTrailer : trailer
-    //       ),
-    //     };
-    //     setVehiclesDetails(updatedVehiclesDetails);
-    //   }
-    //   setShowTrailerForm(false);
-    //   setIsOpenTrailerDialog(false);
-    //   setEditingTrailer(null);
-    // } catch (error) {
-    //   console.error("Error updating trailer:", error);
-    // }
+  const handleEditExpense = async (expense: any) => {
+    expense.date = expense.date.toString();
+    try {
+      if (expense.type == REPAIR) {
+        let repair: RepairDetail = {
+          _id: expense._id,
+          repair: expense.additionalName,
+          truckObject: expense.truck,
+          trailerObject: "",
+          repairDate: new Date(expense.date).toISOString(),
+          repairCost: expense.cost,
+          repairComments: "",
+        };
+        const updatedRepair = await UpdateRepair(repair);
+        if (updatedRepair) {
+          const updatedExpenseTable = expenseTableData.map((e: any) =>
+            e._id == updatedRepair._id ? expense : e
+          );
+          setExpenseTableData(updatedExpenseTable);
+        }
+      } else if (expense.type == PAYROLL) {
+        let payroll: PayrollDetail = {
+          _id: expense._id,
+          driver: expense.driver,
+          payrollCost: expense.cost,
+          payrollDate: new Date(expense.date).toISOString(),
+        };
+        const updatedPayroll = await UpdatePayroll(payroll);
+        if (updatedPayroll) {
+          const updatedExpenseTable = expenseTableData.map((e: any) =>
+            e._id == updatedPayroll._id ? expense : e
+          );
+          setExpenseTableData(updatedExpenseTable);
+        }
+      } else if (expense.type == FUEL) {
+        let fuel: Fuel = {
+          _id: expense._id,
+          cost: expense.cost,
+          truckObject: expense.truck,
+          date: new Date(expense.date).toISOString(),
+          comments: "",
+        };
+        const updatedFuel = await UpdateFuel(fuel);
+        if (updatedFuel) {
+          const updatedExpenseTable = expenseTableData.map((e: any) =>
+            e._id == updatedFuel._id ? expense : e
+          );
+          setExpenseTableData(updatedExpenseTable);
+        }
+      }
+      setIsOpenExpenseDialog(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleDeleteExpense = async (expense: any, index: number) => {
@@ -340,7 +384,7 @@ const Finance: React.FC = () => {
             </TableHead>
             <TableBody>
               {expenseTableData.map((expense: any) => (
-                <TableRow key={expense.key}>
+                <TableRow key={expense._id}>
                   <TableCell>
                     <Button
                       variant="light"
