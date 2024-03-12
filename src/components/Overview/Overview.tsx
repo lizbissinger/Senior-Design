@@ -43,6 +43,7 @@ const Overview: React.FC = () => {
     setEditingLoadIndex,
     filteredLoads,
     setFilteredLoads,
+    updateLoadDocuments,
     selectedDate,
     setSelectedDate,
     selectedLoadNumber,
@@ -532,6 +533,7 @@ const Overview: React.FC = () => {
                     ) || null
                   }
                   onClose={handleCloseDetailsView}
+                  updateLoadDocuments={updateLoadDocuments}
                 />
               )}
             </div>

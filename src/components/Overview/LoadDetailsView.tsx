@@ -21,13 +21,13 @@ import { fetchDocuments, deleteDocument } from "../../routes/documents";
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
   onClose: () => void;
+  updateLoadDocuments: (loadId: string, newDocuments: CustomFile[]) => void; 
 }
 
-const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
+const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose, updateLoadDocuments  }) => {
   const [showMap, setShowMap] = useState(false);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
-  const [documents, setDocuments] = useState<CustomFile[]>([]); // Updated to use CustomFile[]
-///set the metadata yk
+  const [documents, setDocuments] = useState<CustomFile[]>([]); 
   const toggleMapVisibility = () => setShowMap(!showMap);
 
   useEffect(() => {
@@ -36,6 +36,7 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
         try {
           const fetchedDocs = await fetchDocuments(load._id);
           setDocuments(fetchedDocs);
+          
         } catch (error) {
           console.error("Error fetching documents:", error);
         }
@@ -44,26 +45,34 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   
     fetchAndSetDocuments();
   }, [load]); 
+
+
+  useEffect(() => {
+    console.log(documents);
+    console.log("below is the active load da documents field")
+    console.log(load?.documents)
+  }, [documents]);
+  
   
 
-  const handleDeleteDocument = async (documentId: string) => {
-    const loadId = load?._id;
-    console.log("Button clicked document ID: " + documentId);
-    if (!loadId) {
-      console.error("Load ID is undefined.");
-      return;
-    }
+  const handleDeleteDocument = async (documentId: any) => {
+  const loadId = load?._id;
+  if (!loadId) {
+    console.error("Load ID is undefined.");
+    return;
+  }
 
-    try {
-      await deleteDocument(loadId, documentId);
-      fetchDocuments(loadId).then((fetchedDocs) => {
-        setDocuments(fetchedDocs);
-        console.log("Documents re-fetched successfully after deletion.");
-      });
-    } catch (error) {
-      console.error("Error deleting document:", error);
-    }
-  };
+  try {
+    await deleteDocument(loadId, documentId);
+    const fetchedDocs = await fetchDocuments(loadId);
+    setDocuments(fetchedDocs);
+    // Use the prop to update the parent state for documents
+    updateLoadDocuments(loadId, fetchedDocs);
+  } catch (error) {
+    console.error("Error deleting document:", error);
+  }
+};
+
 
   const handleMapCloseClick = (event: { stopPropagation: () => void }) => {
     event.stopPropagation();

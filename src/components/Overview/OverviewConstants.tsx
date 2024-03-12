@@ -54,6 +54,17 @@ export const useOverviewState = () => {
     setCurrentPage(1);
   }, [filteredLoads]);
 
+  const updateLoadDocuments = (loadId: any, newDocuments: any) => {
+    setLoadDetails((loadDetails) =>
+      loadDetails.map((load) => {
+        if (load._id === loadId) {
+          return { ...load, documents: newDocuments };
+        }
+        return load;
+      })
+    );
+  };
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
@@ -1249,6 +1260,7 @@ export const useOverviewState = () => {
     setShowForm,
     errors,
     setErrors,
+    updateLoadDocuments,
     submitting,
     setSubmitting,
     handleDriverSelect,
