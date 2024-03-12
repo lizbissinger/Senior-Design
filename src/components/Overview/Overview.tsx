@@ -29,6 +29,9 @@ const Overview: React.FC = () => {
   const {
     drivers,
     setDrivers,
+    refreshKey,
+    setRefreshKey,
+    handleDocumentsUpdated,
     trucks,
     setTrucks,
     trailers,
@@ -527,6 +530,7 @@ const Overview: React.FC = () => {
             >
               {selectedLoadNumber && (
                 <LoadDetailsView
+                  key={refreshKey}
                   load={
                     loadDetails.find(
                       (load) => load.loadNumber === selectedLoadNumber
