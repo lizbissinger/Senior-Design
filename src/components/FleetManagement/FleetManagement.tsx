@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./FleetManagement.css";
 import { AddDriverForm, EditDriverForm } from "../DriverForm/DriverForm";
-import { EditTruckForm } from "../TruckForm/TruckForm";
+import { AddTruckForm, EditTruckForm } from "../TruckForm/TruckForm";
 import { AddTrailerForm, EditTrailerForm } from "../TrailerForm/TrailerForm";
 import VehiclesDetailsTable from "../VehiclesDetailsTable/VehiclesDetailsTable";
 import {
@@ -419,6 +419,20 @@ const FleetManagement: React.FC = () => {
               className="main-button"
             />
             <AddDriverForm onAddDriver={handleAddDriver} />
+          </DialogPanel>
+        </Dialog>
+
+        <Dialog
+          open={isOpenAddTruckDialog}
+          onClose={() => setIsOpenAddTruckDialog(false)}
+          static={true}
+        >
+          <DialogPanel>
+            <CloseButton
+              onClick={() => setIsOpenAddTruckDialog(false)}
+              className="main-button"
+            />
+            <AddTruckForm onAddTruck={handleAddTruck} />
           </DialogPanel>
         </Dialog>
 
