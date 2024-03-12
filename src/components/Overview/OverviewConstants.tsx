@@ -34,6 +34,7 @@ import { LoadDetail, CustomFile } from "../Types/types";
 
 export const useOverviewState = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [trucks, setTrucks] = useState<string[]>([]);
   const [trailers, setTrailers] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -53,6 +54,17 @@ export const useOverviewState = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [filteredLoads]);
+
+  const updateLoadDocuments = (loadId: any, newDocuments: any) => {
+    setLoadDetails((loadDetails) =>
+      loadDetails.map((load) => {
+        if (load._id === loadId) {
+          return { ...load, documents: newDocuments };
+        }
+        return load;
+      })
+    );
+  };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -254,6 +266,10 @@ export const useOverviewState = () => {
     setNewLoad({ ...newLoad, trailerObject: selectedTrailer });
   };
 
+  const handleDocumentsUpdated = () => {
+    setRefreshKey((prevKey) => prevKey + 1);
+  };
+
   const handleDocumentSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray: CustomFile[] = Array.from(e.target.files).map(
@@ -269,6 +285,8 @@ export const useOverviewState = () => {
         ...current,
         documents: [...(current.documents || []), ...filesArray],
       }));
+
+      handleDocumentsUpdated();
     }
   };
 
@@ -804,13 +822,17 @@ export const useOverviewState = () => {
                 Documents
               </label>
               <input
-                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-sm cursor-pointer  dark:text-gray-400 focus:outline-none dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400"
+                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-sm cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400"
                 id="documents"
                 type="file"
                 placeholder="Documents"
                 multiple
-                onChange={handleDocumentSelectFile}
+                onChange={(e) => {
+                  handleDocumentSelectFile(e);
+                  handleDocumentsUpdated();
+                }}
               />
+
               <p
                 className="mt-1 mb-0 text-xs text-gray-700 dark:text-gray-300"
                 id="file_input_help"
@@ -1197,6 +1219,8 @@ export const useOverviewState = () => {
   return {
     drivers,
     setDrivers,
+    refreshKey,
+    setRefreshKey,
     trucks,
     setTrucks,
     trailers,
@@ -1249,6 +1273,7 @@ export const useOverviewState = () => {
     setShowForm,
     errors,
     setErrors,
+    updateLoadDocuments,
     submitting,
     setSubmitting,
     handleDriverSelect,
@@ -1276,6 +1301,7 @@ export const useOverviewState = () => {
     setToDoCount,
     notInvoicedCount,
     setNotInvoicedCount,
+    handleDocumentsUpdated,
     invoicedCount,
     setInvoicedCount,
     receivedPaymentCount,
