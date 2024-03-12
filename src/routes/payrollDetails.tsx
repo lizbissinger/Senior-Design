@@ -46,6 +46,30 @@ export async function CreateNewPayroll(repair: PayrollDetail): Promise<PayrollDe
   }
 }
 
+export async function UpdatePayroll(payroll: PayrollDetail): Promise<PayrollDetail | undefined> {
+  try {
+    const requestOptions = {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payroll),
+    };
+
+    const response = await fetch(`${api}/Payroll/${payroll._id}`, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`Failed to update the payroll: ${response.statusText}`);
+    }
+
+    const updatedPayroll: PayrollDetail = await response.json();
+    return updatedPayroll;
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
+
 export async function DeletePayroll(id: string): Promise<PayrollDetail | undefined> {
   try {
     const response = await fetch(`${api}/PayrollDetails/${id}`, {
