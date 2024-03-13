@@ -5,12 +5,11 @@ const api = import.meta.env.VITE_API_URL;
 export async function GetAllFuelRows(): Promise<Fuel[] | undefined> {
   try {
     const response = await fetch(`${api}/fuel`, {
-      method: "GET"
+      method: "GET",
     });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch Fuel rows: ${response.statusText}`);
-      
     }
 
     const data: Fuel[] = await response.json();
@@ -27,7 +26,7 @@ export async function CreateNewFuelRow(fuel: Fuel): Promise<Fuel | undefined> {
     const requestOptions = {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(fuel),
     };
@@ -35,7 +34,9 @@ export async function CreateNewFuelRow(fuel: Fuel): Promise<Fuel | undefined> {
     const response = await fetch(`${api}/fuel`, requestOptions);
 
     if (!response.ok) {
-      throw new Error(`Failed to create a new fuel row: ${response.statusText}`);
+      throw new Error(
+        `Failed to create a new fuel row: ${response.statusText}`
+      );
     }
 
     const data: Fuel = await response.json();
@@ -51,7 +52,7 @@ export async function UpdateFuel(fuel: Fuel): Promise<Fuel | undefined> {
     const requestOptions = {
       method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(fuel),
     };
@@ -64,6 +65,26 @@ export async function UpdateFuel(fuel: Fuel): Promise<Fuel | undefined> {
 
     const updatedFuel: Fuel = await response.json();
     return updatedFuel;
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
+
+export async function DeleteFuel(
+  id: string
+): Promise<Fuel | undefined> {
+  try {
+    const response = await fetch(`${api}/fuel/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete fuel: ${response.statusText}`);
+    }
+
+    const deletedFuel: Fuel = await response.json();
+    return deletedFuel;
   } catch (error) {
     console.error(error);
     return undefined;
