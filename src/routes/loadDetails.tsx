@@ -37,17 +37,12 @@ export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
     }
   });
 
- 
-  
- 
-
   const requestOptions: RequestInit = {
     method: "POST",
     body: formData,
   };
 
   try {
-    
     const response = await fetch(`${api}/loadDetails`, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
