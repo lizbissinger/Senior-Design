@@ -76,7 +76,6 @@ export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
       formData.append(
         typedKey,
         typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)
-        typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)
       );
     } else {
       const documents: File[] = load[typedKey] as unknown as File[];

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import React, { useState } from "react";
 import {
   Tab,
   TabGroup,
@@ -15,10 +14,8 @@ import CloseButton from "react-bootstrap/CloseButton";
 import MapWithDirections from "./MapWithDirections";
 import "./Overview.css";
 import { LoadDetail } from "../Types/types";
-import { LoadDetail } from "../Types/types";
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Email from "./Email";
-import { fetchDocuments, deleteDocument } from "../../routes/documents";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 interface LoadDetailsViewProps {
@@ -26,7 +23,6 @@ interface LoadDetailsViewProps {
   onClose: () => void;
 }
 
-const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
 const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   const [showMap, setShowMap] = useState(false);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
@@ -61,24 +57,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
       blob = new Blob([new Uint8Array(docData.data.data)], {
         type: docData.contentType,
       });
-  const viewDocumentInTab = (docData: any) => {
-    let blob;
-
-    if (docData instanceof File) {
-      blob = new Blob([docData], { type: docData.type });
-    } else if (docData.data && Array.isArray(docData.data.data)) {
-      blob = new Blob([new Uint8Array(docData.data.data)], {
-        type: docData.contentType,
-      });
     } else {
       console.error("Unsupported document format");
       return;
-      console.error("Unsupported document format");
-      return;
     }
-
-    const url = window.URL.createObjectURL(blob);
-    setDocumentUrl(url);
 
     const url = window.URL.createObjectURL(blob);
     setDocumentUrl(url);
@@ -188,9 +170,7 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
               ) : (
                 <List className="dark-font">
                   {load?.documents?.map((document: any, index) => (
-                  {load?.documents?.map((document: any, index) => (
                     <ListItem
-                      key={index}
                       key={index}
                       onClick={() => viewDocumentInTab(document)}
                       style={{ cursor: "pointer" }}
@@ -198,19 +178,12 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
                       <p className="mb-0">
                         {document.fileName || document.name || "Document"}
                       </p>
-                      <p className="mb-0">
-                        {document.fileName || document.name || "Document"}
-                      </p>
-
                       <DocumentMagnifyingGlassIcon style={{ width: 25 }} />
                     </ListItem>
                   ))}
                 </List>
               )}
             </List>
-          </TabPanel>
-          <TabPanel>
-            {load && <Email loadDetails={[load]} />}
           </TabPanel>
           <TabPanel>
             {load && <Email loadDetails={[load]} />}
