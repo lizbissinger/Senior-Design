@@ -30,7 +30,7 @@ import TruckDropdown from "../TruckForm/TruckDropdown";
 
 import _ from "lodash";
 
-import { LoadDetail, CustomFile } from "../Types/types";
+import { LoadDetail } from "../Types/types";
 
 export const useOverviewState = () => {
   const [drivers, setDrivers] = useState<string[]>([]);
@@ -256,18 +256,10 @@ export const useOverviewState = () => {
 
   const handleDocumentSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const filesArray: CustomFile[] = Array.from(e.target.files).map(
-        (file) => ({
-          ...file,
-          fileName: file.name,
-          contentType: file.type,
-          file,
-          data: null, // Provide an initial value for data
-        })
-      );
+      const filesArray = Array.from(e.target.files);
       setNewLoad((current) => ({
         ...current,
-        documents: [...(current.documents || []), ...filesArray],
+        documents: filesArray,
       }));
     }
   };
