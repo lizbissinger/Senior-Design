@@ -22,17 +22,13 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
   onClose: () => void;
-  updateLoadDocuments: (loadId: string, newDocuments: CustomFile[]) => void;
+  updateLoadDocuments: (loadId: string, newDocuments: CustomFile[]) => void; 
 }
 
-const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
-  load,
-  onClose,
-  updateLoadDocuments,
-}) => {
+const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose, updateLoadDocuments  }) => {
   const [showMap, setShowMap] = useState(false);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
-  const [documents, setDocuments] = useState<CustomFile[]>([]);
+  const [documents, setDocuments] = useState<CustomFile[]>([]); 
   const toggleMapVisibility = () => setShowMap(!showMap);
 
   useEffect(() => {
@@ -41,37 +37,42 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
         try {
           const fetchedDocs = await fetchDocuments(load._id);
           setDocuments(fetchedDocs);
+          
         } catch (error) {
           console.error("Error fetching documents:", error);
         }
       }
     };
-
+  
     fetchAndSetDocuments();
-  }, [load]);
+  }, [load]); 
+
 
   useEffect(() => {
     console.log(documents);
-    console.log("below is the active load da documents field");
-    console.log(load?.documents);
+    console.log("below is the active load da documents field")
+    console.log(load?.documents)
   }, [documents]);
+  
+  
 
   const handleDeleteDocument = async (documentId: any) => {
-    const loadId = load?._id;
-    if (!loadId) {
-      console.error("Load ID is undefined.");
-      return;
-    }
+  const loadId = load?._id;
+  if (!loadId) {
+    console.error("Load ID is undefined.");
+    return;
+  }
 
-    try {
-      await deleteDocument(loadId, documentId);
-      const fetchedDocs = await fetchDocuments(loadId);
-      setDocuments(fetchedDocs);
-      updateLoadDocuments(loadId, fetchedDocs);
-    } catch (error) {
-      console.error("Error deleting document:", error);
-    }
-  };
+  try {
+    await deleteDocument(loadId, documentId);
+    const fetchedDocs = await fetchDocuments(loadId);
+    setDocuments(fetchedDocs);
+    updateLoadDocuments(loadId, fetchedDocs);
+  } catch (error) {
+    console.error("Error deleting document:", error);
+  }
+};
+
 
   const handleMapCloseClick = (event: { stopPropagation: () => void }) => {
     event.stopPropagation();
@@ -118,30 +119,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
       <XMarkIcon onClick={onClose} className="main-button dark:text-white cursor-pointer w-7 h-7" />
       <TabGroup>
         <TabList className="px-1" variant="line" defaultValue="1">
-          <Tab
-            value="1"
-            className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
-          >
-            Load Info
-          </Tab>
-          <Tab
-            value="2"
-            className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
-          >
-            Directions
-          </Tab>
-          <Tab
-            value="3"
-            className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
-          >
-            Documents
-          </Tab>
-          <Tab
-            value="4"
-            className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
-          >
-            Update
-          </Tab>
+          <Tab value="1" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Load Info</Tab>
+          <Tab value="2" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Directions</Tab>
+          <Tab value="3" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Documents</Tab>
+          <Tab value="4" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Update</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -207,12 +188,7 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
                 alignItems: "center",
               }}
             >
-              <Button
-                variant="light"
-                className="text-[#779BFB] focus:!outline-none focus:!ring-0 !border-none hover:text-[#6686DC] dark:text-[#6686DC] dark:hover:text-[#779BFB]"
-              >
-                View Directions
-              </Button>
+              <Button variant="light" className="text-[#779BFB] focus:!outline-none focus:!ring-0 !border-none hover:text-[#6686DC] dark:text-[#6686DC] dark:hover:text-[#779BFB]">View Directions</Button>
               {showMap && <CloseButton onClick={handleMapCloseClick} />}
             </div>
             {showMap && load?.pickupLocation && load?.deliveryLocation && (
@@ -240,37 +216,24 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
                   {documents.map((document, index) => (
                     <ListItem
                       key={document._id || index}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
+                      style={{ cursor: "pointer" }}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <p
-                          className="mb-0"
-                          onClick={() => viewDocumentInTab(document)}
-                          style={{
-                            cursor: "pointer",
-                            marginRight: "auto",
-                          }}
-                        >
-                          {document.fileName}
-                        </p>
-                        <DocumentMagnifyingGlassIcon
-                          style={{
-                            width: 25,
-                            cursor: "pointer",
-                            marginLeft: "10px",
-                          }}
-                          onClick={() => viewDocumentInTab(document)}
-                        />
-                      </div>
+                      <p
+                        className="mb-0"
+                        onClick={() => viewDocumentInTab(document)}
+                      >
+                        {document.fileName}
+                      </p>
                       <Button
                         onClick={() => handleDeleteDocument(document._id || "")}
                       >
                         Delete
                       </Button>
+
+                      <DocumentMagnifyingGlassIcon
+                        style={{ width: 25 }}
+                        onClick={() => viewDocumentInTab(document)}
+                      />
                     </ListItem>
                   ))}
                 </List>
