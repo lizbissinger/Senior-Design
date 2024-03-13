@@ -25,6 +25,7 @@ interface LoadDetailsViewProps {
 }
 
 const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
+const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   const [showMap, setShowMap] = useState(false);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
   const [documents, setDocuments] = useState<CustomFile[]>([]); // Updated to use CustomFile[]
