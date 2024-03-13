@@ -27,6 +27,7 @@ export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
   (Object.keys(load) as Array<keyof LoadDetail>).forEach((key) => {
     if (key !== "documents") {
       // Excluding documents since it's handled separaetly
+      // Excluding documents since it's handled separaetly
       const value = load[key];
       if (typeof value === "object" && value !== null) {
         formData.append(key, JSON.stringify(value));
@@ -36,12 +37,17 @@ export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
     }
   });
 
+ 
+  
+ 
+
   const requestOptions: RequestInit = {
     method: "POST",
     body: formData,
   };
 
   try {
+    
     const response = await fetch(`${api}/loadDetails`, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -74,6 +80,7 @@ export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
       const value = load[typedKey];
       formData.append(
         typedKey,
+        typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)
         typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)
       );
     } else {
