@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Tab,
   TabGroup,
@@ -13,65 +13,21 @@ import {
 import CloseButton from "react-bootstrap/CloseButton";
 import MapWithDirections from "./MapWithDirections";
 import "./Overview.css";
-import { LoadDetail, CustomFile } from "../Types/types";
+import { LoadDetail } from "../Types/types";
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Email from "./Email";
-import { fetchDocuments, deleteDocument } from "../../routes/documents";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
   onClose: () => void;
-  updateLoadDocuments: (loadId: string, newDocuments: CustomFile[]) => void;
 }
 
-const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
-  load,
-  onClose,
-  updateLoadDocuments,
-}) => {
+const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({ load, onClose }) => {
   const [showMap, setShowMap] = useState(false);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
-  const [documents, setDocuments] = useState<CustomFile[]>([]);
+
   const toggleMapVisibility = () => setShowMap(!showMap);
-
-  useEffect(() => {
-    const fetchAndSetDocuments = async () => {
-      if (load) {
-        try {
-          const fetchedDocs = await fetchDocuments(load._id);
-          setDocuments(fetchedDocs);
-        } catch (error) {
-          console.error("Error fetching documents:", error);
-        }
-      }
-    };
-
-    fetchAndSetDocuments();
-  }, [load]);
-
-  useEffect(() => {
-    console.log(documents);
-    console.log("below is the active load da documents field");
-    console.log(load?.documents);
-  }, [documents]);
-
-  const handleDeleteDocument = async (documentId: any) => {
-    const loadId = load?._id;
-    if (!loadId) {
-      console.error("Load ID is undefined.");
-      return;
-    }
-
-    try {
-      await deleteDocument(loadId, documentId);
-      const fetchedDocs = await fetchDocuments(loadId);
-      setDocuments(fetchedDocs);
-      updateLoadDocuments(loadId, fetchedDocs);
-    } catch (error) {
-      console.error("Error deleting document:", error);
-    }
-  };
 
   const handleMapCloseClick = (event: { stopPropagation: () => void }) => {
     event.stopPropagation();
@@ -92,21 +48,22 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
     return new Date(timestamp).toLocaleString("en-US", options);
   };
 
-  const viewDocumentInTab = (document: CustomFile) => {
-    if (document.data) {
-      const byteCharacters = atob(document.data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: document.contentType });
+  const viewDocumentInTab = (docData: any) => {
+    let blob;
 
-      const url = window.URL.createObjectURL(blob);
-      setDocumentUrl(url);
+    if (docData instanceof File) {
+      blob = new Blob([docData], { type: docData.type });
+    } else if (docData.data && Array.isArray(docData.data.data)) {
+      blob = new Blob([new Uint8Array(docData.data.data)], {
+        type: docData.contentType,
+      });
     } else {
-      console.error("Document data is not available");
+      console.error("Unsupported document format");
+      return;
     }
+
+    const url = window.URL.createObjectURL(blob);
+    setDocumentUrl(url);
   };
 
   const closeDocumentViewer = () => {
@@ -118,30 +75,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
       <XMarkIcon onClick={onClose} className="main-button dark:text-white cursor-pointer w-7 h-7" />
       <TabGroup>
         <TabList className="px-1" variant="line" defaultValue="1">
-          <Tab
-            value="1"
-            className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
-          >
-            Load Info
-          </Tab>
-          <Tab
-            value="2"
-            className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
-          >
-            Directions
-          </Tab>
-          <Tab
-            value="3"
-            className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
-          >
-            Documents
-          </Tab>
-          <Tab
-            value="4"
-            className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]"
-          >
-            Update
-          </Tab>
+          <Tab value="1" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Load Info</Tab>
+          <Tab value="2" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Directions</Tab>
+          <Tab value="3" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Documents</Tab>
+          <Tab value="4" className="ui-selected:!text-[#6686DC] ui-selected:!border-[#6686DC]">Update</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -207,12 +144,7 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
                 alignItems: "center",
               }}
             >
-              <Button
-                variant="light"
-                className="text-[#779BFB] focus:!outline-none focus:!ring-0 !border-none hover:text-[#6686DC] dark:text-[#6686DC] dark:hover:text-[#779BFB]"
-              >
-                View Directions
-              </Button>
+              <Button variant="light" className="text-[#779BFB] focus:!outline-none focus:!ring-0 !border-none hover:text-[#6686DC] dark:text-[#6686DC] dark:hover:text-[#779BFB]">View Directions</Button>
               {showMap && <CloseButton onClick={handleMapCloseClick} />}
             </div>
             {showMap && load?.pickupLocation && load?.deliveryLocation && (
@@ -237,47 +169,25 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
                 </>
               ) : (
                 <List className="dark-font">
-                  {documents.map((document, index) => (
+                  {load?.documents?.map((document: any, index) => (
                     <ListItem
-                      key={document._id || index}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
+                      key={index}
+                      onClick={() => viewDocumentInTab(document)}
+                      style={{ cursor: "pointer" }}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <p
-                          className="mb-0"
-                          onClick={() => viewDocumentInTab(document)}
-                          style={{
-                            cursor: "pointer",
-                            marginRight: "auto",
-                          }}
-                        >
-                          {document.fileName}
-                        </p>
-                        <DocumentMagnifyingGlassIcon
-                          style={{
-                            width: 25,
-                            cursor: "pointer",
-                            marginLeft: "10px",
-                          }}
-                          onClick={() => viewDocumentInTab(document)}
-                        />
-                      </div>
-                      <Button
-                        onClick={() => handleDeleteDocument(document._id || "")}
-                      >
-                        Delete
-                      </Button>
+                      <p className="mb-0">
+                        {document.fileName || document.name || "Document"}
+                      </p>
+                      <DocumentMagnifyingGlassIcon style={{ width: 25 }} />
                     </ListItem>
                   ))}
                 </List>
               )}
             </List>
           </TabPanel>
-          <TabPanel>{load && <Email loadDetails={[load]} />}</TabPanel>
+          <TabPanel>
+            {load && <Email loadDetails={[load]} />}
+          </TabPanel>
         </TabPanels>
       </TabGroup>
     </Card>
