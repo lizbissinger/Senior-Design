@@ -46,46 +46,46 @@ export async function CreateNewRepair(repair: RepairDetail): Promise<RepairDetai
   }
 }
 
-export async function DeleteRepair(id: string): Promise<RepairDetail | undefined> {
-  try {
-    const response = await fetch(`${api}/repairDetails/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete the repair: ${response.statusText}`);
-    }
-
-    const deletedRepair: RepairDetail = await response.json();
-    return deletedRepair;
-  } catch (error) {
-    console.error(error);
-    return undefined;
-  }
-}
-
-// export async function UpdateRepair(repair: RepairDetail): Promise<RepairDetail | undefined> {
+// export async function DeleteRepair(id: string): Promise<RepairDetail | undefined> {
 //   try {
-//     const requestOptions = {
-//       method: "PATCH",
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(repair),
-//     };
-
-//     const response = await fetch(`${api}/repairDetails/${repair._id}`, requestOptions);
+//     const response = await fetch(`${api}/repairDetails/${id}`, {
+//       method: "DELETE",
+//     });
 
 //     if (!response.ok) {
-//       throw new Error(`Failed to update the repair: ${response.statusText}`);
+//       throw new Error(`Failed to delete the repair: ${response.statusText}`);
 //     }
 
-//     const updatedRepair: RepairDetail = await response.json();
-//     return updatedRepair;
+//     const deletedRepair: RepairDetail = await response.json();
+//     return deletedRepair;
 //   } catch (error) {
 //     console.error(error);
 //     return undefined;
 //   }
 // }
+
+export async function UpdateRepair(repair: RepairDetail): Promise<RepairDetail | undefined> {
+  try {
+    const requestOptions = {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(repair),
+    };
+
+    const response = await fetch(`${api}/repairs/${repair._id}`, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`Failed to update the repair: ${response.statusText}`);
+    }
+
+    const updatedRepair: RepairDetail = await response.json();
+    return updatedRepair;
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
 
 export default GetAllRepairs;

@@ -27,6 +27,7 @@ export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
   (Object.keys(load) as Array<keyof LoadDetail>).forEach((key) => {
     if (key !== "documents") {
       // Excluding documents since it's handled separaetly
+      // Excluding documents since it's handled separaetly
       const value = load[key];
       if (typeof value === "object" && value !== null) {
         formData.append(key, JSON.stringify(value));

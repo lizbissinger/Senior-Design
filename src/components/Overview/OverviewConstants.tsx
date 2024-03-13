@@ -153,14 +153,14 @@ export const useOverviewState = () => {
   useEffect(() => {
     const loadingInterval = setInterval(() => {
       setLoadingProgress((prevProgress) => {
-        const newProgress = prevProgress + 10;
+        const newProgress = prevProgress + 3;
         if (newProgress >= 100) {
           clearInterval(loadingInterval);
           setIsLoading(false);
         }
         return newProgress;
       });
-    }, 60);
+    }, 50);
 
     return () => clearInterval(loadingInterval);
   }, []);
