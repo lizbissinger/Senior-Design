@@ -16,8 +16,8 @@ import {
 } from "@tremor/react";
 import {
   WrenchIcon,
-  BanknotesIcon,
   FunnelIcon,
+  CurrencyDollarIcon
 } from "@heroicons/react/24/solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenAlt } from "@fortawesome/free-solid-svg-icons";
@@ -413,7 +413,7 @@ const Finance: React.FC = () => {
                         expense.type == REPAIR
                           ? WrenchIcon
                           : expense.type == PAYROLL
-                          ? BanknotesIcon
+                          ? CurrencyDollarIcon
                           : FunnelIcon
                       }
                       color={
