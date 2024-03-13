@@ -17,6 +17,7 @@ import { LoadDetail, CustomFile } from "../Types/types";
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Email from "./Email";
 import { fetchDocuments, deleteDocument } from "../../routes/documents";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 interface LoadDetailsViewProps {
   load: LoadDetail | null;
@@ -114,7 +115,7 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
 
   return (
     <Card decoration="left" decorationColor="#6686DC">
-      <CloseButton onClick={onClose} className="mb-1 main-button"></CloseButton>
+      <XMarkIcon onClick={onClose} className="main-button dark:text-white cursor-pointer w-7 h-7" />
       <TabGroup>
         <TabList className="px-1" variant="line" defaultValue="1">
           <Tab

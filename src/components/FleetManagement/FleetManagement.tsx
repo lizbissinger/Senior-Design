@@ -27,7 +27,7 @@ import GetAllTrucks, {
 } from "../../routes/truckDetails";
 import { Dialog, DialogPanel } from "@tremor/react";
 import { Dropdown } from "react-bootstrap";
-import CloseButton from "react-bootstrap/CloseButton";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 const FleetManagement: React.FC = () => {
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -414,9 +414,9 @@ const FleetManagement: React.FC = () => {
           static={true}
         >
           <DialogPanel>
-            <CloseButton
+            <XMarkIcon
               onClick={() => setIsOpenAddDriverDialog(false)}
-              className="main-button"
+              className="main-button dark:text-white cursor-pointer w-7 h-7"
             />
             <AddDriverForm onAddDriver={handleAddDriver} />
           </DialogPanel>
@@ -428,9 +428,9 @@ const FleetManagement: React.FC = () => {
           static={true}
         >
           <DialogPanel>
-            <CloseButton
+            <XMarkIcon
               onClick={() => setIsOpenAddTruckDialog(false)}
-              className="main-button"
+              className="main-button dark:text-white cursor-pointer w-7 h-7"
             />
             <AddTruckForm onAddTruck={handleAddTruck} />
           </DialogPanel>
@@ -442,9 +442,9 @@ const FleetManagement: React.FC = () => {
           static={true}
         >
           <DialogPanel>
-            <CloseButton
+            <XMarkIcon
               onClick={() => setIsOpenAddTrailerDialog(false)}
-              className="main-button"
+              className="main-button dark:text-white cursor-pointer w-7 h-7"
             />
             <AddTrailerForm onAddTrailer={handleAddTrailer} />
           </DialogPanel>
@@ -460,13 +460,13 @@ const FleetManagement: React.FC = () => {
           static={true}
         >
           <DialogPanel>
-            <CloseButton
+            <XMarkIcon
               onClick={() => {
                 setIsOpenEditDriverDialog(false);
                 setEditedDriver(null);
                 setIsEditingDriver(false);
               }}
-              className="main-button"
+              className="main-button dark:text-white cursor-pointer w-7 h-7"
             />
             <EditDriverForm
               onEditDriver={handleEditDriver}
@@ -485,13 +485,13 @@ const FleetManagement: React.FC = () => {
           static={true}
         >
           <DialogPanel>
-            <CloseButton
+            <XMarkIcon
               onClick={() => {
                 setIsOpenEditTruckDialog(false);
                 setEditedTruck(null);
                 setIsEditingTruck(false);
               }}
-              className="main-button"
+              className="main-button dark:text-white cursor-pointer w-7 h-7"
             />
             <EditTruckForm
               onEditTruck={handleEditTruck}
@@ -510,13 +510,13 @@ const FleetManagement: React.FC = () => {
           static={true}
         >
           <DialogPanel>
-            <CloseButton
+            <XMarkIcon
               onClick={() => {
                 setIsOpenEditTrailerDialog(false);
                 setEditedTrailer(null);
                 setIsEditingTrailer(false);
               }}
-              className="main-button"
+              className="main-button dark:text-white cursor-pointer w-7 h-7"
             />
             <EditTrailerForm
               onEditTrailer={handleEditTrailer}

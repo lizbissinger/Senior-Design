@@ -39,6 +39,7 @@ import {
 } from "../../routes/fuel";
 import ExpenseForm from "../ExpenseForm/ExpenseForm";
 import CloseButton from "react-bootstrap/CloseButton";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 const Finance: React.FC = () => {
   const REPAIR = "Repair";
@@ -444,13 +445,13 @@ const Finance: React.FC = () => {
           static={true}
         >
           <DialogPanel>
-            <CloseButton
+            <XMarkIcon
               onClick={() => {
                 setIsOpenExpenseDialog(false);
                 setEditingExpense(null);
               }}
-              className="main-button"
-            ></CloseButton>
+              className="main-button dark:text-white cursor-pointer w-7 h-7"
+            ></XMarkIcon>
             <ExpenseForm
               onAddExpense={handleAddExpense}
               onEditExpense={handleEditExpense}
