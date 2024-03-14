@@ -785,7 +785,7 @@ const Overview: React.FC = () => {
                           <NumberInput
                             id="price"
                             placeholder="Price"
-                            value={newLoad.price}
+                            value={newLoad.price || ""}
                             onChange={(e) =>
                               setNewLoad({ ...newLoad, price: e.target.value })
                             }
@@ -812,7 +812,7 @@ const Overview: React.FC = () => {
                           <NumberInput
                             id="detentionPrice"
                             placeholder="Detention"
-                            value={newLoad.detentionPrice}
+                            value={newLoad.detentionPrice || ""}
                             onChange={(e) =>
                               setNewLoad({
                                 ...newLoad,
@@ -960,7 +960,7 @@ const Overview: React.FC = () => {
                           <NumberInput
                             id="fuelGallons"
                             placeholder="Fuel"
-                            value={newLoad.fuelGallons}
+                            value={newLoad.fuelGallons || ""}
                             onChange={(e) =>
                               setNewLoad({
                                 ...newLoad,
