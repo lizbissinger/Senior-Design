@@ -112,11 +112,10 @@ const Overview: React.FC = () => {
     pickupLocation: "",
     deliveryLocation: "",
     documents: [],
-    price: "",
-    detention: "",
-    detentionPrice: "",
-    allMiles: "",
-    fuelGallons: "",
+    price: null,
+    detentionPrice: null,
+    allMiles: null,
+    fuelGallons: null,
     status: "",
     brokerInfo: {
       name: "",
@@ -159,23 +158,27 @@ const Overview: React.FC = () => {
     const handleDistanceCalculation = async () => {
       if (newLoad.pickupLocation && newLoad.deliveryLocation) {
         try {
-          const distanceMiles = await calculateDistance(
-            newLoad.pickupLocation,
-            newLoad.deliveryLocation
+          const distanceMiles = parseFloat(
+            await calculateDistance(
+              newLoad.pickupLocation,
+              newLoad.deliveryLocation
+            )
           );
+
           setNewLoad((prevState) => ({
             ...prevState,
-            allMiles: distanceMiles,
+            allMiles: isNaN(distanceMiles) ? 0 : distanceMiles,
           }));
         } catch (error) {
           console.error(error);
           setNewLoad((prevState) => ({
             ...prevState,
-            allMiles: "",
+            allMiles: 0,
           }));
         }
       }
     };
+
     handleDistanceCalculation();
   }, [newLoad.pickupLocation, newLoad.deliveryLocation]);
 
@@ -333,11 +336,10 @@ const Overview: React.FC = () => {
       pickupLocation: "",
       deliveryLocation: "",
       documents: [],
-      price: "",
-      detention: "",
-      detentionPrice: "",
-      allMiles: "",
-      fuelGallons: "",
+      price: null,
+      detentionPrice: null,
+      allMiles: null,
+      fuelGallons: null,
       status: "",
       brokerInfo: {
         name: "",
@@ -419,11 +421,10 @@ const Overview: React.FC = () => {
       pickupLocation: "",
       deliveryLocation: "",
       documents: [],
-      price: "",
-      detention: "",
-      detentionPrice: "",
-      allMiles: "",
-      fuelGallons: "",
+      price: null,
+      detentionPrice: null,
+      allMiles: null,
+      fuelGallons: null,
       status: "",
       brokerInfo: {
         name: "",
@@ -496,11 +497,26 @@ const Overview: React.FC = () => {
   };
 
   const calculateTotalPrice = () => {
-    let total = 0;
-    loadDetails.forEach((load) => {
-      total += parseFloat(load.price) || 0;
-    });
-    setTotalPrice(total);
+    try {
+      let total = 0;
+      loadDetails.forEach((load) => {
+        if (typeof load.price === "number") {
+          total += load.price;
+        } else if (typeof load.price === "string") {
+          const price = parseFloat(load.price);
+          if (!isNaN(price)) {
+            total += price;
+          } else {
+            throw new Error(`Invalid price for load ${load._id}`);
+          }
+        } else {
+          throw new Error(`Invalid price type for load ${load._id}`);
+        }
+      });
+      setTotalPrice(Number(total.toFixed(2)));
+    } catch (error) {
+      console.error("Error calculating total price:", error);
+    }
   };
 
   const [inProgressCount, setInProgressCount] = useState(0);
@@ -785,9 +801,12 @@ const Overview: React.FC = () => {
                           <NumberInput
                             id="price"
                             placeholder="Price"
-                            value={newLoad.price || ""}
+                            value={newLoad.price || "—"}
                             onChange={(e) =>
-                              setNewLoad({ ...newLoad, price: e.target.value })
+                              setNewLoad({
+                                ...newLoad,
+                                price: parseFloat(e.target.value) || 0, // Convert to number, default to 0 if invalid
+                              })
                             }
                             required
                             onInvalid={(e) =>
@@ -812,11 +831,14 @@ const Overview: React.FC = () => {
                           <NumberInput
                             id="detentionPrice"
                             placeholder="Detention"
-                            value={newLoad.detentionPrice || ""}
+                            value={newLoad.detentionPrice || "—"}
                             onChange={(e) =>
                               setNewLoad({
                                 ...newLoad,
-                                detentionPrice: e.target.value,
+                                detentionPrice:
+                                  e.target.value !== ""
+                                    ? parseFloat(e.target.value)
+                                    : null,
                               })
                             }
                           />
@@ -839,7 +861,7 @@ const Overview: React.FC = () => {
                             onPlaceSelected={(place) => {
                               setNewLoad((newLoad) => ({
                                 ...newLoad,
-                                pickupLocation: place.formatted_address || "",
+                                pickupLocation: place.formatted_address || "—",
                               }));
                             }}
                             options={{
@@ -865,7 +887,7 @@ const Overview: React.FC = () => {
                             onPlaceSelected={(place) => {
                               setNewLoad((newLoad) => ({
                                 ...newLoad,
-                                deliveryLocation: place.formatted_address || "",
+                                deliveryLocation: place.formatted_address || "—",
                               }));
                             }}
                             options={{
@@ -930,11 +952,18 @@ const Overview: React.FC = () => {
                           <NumberInput
                             id="allMiles"
                             placeholder="Miles"
-                            value={newLoad.allMiles}
+                            value={
+                              newLoad.allMiles !== null
+                                ? newLoad.allMiles.toString()
+                                : ""
+                            }
                             onChange={(e) =>
                               setNewLoad({
                                 ...newLoad,
-                                allMiles: e.target.value,
+                                allMiles:
+                                  e.target.value !== ""
+                                    ? parseFloat(e.target.value)
+                                    : null,
                               })
                             }
                             required
@@ -964,7 +993,10 @@ const Overview: React.FC = () => {
                             onChange={(e) =>
                               setNewLoad({
                                 ...newLoad,
-                                fuelGallons: e.target.value,
+                                fuelGallons:
+                                  e.target.value !== ""
+                                    ? parseFloat(e.target.value)
+                                    : null,
                               })
                             }
                           />
@@ -1072,14 +1104,31 @@ const Overview: React.FC = () => {
                           ? "▲"
                           : "▼"}
                       </th>
-                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Truck</th>
-                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Trailer</th>
-                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Driver</th>
-                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Pick-up Date-Time</th>
-                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Delivery Date-Time</th>
-                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Pick-up Location</th>
-                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Delivery Location</th>
-                      <th className="sort dark:text-dark-tremor-content-strong dark:bg-gray-800" onClick={() => requestSort("price")}>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                        Truck
+                      </th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                        Trailer
+                      </th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                        Driver
+                      </th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                        Pick-up Date-Time
+                      </th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                        Delivery Date-Time
+                      </th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                        Pick-up Location
+                      </th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                        Delivery Location
+                      </th>
+                      <th
+                        className="sort dark:text-dark-tremor-content-strong dark:bg-gray-800"
+                        onClick={() => requestSort("price")}
+                      >
                         {" "}
                         Price{" "}
                         {sortConfig.key === "price" &&
@@ -1087,7 +1136,9 @@ const Overview: React.FC = () => {
                           ? "▲"
                           : "▼"}
                       </th>
-                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">Loaded miles</th>
+                      <th className="dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                        Loaded miles
+                      </th>
                       <th
                         className="sort dark:text-dark-tremor-content-strong dark:bg-gray-800"
                         onClick={() => requestSort("status")}
@@ -1110,7 +1161,7 @@ const Overview: React.FC = () => {
                           className="hover:bg-gray-100 dark:hover:bg-gray-800"
                           onClick={() => handleLoadNumberClick(load.loadNumber)}
                           key={index}
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: "pointer" }}
                         >
                           <td className="centered-cell">
                             <Tooltip title="Show details">

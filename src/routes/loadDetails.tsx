@@ -24,16 +24,18 @@ export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
     });
   }
 
-  (Object.keys(load) as Array<keyof LoadDetail>).forEach((key) => {
-    if (key !== "documents") {
-      const value = load[key];
-      if (typeof value === "object" && value !== null) {
-        formData.append(key, JSON.stringify(value));
-      } else {
+  for (const key in load) {
+    if (Object.prototype.hasOwnProperty.call(load, key) && key !== "documents") {
+      const value = load[key as keyof LoadDetail];
+      if (typeof value === "number" && !isNaN(value)) {
         formData.append(key, String(value));
+      } else if (value !== null && value !== undefined) {
+        formData.append(key, value.toString()); // Convert other values to strings
+      } else {
+        formData.append(key, "-"); // Convert null or undefined values to "-"
       }
     }
-  });
+  }
 
   const requestOptions: RequestInit = {
     method: "POST",
@@ -53,6 +55,7 @@ export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
   }
 }
 
+
 export async function DeleteLoad(id: string) {
   let deletedLoad;
   await fetch(`${api}/loadDetails/${id}`, {
@@ -63,17 +66,50 @@ export async function DeleteLoad(id: string) {
   return deletedLoad;
 }
 
-export async function UpdateLoad(load: LoadDetail) {
-  const requestOptions = {
+export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
+  const formData = new FormData();
+
+  Object.keys(load).forEach((key) => {
+    const typedKey = key as keyof LoadDetail;
+
+    if (typedKey !== "documents") {
+      const value = load[typedKey];
+      formData.append(
+        typedKey,
+        typeof value === "object" && value !== null
+          ? JSON.stringify(value)
+          : String(value)
+      );
+    } else {
+      const documents: CustomFile[] = load[typedKey] as unknown as CustomFile[];
+      documents.forEach((document) => {
+        formData.append("documents", document.file);
+      });
+    }
+  });
+
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+
+  const requestOptions: RequestInit = {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(load),
+    body: formData,
   };
-  return await fetch(`${api}/loadDetails/${load._id}`, requestOptions).then(
-    (response) => response.json()
-  );
+
+  try {
+    const url = `${api}/loadDetails/${load._id}`;
+    const response = await fetch(url, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating load:", error);
+    throw error;
+  }
 }
 
 export default GetAllLoads;
