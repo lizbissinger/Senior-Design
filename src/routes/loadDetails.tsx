@@ -25,7 +25,10 @@ export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
   }
 
   for (const key in load) {
-    if (Object.prototype.hasOwnProperty.call(load, key) && key !== "documents") {
+    if (
+      Object.prototype.hasOwnProperty.call(load, key) &&
+      key !== "documents"
+    ) {
       const value = load[key as keyof LoadDetail];
       if (typeof value === "number" && !isNaN(value)) {
         formData.append(key, String(value));
@@ -55,7 +58,6 @@ export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
   }
 }
 
-
 export async function DeleteLoad(id: string) {
   let deletedLoad;
   await fetch(`${api}/loadDetails/${id}`, {
@@ -66,46 +68,53 @@ export async function DeleteLoad(id: string) {
   return deletedLoad;
 }
 
-export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
+export async function UpdateLoad(load: LoadDetail, files?: CustomFile[]) {
   const formData = new FormData();
 
-  Object.keys(load).forEach((key) => {
-    const typedKey = key as keyof LoadDetail;
+  if (files) {
+    files.forEach((file) => {
+      formData.append("documents", file.file);
+    });
+  }
 
-    if (typedKey !== "documents") {
-      const value = load[typedKey];
-      formData.append(
-        typedKey,
-        typeof value === "object" && value !== null
-          ? JSON.stringify(value)
-          : String(value)
-      );
-    } else {
-      const documents: CustomFile[] = load[typedKey] as unknown as CustomFile[];
-      documents.forEach((document) => {
-        formData.append("documents", document.file);
-      });
+  for (const key in load) {
+    if (
+      Object.prototype.hasOwnProperty.call(load, key) &&
+      key !== "documents"
+    ) {
+      const value = load[key as keyof LoadDetail];
+      if (value !== null && value !== undefined) {
+        if (typeof value === "number" && !isNaN(value)) {
+          formData.append(key, String(value));
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
     }
-  });
+  }
 
-  for (let [key, value] of formData.entries()) {
+  console.log("SIRF CONSOLE check kar rehaa:", formData);
+
+  console.log("FormData:");
+  for (const [key, value] of formData.entries()) {
     console.log(key, value);
   }
 
   const requestOptions: RequestInit = {
-    method: "PATCH",
+    method: "PATCH", 
     body: formData,
   };
 
   try {
-    const url = `${api}/loadDetails/${load._id}`;
-    const response = await fetch(url, requestOptions);
-
+    const response = await fetch(
+      `${api}/loadDetails/${load._id}`,
+      requestOptions
+    );
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-
-    return await response.json();
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error updating load:", error);
     throw error;

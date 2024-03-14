@@ -801,7 +801,7 @@ const Overview: React.FC = () => {
                           <NumberInput
                             id="price"
                             placeholder="Price"
-                            value={newLoad.price || "—"}
+                            value={newLoad.price || ""}
                             onChange={(e) =>
                               setNewLoad({
                                 ...newLoad,
@@ -831,7 +831,7 @@ const Overview: React.FC = () => {
                           <NumberInput
                             id="detentionPrice"
                             placeholder="Detention"
-                            value={newLoad.detentionPrice || "—"}
+                            value={newLoad.detentionPrice || ""}
                             onChange={(e) =>
                               setNewLoad({
                                 ...newLoad,
@@ -861,7 +861,7 @@ const Overview: React.FC = () => {
                             onPlaceSelected={(place) => {
                               setNewLoad((newLoad) => ({
                                 ...newLoad,
-                                pickupLocation: place.formatted_address || "—",
+                                pickupLocation: place.formatted_address || "",
                               }));
                             }}
                             options={{
@@ -887,7 +887,7 @@ const Overview: React.FC = () => {
                             onPlaceSelected={(place) => {
                               setNewLoad((newLoad) => ({
                                 ...newLoad,
-                                deliveryLocation: place.formatted_address || "—",
+                                deliveryLocation: place.formatted_address || "",
                               }));
                             }}
                             options={{
