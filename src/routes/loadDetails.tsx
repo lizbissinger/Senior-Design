@@ -1,4 +1,4 @@
-import { LoadDetail, CustomFile } from "../components/Types/types";
+import { LoadDetail } from "../components/Types/types";
 
 const api = import.meta.env.VITE_API_URL;
 
@@ -15,17 +15,18 @@ async function GetAllLoads() {
   return loads;
 }
 
-export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
+export async function CreateNewLoad(load: LoadDetail, files?: File[]) {
   const formData = new FormData();
 
   if (files) {
     files.forEach((file) => {
-      formData.append("documents", file.file);
+      formData.append("documents", file);
     });
   }
 
   (Object.keys(load) as Array<keyof LoadDetail>).forEach((key) => {
     if (key !== "documents") {
+      // Excluding documents since it's handled separaetly
       const value = load[key];
       if (typeof value === "object" && value !== null) {
         formData.append(key, JSON.stringify(value));
@@ -62,50 +63,18 @@ export async function DeleteLoad(id: string) {
     .then((data) => (deletedLoad = data));
   return deletedLoad;
 }
-export async function UpdateLoad(load: LoadDetail): Promise<LoadDetail> {
-  const formData = new FormData();
 
-  Object.keys(load).forEach((key) => {
-    const typedKey = key as keyof LoadDetail;
-
-    if (typedKey !== "documents") {
-      const value = load[typedKey];
-      formData.append(
-        typedKey,
-        typeof value === "object" && value !== null
-          ? JSON.stringify(value)
-          : String(value)
-      );
-    } else {
-      const documents: CustomFile[] = load[typedKey] as unknown as CustomFile[];
-      documents.forEach((document) => {
-        formData.append("documents", document.file);
-      });
-    }
-  });
-
-  for (let [key, value] of formData.entries()) {
-    console.log(key, value);
-  }
-
-  const requestOptions: RequestInit = {
+export async function UpdateLoad(load: LoadDetail) {
+  const requestOptions = {
     method: "PATCH",
-    body: formData,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(load),
   };
-
-  try {
-    const url = `${api}/loadDetails/${load._id}`;
-    const response = await fetch(url, requestOptions);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error updating load:", error);
-    throw error;
-  }
+  return await fetch(`${api}/loadDetails/${load._id}`, requestOptions).then(
+    (response) => response.json()
+  );
 }
 
 export default GetAllLoads;
