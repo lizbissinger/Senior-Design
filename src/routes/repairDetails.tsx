@@ -1,16 +1,16 @@
 import { RepairDetail } from "../components/Types/types";
+import { deleteDocument } from "./documents";
 
 const api = import.meta.env.VITE_API_URL;
 
 export async function GetAllRepairs(): Promise<RepairDetail[] | undefined> {
   try {
     const response = await fetch(`${api}/repairs`, {
-      method: "GET"
+      method: "GET",
     });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch repairs: ${response.statusText}`);
-      
     }
 
     const data: RepairDetail[] = await response.json();
@@ -21,13 +21,14 @@ export async function GetAllRepairs(): Promise<RepairDetail[] | undefined> {
   }
 }
 
-export async function CreateNewRepair(repair: RepairDetail): Promise<RepairDetail | undefined> {
-  console.log("Createing new repair");
+export async function CreateNewRepair(
+  repair: RepairDetail
+): Promise<RepairDetail | undefined> {
   try {
     const requestOptions = {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(repair),
     };
@@ -46,35 +47,22 @@ export async function CreateNewRepair(repair: RepairDetail): Promise<RepairDetai
   }
 }
 
-// export async function DeleteRepair(id: string): Promise<RepairDetail | undefined> {
-//   try {
-//     const response = await fetch(`${api}/repairDetails/${id}`, {
-//       method: "DELETE",
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to delete the repair: ${response.statusText}`);
-//     }
-
-//     const deletedRepair: RepairDetail = await response.json();
-//     return deletedRepair;
-//   } catch (error) {
-//     console.error(error);
-//     return undefined;
-//   }
-// }
-
-export async function UpdateRepair(repair: RepairDetail): Promise<RepairDetail | undefined> {
+export async function UpdateRepair(
+  repair: RepairDetail
+): Promise<RepairDetail | undefined> {
   try {
     const requestOptions = {
       method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(repair),
     };
 
-    const response = await fetch(`${api}/repairs/${repair._id}`, requestOptions);
+    const response = await fetch(
+      `${api}/repairs/${repair._id}`,
+      requestOptions
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to update the repair: ${response.statusText}`);
@@ -82,6 +70,26 @@ export async function UpdateRepair(repair: RepairDetail): Promise<RepairDetail |
 
     const updatedRepair: RepairDetail = await response.json();
     return updatedRepair;
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
+
+export async function DeleteRepair(
+  id: string
+): Promise<RepairDetail | undefined> {
+  try {
+    const response = await fetch(`${api}/repairs/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete repair: ${response.statusText}`);
+    }
+
+    const deletedRepair: RepairDetail = await response.json();
+    return deletedRepair;
   } catch (error) {
     console.error(error);
     return undefined;

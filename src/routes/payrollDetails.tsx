@@ -5,12 +5,11 @@ const api = import.meta.env.VITE_API_URL;
 export async function GetAllPayroll(): Promise<PayrollDetail[] | undefined> {
   try {
     const response = await fetch(`${api}/Payroll`, {
-      method: "GET"
+      method: "GET",
     });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch Payroll: ${response.statusText}`);
-      
     }
 
     const data: PayrollDetail[] = await response.json();
@@ -21,13 +20,15 @@ export async function GetAllPayroll(): Promise<PayrollDetail[] | undefined> {
   }
 }
 
-export async function CreateNewPayroll(repair: PayrollDetail): Promise<PayrollDetail | undefined> {
+export async function CreateNewPayroll(
+  repair: PayrollDetail
+): Promise<PayrollDetail | undefined> {
   console.log("Createing new payroll");
   try {
     const requestOptions = {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(repair),
     };
@@ -46,17 +47,22 @@ export async function CreateNewPayroll(repair: PayrollDetail): Promise<PayrollDe
   }
 }
 
-export async function UpdatePayroll(payroll: PayrollDetail): Promise<PayrollDetail | undefined> {
+export async function UpdatePayroll(
+  payroll: PayrollDetail
+): Promise<PayrollDetail | undefined> {
   try {
     const requestOptions = {
       method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payroll),
     };
 
-    const response = await fetch(`${api}/Payroll/${payroll._id}`, requestOptions);
+    const response = await fetch(
+      `${api}/Payroll/${payroll._id}`,
+      requestOptions
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to update the payroll: ${response.statusText}`);
@@ -70,24 +76,24 @@ export async function UpdatePayroll(payroll: PayrollDetail): Promise<PayrollDeta
   }
 }
 
-export async function DeletePayroll(id: string): Promise<PayrollDetail | undefined> {
+export async function DeletePayroll(
+  id: string
+): Promise<PayrollDetail | undefined> {
   try {
-    const response = await fetch(`${api}/PayrollDetails/${id}`, {
+    const response = await fetch(`${api}/Payroll/${id}`, {
       method: "DELETE",
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to delete the repair: ${response.statusText}`);
+      throw new Error(`Failed to delete payroll: ${response.statusText}`);
     }
 
-    const deletedRepair: PayrollDetail = await response.json();
-    return deletedRepair;
+    const deletedPayroll: PayrollDetail = await response.json();
+    return deletedPayroll;
   } catch (error) {
     console.error(error);
     return undefined;
   }
 }
-
-
 
 export default GetAllPayroll;

@@ -3,6 +3,8 @@ import {
   Divider,
   TextInput,
   NumberInput,
+  Dialog,
+  DialogPanel,
   Select,
   SelectItem,
   SearchSelect,
@@ -15,12 +17,14 @@ import GetAllDrivers from "../../routes/driverDetails";
 interface ExpenseFormProps {
   onAddExpense: (expense: any) => void;
   onEditExpense?: (expense: any) => void;
+  onDeleteExpense?: (expense: any) => void;
   editingExpense?: any | null;
 }
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({
   onAddExpense,
   onEditExpense,
+  onDeleteExpense,
   editingExpense,
 }) => {
   const repair = "Repair";
@@ -33,11 +37,12 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
     date: new Date(),
     truck: "",
     driver: "",
-    additionalName: ""
+    additionalName: "",
   });
   const [categoryValue, setCategoryValue] = useState<string>();
   const [trucks, setTrucks] = useState<Object[]>([]);
   const [drivers, setDrivers] = useState<Object[]>([]);
+  const [isOpenDeleteDialog, setIsDeleteDialogOpen] = useState(false);
 
   const fetchTrucks = async () => {
     try {
@@ -96,15 +101,19 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
     } else {
       onAddExpense(newExpense);
     }
+  };
 
-    setNewExpense({});
+  const handleDelete = () => {
+    if (editingExpense) {
+      onDeleteExpense && onDeleteExpense(editingExpense);
+    }
   };
 
   return (
     <>
       <div className="sm:mx-auto sm:max-w-2xl overflow-auto">
         <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-          Expense Information
+          {editingExpense ? `Edit ${editingExpense.type}` : "Add Expense"}
         </h3>
         <form onSubmit={handleSubmit}>
           <Divider />
@@ -276,7 +285,15 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
             </div>
           </div>
           <Divider />
-          <div className="flex items-center justify-end space-x-4">
+          <div className={`flex items-center justify-${editingExpense ? `between` : `end`} space-x-4`}>
+            {editingExpense ? (
+              <button
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {e.preventDefault(); setIsDeleteDialogOpen(true)}}
+                className="whitespace-nowrap rounded-tremor-default px-4 py-2.5 text-white bg-red-500 font-medium hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+              >
+                Delete
+              </button>
+            ) : null}
             <button
               type="submit"
               className="whitespace-nowrap rounded-tremor-default bg-[#779BFB] px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-[#6686DC] dark:bg-[#6686DC] dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-[#779BFB]"
@@ -285,6 +302,32 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
             </button>
           </div>
         </form>
+        <Dialog
+            open={isOpenDeleteDialog}
+            onClose={() => {setIsDeleteDialogOpen(false)}}
+            static={true}
+          >
+            <DialogPanel>
+              <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                Confirm Deletion
+              </h3>
+              <p>Are you sure you want to delete this expense?</p>
+              <div className="flex items-center justify-end space-x-4">
+                <button
+                  onClick={() => {setIsDeleteDialogOpen(false)}}
+                  className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </DialogPanel>
+          </Dialog>
       </div>
     </>
   );

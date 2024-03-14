@@ -17,28 +17,30 @@ import {
 import {
   WrenchIcon,
   FunnelIcon,
-  CurrencyDollarIcon
+  CurrencyDollarIcon,
 } from "@heroicons/react/24/solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenAlt } from "@fortawesome/free-solid-svg-icons";
+import { faPenAlt, faTruck, faUser } from "@fortawesome/free-solid-svg-icons";
 import { PayrollDetail, RepairDetail, Fuel } from "../Types/types";
 import {
   GetAllRepairs,
   CreateNewRepair,
   UpdateRepair,
+  DeleteRepair,
 } from "../../routes/repairDetails";
 import {
   GetAllPayroll,
   CreateNewPayroll,
   UpdatePayroll,
+  DeletePayroll,
 } from "../../routes/payrollDetails";
 import {
   GetAllFuelRows,
   CreateNewFuelRow,
   UpdateFuel,
+  DeleteFuel,
 } from "../../routes/fuel";
 import ExpenseForm from "../ExpenseForm/ExpenseForm";
-import CloseButton from "react-bootstrap/CloseButton";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 const Finance: React.FC = () => {
@@ -206,32 +208,42 @@ const Finance: React.FC = () => {
         }
       }
       setIsOpenExpenseDialog(false);
+      await new Promise(r => setTimeout(r, 200));
+      setEditingExpense(null);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleDeleteExpense = async (expense: any, index: number) => {
-    // try {
-    //   const deletedTrailer = await DeleteTrailer(trailer._id);
-    //   console.log("Trailer deleted:", trailer);
-    //   if (deletedTrailer) {
-    //     const updatedTrailerDetails = trailerDetails.filter(
-    //       (trailer) => trailer._id !== deletedTrailer._id
-    //     );
-    //     setTrailerDetails(updatedTrailerDetails);
-    //     const updatedVehiclesDetails = {
-    //       ...vehiclesDetails,
-    //       trailers: vehiclesDetails.trailers.filter(
-    //         (trailer) => trailer._id !== deletedTrailer._id
-    //       ),
-    //     };
-    //     setVehiclesDetails(updatedVehiclesDetails);
-    //   }
-    //   setSelectedTrailer(null);
-    // } catch (error) {
-    //   console.error("Error deleting trailer:", error);
-    // }
+  const handleDeleteExpense = async (expense: any) => {
+    if (expense.type == REPAIR) {
+      const deletedRepair = await DeleteRepair(expense._id);
+      if (deletedRepair) {
+        const updatedExpenseTable = expenseTableData.filter(
+          (e: any) => e._id !== deletedRepair._id
+        );
+        setExpenseTableData(updatedExpenseTable);
+      }
+    } else if (expense.type == PAYROLL) {
+      const deletedPayroll = await DeletePayroll(expense._id);
+      if (deletedPayroll) {
+        const updatedExpenseTable = expenseTableData.filter(
+          (e: any) => e._id !== deletedPayroll._id
+        );
+        setExpenseTableData(updatedExpenseTable);
+      }
+    } else if (expense.type == FUEL) {
+      const deletedFuel = await DeleteFuel(expense._id);
+      if (deletedFuel) {
+        const updatedExpenseTable = expenseTableData.filter(
+          (e: any) => e._id !== deletedFuel._id
+        );
+        setExpenseTableData(updatedExpenseTable);
+      }
+    }
+    setIsOpenExpenseDialog(false);
+    await new Promise(r => setTimeout(r, 200));
+    setEditingExpense(null);
   };
 
   const data = [
@@ -420,7 +432,7 @@ const Finance: React.FC = () => {
                         expense.type == REPAIR
                           ? "cyan"
                           : expense.type == PAYROLL
-                          ? "#6686DC"
+                          ? "indigo"
                           : "fuchsia"
                       }
                     >
@@ -431,8 +443,14 @@ const Finance: React.FC = () => {
                   <TableCell>
                     {new Date(expense.date).toLocaleDateString()}
                   </TableCell>
-                  <TableCell>{expense.truck}</TableCell>
-                  <TableCell>{expense.driver}</TableCell>
+                  <TableCell>
+                    {expense.truck ? <FontAwesomeIcon icon={faTruck} /> : null}
+                    {` ${expense.truck}`}
+                  </TableCell>
+                  <TableCell>
+                    {expense.driver ? <FontAwesomeIcon icon={faUser} /> : null}
+                    {` ${expense.driver}`}
+                  </TableCell>
                   <TableCell>{expense.additionalName}</TableCell>
                 </TableRow>
               ))}
@@ -441,13 +459,18 @@ const Finance: React.FC = () => {
         </Card>
         <Dialog
           open={isOpenExpenseDialog}
-          onClose={() => setIsOpenExpenseDialog(false)}
+          onClose={async () => {
+            setIsOpenExpenseDialog(false);
+            await new Promise(r => setTimeout(r, 200));
+            setEditingExpense(null);
+          }}
           static={true}
         >
           <DialogPanel>
             <XMarkIcon
-              onClick={() => {
+              onClick={async () => {
                 setIsOpenExpenseDialog(false);
+                await new Promise(r => setTimeout(r, 200));
                 setEditingExpense(null);
               }}
               className="main-button dark:text-white cursor-pointer w-7 h-7"
@@ -455,6 +478,7 @@ const Finance: React.FC = () => {
             <ExpenseForm
               onAddExpense={handleAddExpense}
               onEditExpense={handleEditExpense}
+              onDeleteExpense={handleDeleteExpense}
               editingExpense={editingExpense}
             />
           </DialogPanel>
