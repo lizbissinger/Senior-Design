@@ -208,6 +208,8 @@ const Finance: React.FC = () => {
         }
       }
       setIsOpenExpenseDialog(false);
+      await new Promise(r => setTimeout(r, 200));
+      setEditingExpense(null);
     } catch (err) {
       console.error(err);
     }
@@ -240,6 +242,8 @@ const Finance: React.FC = () => {
       }
     }
     setIsOpenExpenseDialog(false);
+    await new Promise(r => setTimeout(r, 200));
+    setEditingExpense(null);
   };
 
   const data = [
@@ -455,13 +459,18 @@ const Finance: React.FC = () => {
         </Card>
         <Dialog
           open={isOpenExpenseDialog}
-          onClose={() => setIsOpenExpenseDialog(false)}
+          onClose={async () => {
+            setIsOpenExpenseDialog(false);
+            await new Promise(r => setTimeout(r, 200));
+            setEditingExpense(null);
+          }}
           static={true}
         >
           <DialogPanel>
             <XMarkIcon
-              onClick={() => {
+              onClick={async () => {
                 setIsOpenExpenseDialog(false);
+                await new Promise(r => setTimeout(r, 200));
                 setEditingExpense(null);
               }}
               className="main-button dark:text-white cursor-pointer w-7 h-7"

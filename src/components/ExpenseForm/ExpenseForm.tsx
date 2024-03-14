@@ -101,16 +101,12 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
     } else {
       onAddExpense(newExpense);
     }
-
-    setNewExpense({});
   };
 
   const handleDelete = () => {
     if (editingExpense) {
       onDeleteExpense && onDeleteExpense(editingExpense);
     }
-
-    setNewExpense({});
   };
 
   return (
@@ -292,7 +288,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
           <div className={`flex items-center justify-${editingExpense ? `between` : `end`} space-x-4`}>
             {editingExpense ? (
               <button
-                onClick={handleDelete}
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {e.preventDefault(); setIsDeleteDialogOpen(true)}}
                 className="whitespace-nowrap rounded-tremor-default px-4 py-2.5 text-white bg-red-500 font-medium hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
               >
                 Delete
@@ -306,6 +302,32 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
             </button>
           </div>
         </form>
+        <Dialog
+            open={isOpenDeleteDialog}
+            onClose={() => {setIsDeleteDialogOpen(false)}}
+            static={true}
+          >
+            <DialogPanel>
+              <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                Confirm Deletion
+              </h3>
+              <p>Are you sure you want to delete this expense?</p>
+              <div className="flex items-center justify-end space-x-4">
+                <button
+                  onClick={() => {setIsDeleteDialogOpen(false)}}
+                  className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </DialogPanel>
+          </Dialog>
       </div>
     </>
   );
