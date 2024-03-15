@@ -369,7 +369,9 @@ const Overview: React.FC = () => {
   };
 
   const updateLoad = async (load: LoadDetail) => {
-    await UpdateLoad(load);
+    const { documents, ...loadDetailsWithoutDocuments } = load;
+
+    await UpdateLoad(loadDetailsWithoutDocuments, documents);
     handleDocumentsUpdated();
   };
 

@@ -39,6 +39,10 @@ export async function CreateNewLoad(load: LoadDetail, files?: CustomFile[]) {
       }
     }
   }
+  // console.log("FormData:");
+  // for (const [key, value] of formData.entries()) {
+  //   console.log(key, value);
+  // }
 
   const requestOptions: RequestInit = {
     method: "POST",
@@ -93,15 +97,13 @@ export async function UpdateLoad(load: LoadDetail, files?: CustomFile[]) {
     }
   }
 
-  console.log("SIRF CONSOLE check kar rehaa:", formData);
-
   console.log("FormData:");
   for (const [key, value] of formData.entries()) {
     console.log(key, value);
   }
 
   const requestOptions: RequestInit = {
-    method: "PATCH", 
+    method: "PATCH",
     body: formData,
   };
 
