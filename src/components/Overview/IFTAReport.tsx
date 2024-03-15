@@ -26,8 +26,8 @@ const IFTAReport: React.FC<IFTAReportProps> = ({ loadDetails }) => {
 
     loadDetails.forEach((load) => {
       const state = extractStateFromAddress(load.deliveryLocation);
-      const miles = parseFloat(load.allMiles) || 0;
-      const gallons = parseFloat(load.fuelGallons) || 0;
+      const miles = (load.allMiles) || 0;
+      const gallons = (load.fuelGallons) || 0;
 
       if (state && miles && gallons) {
         if (!iftaData[state]) {

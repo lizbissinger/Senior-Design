@@ -60,7 +60,7 @@ const TotalPricePerDriverChart: React.FC<TotalPricePerDriverChartProps> = ({
     const calculateAndSetRevenue = () => {
       const filteredLoadDetails = filterLoadDetailsByTimeRange(selectedTab);
       const total = filteredLoadDetails.reduce(
-        (acc, load) => acc + (parseFloat(load.price) || 0),
+        (acc, load) => acc + ((load.price) || 0),
         0
       );
       setTotalRevenue(total);

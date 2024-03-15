@@ -84,11 +84,11 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
       ],
     ];
 
-    let totalAmount = parseFloat(load.price);
+    let totalAmount = load.price ?? 0; 
 
     if (load.detentionPrice) {
       body.push(["Detention", "", "", `$${load.detentionPrice}`]);
-      totalAmount += parseFloat(load.detentionPrice);
+      totalAmount += load.detentionPrice;
     }
 
     body.push(["", "", "Total", `$${totalAmount.toFixed(2)}`]);
