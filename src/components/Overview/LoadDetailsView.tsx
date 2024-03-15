@@ -159,13 +159,13 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
                 <strong>Price:</strong>{" "}
                 {load?.price !== null && load?.price !== undefined
                   ? load.price.toString()
-                  : "N/A"}
+                  : ""}
               </ListItem>
               <ListItem>
                 <strong>Loaded Miles:</strong>{" "}
                 {load?.allMiles !== null && load?.allMiles !== undefined
                   ? load.allMiles.toString()
-                  : "N/A"}
+                  : ""}
               </ListItem>
               <ListItem>
                 <strong>Truck:</strong> {load?.truckObject}
