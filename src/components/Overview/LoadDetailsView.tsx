@@ -115,7 +115,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
 
   return (
     <Card decoration="left" decorationColor="#6686DC">
-      <XMarkIcon onClick={onClose} className="main-button dark:text-white cursor-pointer w-7 h-7" />
+      <XMarkIcon
+        onClick={onClose}
+        className="main-button dark:text-white cursor-pointer w-7 h-7"
+      />
       <TabGroup>
         <TabList className="px-1" variant="line" defaultValue="1">
           <Tab
@@ -153,10 +156,16 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
                 <strong>Status:</strong> {load?.status}
               </ListItem>
               <ListItem>
-                <strong>Price:</strong> {load?.price}
+                <strong>Price:</strong>{" "}
+                {load?.price !== null && load?.price !== undefined
+                  ? load.price.toString()
+                  : ""}
               </ListItem>
               <ListItem>
-                <strong>Loaded Miles:</strong> {load?.allMiles}
+                <strong>Loaded Miles:</strong>{" "}
+                {load?.allMiles !== null && load?.allMiles !== undefined
+                  ? load.allMiles.toString()
+                  : ""}
               </ListItem>
               <ListItem>
                 <strong>Truck:</strong> {load?.truckObject}
@@ -185,7 +194,10 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
                 <strong>Detention Price:</strong> {load?.detentionPrice}
               </ListItem>
               <ListItem>
-                <strong>Fuel (Gallons):</strong> {load?.fuelGallons}
+                <strong>Fuel (Gallons):</strong>{" "}
+                {load?.fuelGallons !== null && load?.fuelGallons !== undefined
+                  ? load.fuelGallons.toString()
+                  : ""}
               </ListItem>
               <ListItem>
                 <strong>Created At:</strong>{" "}

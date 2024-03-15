@@ -9,11 +9,10 @@ export type LoadDetail = {
   pickupLocation: string;
   deliveryLocation: string;
   documents?: CustomFile[];
-  price: string;
-  detention: string;
-  detentionPrice: string;
-  allMiles: string;
-  fuelGallons: string;
+  price: number | null;
+  detentionPrice: number | null;
+  allMiles: number | null;
+  fuelGallons: number | null;
   status: string;
   brokerInfo: {
     name: string;
