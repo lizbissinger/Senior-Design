@@ -5,8 +5,12 @@ import {
   Grid,
   Button,
   Badge,
+  DateRangePicker,
+  DateRangePickerValue,
   Dialog,
   DialogPanel,
+  SearchSelect,
+  SearchSelectItem,
   Table,
   TableBody,
   TableCell,
@@ -21,7 +25,13 @@ import {
 } from "@heroicons/react/24/solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenAlt, faTruck, faUser } from "@fortawesome/free-solid-svg-icons";
-import { PayrollDetail, RepairDetail, Fuel } from "../Types/types";
+import {
+  PayrollDetail,
+  RepairDetail,
+  Fuel,
+  TruckDetail,
+  DriverDetail,
+} from "../Types/types";
 import {
   GetAllRepairs,
   CreateNewRepair,
@@ -40,19 +50,47 @@ import {
   UpdateFuel,
   DeleteFuel,
 } from "../../routes/fuel";
+import GetAllDrivers from "../../routes/driverDetails";
+import GetAllTrucks from "../../routes/truckDetails";
 import ExpenseForm from "../ExpenseForm/ExpenseForm";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon, UserIcon, TruckIcon } from "@heroicons/react/24/solid";
 
 const Finance: React.FC = () => {
   const REPAIR = "Repair";
   const PAYROLL = "Payroll";
   const FUEL = "Fuel";
+  const [allExpenses, setAllExpenses] = useState<Object[]>([]);
   const [expenseTableData, setExpenseTableData] = useState<Object[]>([]);
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
   const [editingExpense, setEditingExpense] = useState<any | null>(null);
+  const [driver, setDriver] = useState("");
+  const [drivers, setDrivers] = useState<DriverDetail[]>([]);
+  const [truck, setTruck] = useState("");
+  const [trucks, setTrucks] = useState<TruckDetail[]>([]);
+  const [date, setDate] = useState<DateRangePickerValue>();
 
   const valueFormatter = function (number: number) {
     return "$ " + new Intl.NumberFormat("us").format(number).toString();
+  };
+
+  const fetchAllDrivers = async () => {
+    try {
+      const driverList = await GetAllDrivers();
+
+      if (driverList) {
+        setDrivers(driverList);
+      }
+    } catch (error) {}
+  };
+
+  const fetchAllTrucks = async () => {
+    try {
+      const truckList = await GetAllTrucks();
+
+      if (truckList) {
+        setTrucks(truckList);
+      }
+    } catch (error) {}
   };
 
   const fetchExpenseData = async () => {
@@ -104,6 +142,7 @@ const Finance: React.FC = () => {
         });
       }
 
+      setAllExpenses(data);
       setExpenseTableData(data);
     } catch (error) {
       console.error(error);
@@ -125,6 +164,7 @@ const Finance: React.FC = () => {
         };
         const addedRepair = await CreateNewRepair(repair);
         if (addedRepair) {
+          setAllExpenses((prevData) => [...prevData, expense]);
           setExpenseTableData((prevData) => [...prevData, expense]);
         }
       } else if (expense.type == PAYROLL) {
@@ -136,6 +176,7 @@ const Finance: React.FC = () => {
         };
         const addedPayroll = await CreateNewPayroll(payroll);
         if (addedPayroll) {
+          setAllExpenses((prevData) => [...prevData, expense]);
           setExpenseTableData((prevData) => [...prevData, expense]);
         }
       } else if (expense.type == FUEL) {
@@ -148,6 +189,7 @@ const Finance: React.FC = () => {
         };
         const addedFuel = await CreateNewFuelRow(fuel);
         if (addedFuel) {
+          setAllExpenses((prevData) => [...prevData, expense]);
           setExpenseTableData((prevData) => [...prevData, expense]);
         }
       }
@@ -175,6 +217,7 @@ const Finance: React.FC = () => {
           const updatedExpenseTable = expenseTableData.map((e: any) =>
             e._id == updatedRepair._id ? expense : e
           );
+          setAllExpenses(updatedExpenseTable);
           setExpenseTableData(updatedExpenseTable);
         }
       } else if (expense.type == PAYROLL) {
@@ -189,6 +232,7 @@ const Finance: React.FC = () => {
           const updatedExpenseTable = expenseTableData.map((e: any) =>
             e._id == updatedPayroll._id ? expense : e
           );
+          setAllExpenses(updatedExpenseTable);
           setExpenseTableData(updatedExpenseTable);
         }
       } else if (expense.type == FUEL) {
@@ -204,11 +248,12 @@ const Finance: React.FC = () => {
           const updatedExpenseTable = expenseTableData.map((e: any) =>
             e._id == updatedFuel._id ? expense : e
           );
+          setAllExpenses(updatedExpenseTable);
           setExpenseTableData(updatedExpenseTable);
         }
       }
       setIsOpenExpenseDialog(false);
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise((r) => setTimeout(r, 200));
       setEditingExpense(null);
     } catch (err) {
       console.error(err);
@@ -222,6 +267,7 @@ const Finance: React.FC = () => {
         const updatedExpenseTable = expenseTableData.filter(
           (e: any) => e._id !== deletedRepair._id
         );
+        setAllExpenses(updatedExpenseTable);
         setExpenseTableData(updatedExpenseTable);
       }
     } else if (expense.type == PAYROLL) {
@@ -230,6 +276,7 @@ const Finance: React.FC = () => {
         const updatedExpenseTable = expenseTableData.filter(
           (e: any) => e._id !== deletedPayroll._id
         );
+        setAllExpenses(updatedExpenseTable);
         setExpenseTableData(updatedExpenseTable);
       }
     } else if (expense.type == FUEL) {
@@ -238,11 +285,12 @@ const Finance: React.FC = () => {
         const updatedExpenseTable = expenseTableData.filter(
           (e: any) => e._id !== deletedFuel._id
         );
+        setAllExpenses(updatedExpenseTable);
         setExpenseTableData(updatedExpenseTable);
       }
     }
     setIsOpenExpenseDialog(false);
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise((r) => setTimeout(r, 200));
     setEditingExpense(null);
   };
 
@@ -305,10 +353,123 @@ const Finance: React.FC = () => {
 
   useEffect(() => {
     fetchExpenseData();
+    fetchAllDrivers();
+    fetchAllTrucks();
   }, []);
+
+  useEffect(() => {
+    let filteredExpenseTable: any = [];
+    let from: Date;
+    let to: Date;
+    if (date?.from) {
+      from = new Date(date.from);
+    }
+    if (date?.to) {
+      to = new Date(date.to);
+      to.setHours(23);
+      to.setMinutes(59);
+    }
+    if (truck.length > 0 && driver.length > 0 && date?.from && date?.to) {
+      allExpenses.map((e: any) => {
+        const _date = new Date(e.date);
+        if (e.truck == truck && e.driver == driver && _date >= from && _date <= to) {
+          filteredExpenseTable.push(e);
+        }
+      });
+      setExpenseTableData(filteredExpenseTable);
+    } else if (truck.length > 0 && date?.from && date?.to) {
+      allExpenses.map((e: any) => {
+        const _date = new Date(e.date);
+        if (e.truck == truck && _date >= from && _date <= to) {
+          filteredExpenseTable.push(e);
+        }
+      });
+      setExpenseTableData(filteredExpenseTable);
+    } else if (truck.length > 0 && driver.length > 0) {
+      allExpenses.map((e: any) => {
+        if (e.truck == truck && e.driver == driver) {
+          filteredExpenseTable.push(e);
+        }
+      });
+      setExpenseTableData(filteredExpenseTable);
+    } else if (driver.length > 0 && date?.from && date?.to) {
+      allExpenses.map((e: any) => {
+        const _date = new Date(e.date);
+        if (e.driver == driver && _date >= from && _date <= to) {
+          filteredExpenseTable.push(e);
+        }
+      });
+      setExpenseTableData(filteredExpenseTable);
+    } else if (date?.from && date?.to) {
+      allExpenses.map((e: any) => {
+        const _date = new Date(e.date);
+        if (_date >= from && _date <= to) {
+          filteredExpenseTable.push(e);
+        }
+      });
+      setExpenseTableData(filteredExpenseTable);
+    } else if (driver.length > 0) {
+      allExpenses.map((e: any) => {
+        if (e.driver == driver) {
+          filteredExpenseTable.push(e);
+        }
+      });
+      setExpenseTableData(filteredExpenseTable);
+    } else if (truck.length > 0) {
+      allExpenses.map((e: any) => {
+        if (e.truck == truck) {
+          filteredExpenseTable.push(e);
+        }
+      });
+      setExpenseTableData(filteredExpenseTable);
+    } else {
+      setExpenseTableData(allExpenses);
+    }
+  }, [driver, truck, date]);
 
   return (
     <div>
+      <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
+        <DateRangePicker
+          className="DateRangePicker min-w-sm"
+          value={date}
+          onValueChange={setDate}
+        />
+        <div className="max-w-sm mx-auto space-y-6">
+          <SearchSelect
+            value={driver}
+            onValueChange={setDriver}
+            placeholder="Filter by driver"
+            icon={UserIcon}
+          >
+            {drivers.map((d) => (
+              <SearchSelectItem
+                className="cursor-pointer"
+                key={d._id}
+                value={d.name}
+                icon={UserIcon}
+              />
+            ))}
+          </SearchSelect>
+        </div>
+        <div className="max-w-sm mx-auto space-y-6">
+          <SearchSelect
+            value={truck}
+            onValueChange={setTruck}
+            placeholder="Filter by truck"
+            icon={TruckIcon}
+          >
+            {trucks.map((t) => (
+              <SearchSelectItem
+                className="cursor-pointer"
+                key={t._id}
+                value={t.truckNumber}
+                icon={TruckIcon}
+              />
+            ))}
+          </SearchSelect>
+        </div>
+      </Grid>
       <Grid numItemsLg={2} className="gap-6 mt-6">
         <Card>
           <div className="sm:flex sm:items-center sm:justify-between sm:space-x-10">
@@ -461,7 +622,7 @@ const Finance: React.FC = () => {
           open={isOpenExpenseDialog}
           onClose={async () => {
             setIsOpenExpenseDialog(false);
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise((r) => setTimeout(r, 200));
             setEditingExpense(null);
           }}
           static={true}
@@ -470,7 +631,7 @@ const Finance: React.FC = () => {
             <XMarkIcon
               onClick={async () => {
                 setIsOpenExpenseDialog(false);
-                await new Promise(r => setTimeout(r, 200));
+                await new Promise((r) => setTimeout(r, 200));
                 setEditingExpense(null);
               }}
               className="main-button dark:text-white cursor-pointer w-7 h-7"

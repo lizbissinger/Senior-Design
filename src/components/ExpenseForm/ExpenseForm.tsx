@@ -285,10 +285,17 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
             </div>
           </div>
           <Divider />
-          <div className={`flex items-center justify-${editingExpense ? `between` : `end`} space-x-4`}>
+          <div
+            className={`flex items-center justify-${
+              editingExpense ? `between` : `end`
+            } space-x-4`}
+          >
             {editingExpense ? (
               <button
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {e.preventDefault(); setIsDeleteDialogOpen(true)}}
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.preventDefault();
+                  setIsDeleteDialogOpen(true);
+                }}
                 className="whitespace-nowrap rounded-tremor-default px-4 py-2.5 text-white bg-red-500 font-medium hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
               >
                 Delete
@@ -296,38 +303,42 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
             ) : null}
             <button
               type="submit"
-              className="whitespace-nowrap rounded-tremor-default bg-[#779BFB] px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-[#6686DC] dark:bg-[#6686DC] dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-[#779BFB]"
+              className="h-11 whitespace-nowrap rounded-tremor-default bg-[#779BFB] px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-[#6686DC] dark:bg-[#6686DC] dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-[#779BFB]"
             >
-              {editingExpense ? "Update Expense" : "Add Expense"}
+              {editingExpense ? "Update" : "Add"}
             </button>
           </div>
         </form>
         <Dialog
-            open={isOpenDeleteDialog}
-            onClose={() => {setIsDeleteDialogOpen(false)}}
-            static={true}
-          >
-            <DialogPanel>
-              <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                Confirm Deletion
-              </h3>
-              <p>Are you sure you want to delete this expense?</p>
-              <div className="flex items-center justify-end space-x-4">
-                <button
-                  onClick={() => {setIsDeleteDialogOpen(false)}}
-                  className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
-                >
-                  Delete
-                </button>
-              </div>
-            </DialogPanel>
-          </Dialog>
+          open={isOpenDeleteDialog}
+          onClose={() => {
+            setIsDeleteDialogOpen(false);
+          }}
+          static={true}
+        >
+          <DialogPanel>
+            <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              Confirm Deletion
+            </h3>
+            <p>Are you sure you want to delete this expense?</p>
+            <div className="flex items-center justify-end space-x-4">
+              <button
+                onClick={() => {
+                  setIsDeleteDialogOpen(false);
+                }}
+                className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="whitespace-nowrap rounded-tremor-small px-4 py-2.5 text-white bg-red-500 font-medium transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white dark:bg-red-500 dark:text-white dark:tremor-content-strong dark:hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </DialogPanel>
+        </Dialog>
       </div>
     </>
   );
