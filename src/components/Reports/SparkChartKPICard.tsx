@@ -22,7 +22,7 @@ const SparkChartKPICard: React.FC<SparkChartKPICardProps> = ({
   }
 
   return (
-    <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-52">
+    <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-52 dark:shadow-slate-950 dark:shadow-xl">
       <Card className="rounded-md min-h-full">
         <p className="flex items-start justify-between">
           <span className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">

@@ -242,7 +242,7 @@ const Reports: React.FC = () => {
       </Grid>
       <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-6 mt-6">
         <Col numColSpan={1} numColSpanLg={2}>
-          <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-full">
+          <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-full dark:shadow-slate-950 dark:shadow-xl">
             <Card className="rounded-md min-h-full">
               <Title>Revenue over time</Title>
               <TabGroup>
@@ -304,7 +304,7 @@ const Reports: React.FC = () => {
             </Card>
           </Card>
         </Col>
-        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl">
+        <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl dark:shadow-slate-950 dark:shadow-xl">
           <Card className="rounded-md min-h-full">
             <h3 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
               Total expenses by category
