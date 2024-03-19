@@ -52,6 +52,7 @@ import {
 } from "../../routes/fuel";
 import GetAllDrivers from "../../routes/driverDetails";
 import GetAllTrucks from "../../routes/truckDetails";
+import GetFinanceTabRevenue from "../../routes/finance";
 import ExpenseForm from "../ExpenseForm/ExpenseForm";
 import { XMarkIcon, UserIcon, TruckIcon } from "@heroicons/react/24/solid";
 
@@ -61,6 +62,7 @@ const Finance: React.FC = () => {
   const FUEL = "Fuel";
   const [allExpenses, setAllExpenses] = useState<Object[]>([]);
   const [expenseTableData, setExpenseTableData] = useState<Object[]>([]);
+  const [revenueTableData, setRevenueTableData] = useState<Object[]>([]);
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
   const [editingExpense, setEditingExpense] = useState<any | null>(null);
   const [driver, setDriver] = useState("");
@@ -89,6 +91,17 @@ const Finance: React.FC = () => {
 
       if (truckList) {
         setTrucks(truckList);
+      }
+    } catch (error) {}
+  };
+
+  const fetchRevenueData = async () => {
+    try {
+      const revenueData = await GetFinanceTabRevenue(driver, truck, date);
+
+      if (revenueData) {
+        console.log(revenueData);
+        setRevenueTableData(revenueData);
       }
     } catch (error) {}
   };
@@ -294,63 +307,6 @@ const Finance: React.FC = () => {
     setEditingExpense(null);
   };
 
-  const data = [
-    {
-      workspace: "sales_by_day_api",
-      owner: "John Doe",
-      status: "Live",
-      costs: "$3,509.00",
-      region: "US-West 1",
-      capacity: "99%",
-      lastEdited: "23/09/2023 13:00",
-    },
-    {
-      workspace: "marketing_campaign",
-      owner: "Jane Smith",
-      status: "Live",
-      costs: "$5,720.00",
-      region: "US-East 2",
-      capacity: "80%",
-      lastEdited: "22/09/2023 10:45",
-    },
-    {
-      workspace: "test_environment",
-      owner: "David Clark",
-      status: "Inactive",
-      costs: "$800.00",
-      region: "EU-Central 1",
-      capacity: "40%",
-      lastEdited: "25/09/2023 16:20",
-    },
-    {
-      workspace: "sales_campaign",
-      owner: "Jane Smith",
-      status: "Live",
-      costs: "$5,720.00",
-      region: "US-East 2",
-      capacity: "80%",
-      lastEdited: "22/09/2023 10:45",
-    },
-    {
-      workspace: "development_env",
-      owner: "Mike Johnson",
-      status: "Inactive",
-      costs: "$4,200.00",
-      region: "EU-West 1",
-      capacity: "60%",
-      lastEdited: "21/09/2023 14:30",
-    },
-    {
-      workspace: "new_workspace_1",
-      owner: "Alice Brown",
-      status: "Inactive",
-      costs: "$2,100.00",
-      region: "US-West 2",
-      capacity: "75%",
-      lastEdited: "24/09/2023 09:15",
-    },
-  ];
-
   useEffect(() => {
     fetchExpenseData();
     fetchAllDrivers();
@@ -425,6 +381,7 @@ const Finance: React.FC = () => {
     } else {
       setExpenseTableData(allExpenses);
     }
+    fetchRevenueData();
   }, [driver, truck, date]);
 
   return (
@@ -483,41 +440,31 @@ const Finance: React.FC = () => {
             <TableHead className="dark:bg-slate-900">
               <TableRow className="border-b border-tremor-border dark:border-dark-tremor-border">
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
-                  Workspace
+                  Date
                 </TableHeaderCell>
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
-                  Owner
+                  Revenue
                 </TableHeaderCell>
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
-                  Status
+                  Driver
                 </TableHeaderCell>
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
-                  Region
-                </TableHeaderCell>
-                <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
-                  Capacity
-                </TableHeaderCell>
-                <TableHeaderCell className="text-right text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
-                  Costs
-                </TableHeaderCell>
-                <TableHeaderCell className="text-right text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
-                  Last edited
+                  Truck
                 </TableHeaderCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.map((item) => (
-                <TableRow key={item.workspace}>
-                  <TableCell className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                    {item.workspace}
+              {revenueTableData.map((revenue:any) => (
+                <TableRow key={revenue.revenue}>
+                  <TableCell>{revenue.date}</TableCell>
+                  <TableCell>{valueFormatter(revenue.revenue)}</TableCell>
+                  <TableCell>
+                    {revenue.driver ? <FontAwesomeIcon icon={faUser} /> : null}
+                    {` ${revenue.driver}`}
                   </TableCell>
-                  <TableCell>{item.owner}</TableCell>
-                  <TableCell>{item.status}</TableCell>
-                  <TableCell>{item.region}</TableCell>
-                  <TableCell>{item.capacity}</TableCell>
-                  <TableCell className="text-right">{item.costs}</TableCell>
-                  <TableCell className="text-right">
-                    {item.lastEdited}
+                  <TableCell>
+                    {revenue.truck ? <FontAwesomeIcon icon={faTruck} /> : null}
+                    {` ${revenue.truck}`}
                   </TableCell>
                 </TableRow>
               ))}
@@ -546,7 +493,7 @@ const Finance: React.FC = () => {
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
                   Type
                 </TableHeaderCell>
-                <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
+                <TableHeaderCell className="text-right text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
                   Cost
                 </TableHeaderCell>
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
@@ -600,7 +547,7 @@ const Finance: React.FC = () => {
                       {expense.type}
                     </Badge>
                   </TableCell>
-                  <TableCell>{valueFormatter(expense.cost)}</TableCell>
+                  <TableCell className="text-right">{valueFormatter(expense.cost)}</TableCell>
                   <TableCell>
                     {new Date(expense.date).toLocaleDateString()}
                   </TableCell>
