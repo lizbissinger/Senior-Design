@@ -462,7 +462,7 @@ const Finance: React.FC = () => {
                 Revenue
               </h3>
             </div>
-            <div className="mt-4 max-w-sm space-y-6">
+            <div className="mt-4 mb-0.5 max-w-sm space-y-6">
               <Select
                 value={groupBy}
                 onValueChange={setGroupBy}
@@ -505,9 +505,6 @@ const Finance: React.FC = () => {
                   <TableCell>{valueFormatter(revenue.revenue)}</TableCell>
                   <TableCell>
                     <Tooltip
-                      className={
-                        revenue.driverArr?.length > 1 ? `cursor-pointer` : ``
-                      }
                       title={
                         revenue.driverArr?.length > 1
                           ? revenue.driverArr?.sort().toString()
@@ -515,18 +512,23 @@ const Finance: React.FC = () => {
                       }
                     >
                       <div>
-                        {revenue.driver ? (
-                          <FontAwesomeIcon icon={faUser} />
-                        ) : null}
-                        {` ${revenue.driver}`}
+                        {groupBy == "Driver" ? (
+                          <Badge
+                            size="md"
+                            className="type-badge rounded align-middle"
+                            icon={UserIcon}
+                            color={"#6686DC"}
+                          >
+                            {revenue.driver}
+                          </Badge>
+                        ) : (
+                          revenue.driver
+                        )}
                       </div>
                     </Tooltip>
                   </TableCell>
                   <TableCell>
                     <Tooltip
-                      className={
-                        revenue.truckArr?.length > 1 ? `cursor-pointer` : ``
-                      }
                       title={
                         revenue.truckArr?.length > 1
                           ? revenue.truckArr?.sort().toString()
@@ -534,10 +536,18 @@ const Finance: React.FC = () => {
                       }
                     >
                       <div>
-                        {revenue.truck ? (
-                          <FontAwesomeIcon icon={faTruck} />
-                        ) : null}
-                        {` ${revenue.truck}`}
+                        {groupBy == "Truck" ? (
+                          <Badge
+                            size="md"
+                            className="type-badge rounded align-middle"
+                            icon={TruckIcon}
+                            color={"#6686DC"}
+                          >
+                            {revenue.truck}
+                          </Badge>
+                        ) : (
+                          revenue.truck
+                        )}
                       </div>
                     </Tooltip>
                   </TableCell>
