@@ -376,12 +376,18 @@ const Overview: React.FC = () => {
   };
 
   const handleEditClick = (index: number) => {
-    const selectedLoad = filteredLoads[index];
-    setEditableIndex(index);
+    // Calculate the index of the load in the original loadDetails array
+    const originalIndex = (currentPage - 1) * itemsPerPage + index;
+    
+    // Access the selected load using the original index
+    const selectedLoad = loadDetails[originalIndex];
+    
+    // Set the newLoad state with the selected load
+    setEditableIndex(originalIndex);
     setFormMode("edit");
     setNewLoad({ ...selectedLoad });
     setIsOpen(true);
-  };
+  };  
 
   const handleSaveClick = async (index: number) => {
     const loadToUpdate = { ...filteredLoads[index], ...newLoad };
