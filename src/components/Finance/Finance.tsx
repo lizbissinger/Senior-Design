@@ -9,6 +9,8 @@ import {
   DateRangePickerValue,
   Dialog,
   DialogPanel,
+  Select,
+  SelectItem,
   SearchSelect,
   SearchSelectItem,
   Table,
@@ -25,6 +27,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenAlt, faTruck, faUser } from "@fortawesome/free-solid-svg-icons";
+import { Tooltip } from "@mui/material";
 import {
   PayrollDetail,
   RepairDetail,
@@ -54,7 +57,12 @@ import GetAllDrivers from "../../routes/driverDetails";
 import GetAllTrucks from "../../routes/truckDetails";
 import GetFinanceTabRevenue from "../../routes/finance";
 import ExpenseForm from "../ExpenseForm/ExpenseForm";
-import { XMarkIcon, UserIcon, TruckIcon } from "@heroicons/react/24/solid";
+import {
+  XMarkIcon,
+  UserIcon,
+  TruckIcon,
+  RectangleGroupIcon,
+} from "@heroicons/react/24/solid";
 
 const Finance: React.FC = () => {
   const REPAIR = "Repair";
@@ -70,6 +78,7 @@ const Finance: React.FC = () => {
   const [truck, setTruck] = useState("");
   const [trucks, setTrucks] = useState<TruckDetail[]>([]);
   const [date, setDate] = useState<DateRangePickerValue>();
+  const [groupBy, setGroupBy] = useState("Driver");
 
   const valueFormatter = function (number: number) {
     return "$ " + new Intl.NumberFormat("us").format(number).toString();
@@ -97,10 +106,23 @@ const Finance: React.FC = () => {
 
   const fetchRevenueData = async () => {
     try {
-      const revenueData = await GetFinanceTabRevenue(driver, truck, date);
+      const revenueData = await GetFinanceTabRevenue(
+        groupBy,
+        driver,
+        truck,
+        date
+      );
 
       if (revenueData) {
-        console.log(revenueData);
+        if (groupBy == "Driver") {
+          revenueData.sort((a: any, b: any) =>
+            a.driver > b.driver ? 1 : b.driver > a.driver ? -1 : 0
+          );
+        } else if (groupBy == "Truck") {
+          revenueData.sort((a: any, b: any) =>
+            a.truck > b.truck ? 1 : b.truck > a.truck ? -1 : 0
+          );
+        }
         setRevenueTableData(revenueData);
       }
     } catch (error) {}
@@ -328,7 +350,12 @@ const Finance: React.FC = () => {
     if (truck.length > 0 && driver.length > 0 && date?.from && date?.to) {
       allExpenses.map((e: any) => {
         const _date = new Date(e.date);
-        if (e.truck == truck && e.driver == driver && _date >= from && _date <= to) {
+        if (
+          e.truck == truck &&
+          e.driver == driver &&
+          _date >= from &&
+          _date <= to
+        ) {
           filteredExpenseTable.push(e);
         }
       });
@@ -382,7 +409,7 @@ const Finance: React.FC = () => {
       setExpenseTableData(allExpenses);
     }
     fetchRevenueData();
-  }, [driver, truck, date]);
+  }, [driver, truck, date, groupBy]);
 
   return (
     <div>
@@ -431,12 +458,30 @@ const Finance: React.FC = () => {
         <Card>
           <div className="sm:flex sm:items-center sm:justify-between sm:space-x-10">
             <div>
-              <h3 className="mt-2.5 font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              <h3 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
                 Revenue
               </h3>
             </div>
+            <div className="mt-4 max-w-sm space-y-6">
+              <Select
+                value={groupBy}
+                onValueChange={setGroupBy}
+                icon={RectangleGroupIcon}
+              >
+                <SelectItem
+                  className="cursor-pointer"
+                  value="Driver"
+                  icon={UserIcon}
+                />
+                <SelectItem
+                  className="cursor-pointer"
+                  value="Truck"
+                  icon={TruckIcon}
+                />
+              </Select>
+            </div>
           </div>
-          <Table className="mt-11">
+          <Table className="mt-8">
             <TableHead className="dark:bg-slate-900">
               <TableRow className="border-b border-tremor-border dark:border-dark-tremor-border">
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
@@ -454,17 +499,47 @@ const Finance: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {revenueTableData.map((revenue:any) => (
-                <TableRow key={revenue.revenue}>
+              {revenueTableData.map((revenue: any) => (
+                <TableRow key={revenue.key}>
                   <TableCell>{revenue.date}</TableCell>
                   <TableCell>{valueFormatter(revenue.revenue)}</TableCell>
                   <TableCell>
-                    {revenue.driver ? <FontAwesomeIcon icon={faUser} /> : null}
-                    {` ${revenue.driver}`}
+                    <Tooltip
+                      className={
+                        revenue.driverArr?.length > 1 ? `cursor-pointer` : ``
+                      }
+                      title={
+                        revenue.driverArr?.length > 1
+                          ? revenue.driverArr?.sort().toString()
+                          : null
+                      }
+                    >
+                      <div>
+                        {revenue.driver ? (
+                          <FontAwesomeIcon icon={faUser} />
+                        ) : null}
+                        {` ${revenue.driver}`}
+                      </div>
+                    </Tooltip>
                   </TableCell>
                   <TableCell>
-                    {revenue.truck ? <FontAwesomeIcon icon={faTruck} /> : null}
-                    {` ${revenue.truck}`}
+                    <Tooltip
+                      className={
+                        revenue.truckArr?.length > 1 ? `cursor-pointer` : ``
+                      }
+                      title={
+                        revenue.truckArr?.length > 1
+                          ? revenue.truckArr?.sort().toString()
+                          : null
+                      }
+                    >
+                      <div>
+                        {revenue.truck ? (
+                          <FontAwesomeIcon icon={faTruck} />
+                        ) : null}
+                        {` ${revenue.truck}`}
+                      </div>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
@@ -547,7 +622,9 @@ const Finance: React.FC = () => {
                       {expense.type}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">{valueFormatter(expense.cost)}</TableCell>
+                  <TableCell className="text-right">
+                    {valueFormatter(expense.cost)}
+                  </TableCell>
                   <TableCell>
                     {new Date(expense.date).toLocaleDateString()}
                   </TableCell>

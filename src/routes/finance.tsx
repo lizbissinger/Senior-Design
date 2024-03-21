@@ -1,6 +1,7 @@
 const api = import.meta.env.VITE_API_URL;
 
 async function GetRevenue(
+  groupBy: string,
   driver?: string,
   truck?: string,
   dateRange?: any
@@ -12,7 +13,7 @@ async function GetRevenue(
     const _truck = truck != null && truck?.length > 0 ? truck : null;
 
     const response = await fetch(
-      `${api}/finance/revenue?driver=${_driver}&truck=${_truck}&from=${from}&to=${to}`,
+      `${api}/finance/revenue?groupBy=${groupBy}&driver=${_driver}&truck=${_truck}&from=${from}&to=${to}`,
       {
         method: "GET",
       }
