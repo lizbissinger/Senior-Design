@@ -737,6 +737,7 @@ const Overview: React.FC = () => {
                             id="loadNumber"
                             placeholder="Load #"
                             value={newLoad.loadNumber}
+                            disabled={formMode == "edit" && editableIndex !== null}
                             onChange={(e) =>
                               setNewLoad({
                                 ...newLoad,
