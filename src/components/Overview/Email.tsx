@@ -212,7 +212,7 @@ const Email: React.FC<EmailProps> = ({ loadDetails }) => {
       />
       <div className="flex justify-end">
         <Button
-          className="mt-2 !bg-[#779BFB] text-white hover:!bg-[#6686DC] py-1 px-2 rounded text-sm dark:!bg-[#6686DC] dark:!text-black dark:hover:!bg-[#779BFB]"
+          className="mt-2 !border-none !bg-[#779BFB] text-white hover:!bg-[#6686DC] py-1 px-2 rounded text-sm dark:!bg-[#6686DC] dark:!text-black dark:hover:!bg-[#779BFB]"
           onClick={sendEmail}
         >
           Send Update

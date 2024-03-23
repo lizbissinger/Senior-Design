@@ -239,7 +239,11 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
             <List className="dark-font">
               {documentUrl ? (
                 <>
-                  <Button variant="light" onClick={closeDocumentViewer}>
+                  <Button
+                    variant="light"
+                    className="text-[#779BFB] focus:!outline-none focus:!ring-0 !border-none hover:text-[#6686DC] dark:text-[#6686DC] dark:hover:text-[#779BFB]"
+                    onClick={closeDocumentViewer}
+                  >
                     Close Document
                   </Button>
                   <iframe
@@ -278,11 +282,12 @@ const LoadDetailsView: React.FC<LoadDetailsViewProps> = ({
                           onClick={() => viewDocumentInTab(document)}
                         />
                       </div>
-                      <Button
+                      <button
+                        className="mt-2 !bg-[#779BFB] text-white hover:!bg-[#6686DC] py-2 px-3 rounded text-sm dark:!bg-[#6686DC] dark:!text-black dark:hover:!bg-[#779BFB]"
                         onClick={() => handleDeleteDocument(document._id || "")}
                       >
                         Delete
-                      </Button>
+                      </button>
                     </ListItem>
                   ))}
                 </List>
