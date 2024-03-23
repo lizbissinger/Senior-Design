@@ -15,7 +15,16 @@ function LinearWithValueLabel(props: LinearProgressProps & { value: number }) {
       }}
     >
       <Box sx={{ width: "50%", mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+        <LinearProgress
+          sx={{
+            backgroundColor: "#C9D8FE",
+            "& .MuiLinearProgress-bar": {
+              backgroundColor: "#6686DC",
+            },
+          }}
+          variant="determinate"
+          {...props}
+        />
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="body2" className={`dark:text-white`}>
