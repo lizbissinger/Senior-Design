@@ -15,11 +15,11 @@ export default function SignUpPage() {
           elements: {
             formButtonPrimary: {
               backgroundColor: "#7392e9",
-              "&:hover": { backgroundColor: "#7392e9" },
+              "&:hover": { backgroundColor: "#6686DC" },
             },
             footerActionLink: {
               color: "#7392e9",
-              "&:hover": { color: "#7392e9" },
+              "&:hover": { color: "#6686DC" },
             },
             headerSubtitle: {
               fontFamily: "myFont",
