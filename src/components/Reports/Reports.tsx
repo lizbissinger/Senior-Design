@@ -19,12 +19,14 @@ import {
   TabPanels,
   List,
   ListItem,
+  Divider,
 } from "@tremor/react";
 import { useState } from "react";
 import {
   UserIcon,
   PresentationChartLineIcon,
   ChartBarIcon,
+  ChartPieIcon,
 } from "@heroicons/react/24/solid";
 import NoDataToShow from "./NoDataToShow";
 import SparkChartKPICard from "./SparkChartKPICard";
@@ -59,6 +61,14 @@ const Reports: React.FC = () => {
   const [categories, setCategories] = useState<string[]>(["Cumulative"]);
   const [expenses, setExpenses] = useState<Object[]>([]);
   const [barChartToolTip, setBarChartToolTip] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
 
   const valueFormatter = function (number: number) {
     return "$ " + new Intl.NumberFormat("us").format(number).toString();
@@ -216,7 +226,7 @@ const Reports: React.FC = () => {
 
   return (
     <div>
-      <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
+      <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-1">
         <DateRangePicker
           className="DateRangePicker min-w-sm"
           value={date}
@@ -240,7 +250,7 @@ const Reports: React.FC = () => {
           </SearchSelect>
         </div>
       </Grid>
-      <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-6 mt-6">
+      <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-3 mt-6">
         <Col numColSpan={1} numColSpanLg={2}>
           <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl min-h-full dark:shadow-slate-950 dark:shadow-xl">
             <Card className="rounded-md min-h-full">
@@ -258,45 +268,77 @@ const Reports: React.FC = () => {
                 </TabList>
                 <TabPanels>
                   <TabPanel>
-                    {revenueOverTimeChartData.length > 0 ? (
-                      <div>
-                        <AreaChart
-                          className="h-96 mt-4"
-                          data={revenueOverTimeChartData}
-                          index="date"
-                          yAxisWidth={65}
-                          categories={categories}
-                          colors={["#6686DC"]}
-                          valueFormatter={valueFormatter}
-                          showAnimation={true}
-                          animationDuration={1500}
-                          curveType="monotone"
+                    {isLoading ? (
+                      <div
+                        role="status"
+                        className="flex items-center justify-center h-96 max-w bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                      >
+                        <PresentationChartLineIcon
+                          className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                          aria-hidden="true"
                         />
-                        <div className="h-2"></div>
+
+                        <span className="sr-only">Loading...</span>
                       </div>
                     ) : (
-                      <NoDataToShow />
+                      <>
+                        {revenueOverTimeChartData.length > 0 ? (
+                          <div>
+                            <AreaChart
+                              className="h-96 mt-3"
+                              data={revenueOverTimeChartData}
+                              index="date"
+                              yAxisWidth={65}
+                              categories={categories}
+                              colors={["#6686DC"]}
+                              valueFormatter={valueFormatter}
+                              showAnimation={true}
+                              animationDuration={1500}
+                              curveType="monotone"
+                            />
+                            <div className="h-2"></div>
+                          </div>
+                        ) : (
+                          <NoDataToShow />
+                        )}
+                      </>
                     )}
                   </TabPanel>
                   <TabPanel>
-                    {revenueOverTimeChartData.length > 0 ? (
-                      <div>
-                        <BarChart
-                          className="h-96 mt-4"
-                          data={revenueOverTimeChartData}
-                          index="date"
-                          yAxisWidth={65}
-                          categories={categories}
-                          colors={["#6686DC"]}
-                          valueFormatter={valueFormatter}
-                          showAnimation={true}
-                          animationDuration={1500}
-                          onValueChange={(v: any) => setBarChartToolTip(v)}
+                    {isLoading ? (
+                      <div
+                        role="status"
+                        className="flex items-center justify-center h-56 max-w-lg bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                      >
+                        <PresentationChartLineIcon
+                          className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                          aria-hidden="true"
                         />
-                        <div className="h-2"></div>
+
+                        <span className="sr-only">Loading...</span>
                       </div>
                     ) : (
-                      <NoDataToShow />
+                      <>
+                        {revenueOverTimeChartData.length > 0 ? (
+                          <div>
+                            <BarChart
+                              className="h-96 mt-3"
+                              data={revenueOverTimeChartData}
+                              index="date"
+                              yAxisWidth={65}
+                              categories={categories}
+                              colors={["#6686DC"]}
+                              valueFormatter={valueFormatter}
+                              showAnimation={true}
+                              animationDuration={1500}
+                              onValueChange={(v: any) => setBarChartToolTip(v)}
+                            />
+                            <div className="h-2"></div>
+                          </div>
+                        ) : (
+                          <NoDataToShow />
+                        )}
+                      </>
                     )}
                   </TabPanel>
                 </TabPanels>
@@ -310,45 +352,79 @@ const Reports: React.FC = () => {
               Total expenses by category
             </h3>
             <div className="h-2"></div>
-            <DonutChart
-              className="mt-8"
-              data={expenses}
-              category="amount"
-              index="name"
-              valueFormatter={valueFormatter}
-              showTooltip={true}
-              colors={["cyan", "#6686DC", "fuchsia"]}
-            />
+            {isLoading ? (
+              <div
+                role="status"
+                className="flex items-center justify-center mt-4 mx-auto h-40 w-40 bg-gray-300 rounded-full animate-pulse dark:bg-gray-700"
+              >
+                <ChartPieIcon
+                  className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">Loading...</span>
+              </div>
+            ) : (
+              <DonutChart
+                className="mt-8"
+                data={expenses}
+                category="amount"
+                index="name"
+                valueFormatter={valueFormatter}
+                showTooltip={true}
+                colors={["cyan", "#6686DC", "fuchsia"]}
+              />
+            )}
             <div className="h-10"></div>
             <p className="mt-8 flex items-center justify-between text-tremor-label text-tremor-content dark:text-dark-tremor-content">
               <span>Category</span>
               <span>Amount / Share</span>
             </p>
             <List className="mt-2">
-              {expenses.map((item: any) => (
-                <ListItem key={item.name} className="space-x-6">
-                  <div className="flex items-center space-x-2.5 truncate">
-                    <span
-                      className={classNames(
-                        item.color,
-                        "w-1 h-4 shrink-0 rounded"
-                      )}
-                      aria-hidden={true}
-                    />
-                    <span className="truncate dark:text-dark-tremor-content-emphasis">
-                      {item.name}
-                    </span>
+              {isLoading ? (
+                <div className="flex flex-col justify-center animate-pulse gap-2 mt-4">
+                  <div className="flex items-center mt-1">
+                    <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-32"></div>
+                    <div className="w-32 main-button h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="font-medium tabular-nums text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                      {valueFormatter(item.amount)}
-                    </span>
-                    <span className="rounded-tremor-small bg-tremor-background-subtle px-1.5 py-0.5 text-tremor-label font-medium tabular-nums text-tremor-content-emphasis dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-emphasis">
-                      {item.share}
-                    </span>
+                  <Divider className="mt-2 mb-2" />
+
+                  <div className="flex items-center">
+                    <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-32"></div>
+                    <div className="w-32 h-2 main-button bg-gray-200 rounded-full dark:bg-gray-700"></div>
                   </div>
-                </ListItem>
-              ))}
+                  <Divider className="mt-2 mb-2" />
+
+                  <div className="flex items-center">
+                    <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-32"></div>
+                    <div className="w-32 h-2 main-button bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                  </div>
+                </div>
+              ) : (
+                expenses.map((item: any, index: number) => (
+                  <ListItem key={item.name} className="space-x-6">
+                    <div className="flex items-center space-x-2.5 truncate">
+                      <span
+                        className={classNames(
+                          item.color,
+                          "w-1 h-4 shrink-0 rounded"
+                        )}
+                        aria-hidden={true}
+                      />
+                      <span className="truncate dark:text-dark-tremor-content-emphasis">
+                        {item.name}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium tabular-nums text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                        {valueFormatter(item.amount)}
+                      </span>
+                      <span className="rounded-tremor-small bg-tremor-background-subtle px-1.5 py-0.5 text-tremor-label font-medium tabular-nums text-tremor-content-emphasis dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-emphasis">
+                        {item.share}
+                      </span>
+                    </div>
+                  </ListItem>
+                ))
+              )}
             </List>
           </Card>
         </Card>
