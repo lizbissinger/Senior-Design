@@ -64,6 +64,17 @@ import {
   RectangleGroupIcon,
 } from "@heroicons/react/24/solid";
 
+const SkeletonLoading = () => (
+  <div role="status">
+    {[...Array(1)].map((_, index) => (
+      <div>
+        <div className="animate-pulse h-3.5 bg-gray-300 rounded-full dark:bg-gray-700 max-w-full mb-2.5"></div>
+      </div>
+    ))}
+    <span className="sr-only">Loading...</span>
+  </div>
+);
+
 const Finance: React.FC = () => {
   const REPAIR = "Repair";
   const PAYROLL = "Payroll";
@@ -79,6 +90,16 @@ const Finance: React.FC = () => {
   const [trucks, setTrucks] = useState<TruckDetail[]>([]);
   const [date, setDate] = useState<DateRangePickerValue>();
   const [groupBy, setGroupBy] = useState("Driver");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, []);
 
   const valueFormatter = function (number: number) {
     return "$ " + new Intl.NumberFormat("us").format(number).toString();
@@ -499,60 +520,69 @@ const Finance: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {revenueTableData.map((revenue: any) => (
-                <TableRow key={revenue.key}>
-                  <TableCell>{revenue.date}</TableCell>
-                  <TableCell>{valueFormatter(revenue.revenue)}</TableCell>
-                  <TableCell>
-                    <Tooltip
-                      title={
-                        revenue.driverArr?.length > 1
-                          ? revenue.driverArr?.sort().toString()
-                          : null
-                      }
-                    >
-                      <div>
-                        {groupBy == "Driver" ? (
-                          <Badge
-                            size="md"
-                            className="type-badge rounded align-middle"
-                            icon={UserIcon}
-                            color={"#6686DC"}
-                          >
-                            {revenue.driver}
-                          </Badge>
-                        ) : (
-                          revenue.driver
-                        )}
-                      </div>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell>
-                    <Tooltip
-                      title={
-                        revenue.truckArr?.length > 1
-                          ? revenue.truckArr?.sort().toString()
-                          : null
-                      }
-                    >
-                      <div>
-                        {groupBy == "Truck" ? (
-                          <Badge
-                            size="md"
-                            className="type-badge rounded align-middle"
-                            icon={TruckIcon}
-                            color={"#6686DC"}
-                          >
-                            {revenue.truck}
-                          </Badge>
-                        ) : (
-                          revenue.truck
-                        )}
-                      </div>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {isLoading &&
+                [...Array(8)].map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell colSpan={4}>
+                      <SkeletonLoading />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              {!isLoading &&
+                revenueTableData.map((revenue: any) => (
+                  <TableRow key={revenue.key}>
+                    <TableCell>{revenue.date}</TableCell>
+                    <TableCell>{valueFormatter(revenue.revenue)}</TableCell>
+                    <TableCell>
+                      <Tooltip
+                        title={
+                          revenue.driverArr?.length > 1
+                            ? revenue.driverArr?.sort().toString()
+                            : null
+                        }
+                      >
+                        <div>
+                          {groupBy === "Driver" ? (
+                            <Badge
+                              size="md"
+                              className="type-badge rounded align-middle"
+                              icon={UserIcon}
+                              color={"#6686DC"}
+                            >
+                              {revenue.driver}
+                            </Badge>
+                          ) : (
+                            revenue.driver
+                          )}
+                        </div>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip
+                        title={
+                          revenue.truckArr?.length > 1
+                            ? revenue.truckArr?.sort().toString()
+                            : null
+                        }
+                      >
+                        <div>
+                          {groupBy === "Truck" ? (
+                            <Badge
+                              size="md"
+                              className="type-badge rounded align-middle"
+                              icon={TruckIcon}
+                              color={"#6686DC"}
+                            >
+                              {revenue.truck}
+                            </Badge>
+                          ) : (
+                            revenue.truck
+                          )}
+                        </div>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Card>
@@ -596,59 +626,72 @@ const Finance: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {expenseTableData.map((expense: any) => (
-                <TableRow key={expense._id}>
-                  <TableCell>
-                    <Button
-                      variant="light"
-                      onClick={() => {
-                        setEditingExpense(expense);
-                        setIsOpenExpenseDialog(true);
-                      }}
-                      className="edit-button text-[#779BFB] hover:text-[#6686DC] dark:text-[#6686DC] dark:hover:text-[#779BFB]"
-                    >
-                      <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      size="md"
-                      className="type-badge rounded align-middle"
-                      icon={
-                        expense.type == REPAIR
-                          ? WrenchIcon
-                          : expense.type == PAYROLL
-                          ? CurrencyDollarIcon
-                          : FunnelIcon
-                      }
-                      color={
-                        expense.type == REPAIR
-                          ? "cyan"
-                          : expense.type == PAYROLL
-                          ? "indigo"
-                          : "fuchsia"
-                      }
-                    >
-                      {expense.type}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {valueFormatter(expense.cost)}
-                  </TableCell>
-                  <TableCell>
-                    {new Date(expense.date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    {expense.truck ? <FontAwesomeIcon icon={faTruck} /> : null}
-                    {` ${expense.truck}`}
-                  </TableCell>
-                  <TableCell>
-                    {expense.driver ? <FontAwesomeIcon icon={faUser} /> : null}
-                    {` ${expense.driver}`}
-                  </TableCell>
-                  <TableCell>{expense.additionalName}</TableCell>
-                </TableRow>
-              ))}
+              {isLoading &&
+                [...Array(8)].map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell colSpan={7}>
+                      <SkeletonLoading />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              {!isLoading &&
+                expenseTableData.map((expense: any) => (
+                  <TableRow key={expense._id}>
+                    <TableCell>
+                      <Button
+                        variant="light"
+                        onClick={() => {
+                          setEditingExpense(expense);
+                          setIsOpenExpenseDialog(true);
+                        }}
+                        className="edit-button text-[#779BFB] hover:text-[#6686DC] dark:text-[#6686DC] dark:hover:text-[#779BFB]"
+                      >
+                        <FontAwesomeIcon icon={faPenAlt} /> {/* Edit Icon */}
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        size="md"
+                        className="type-badge rounded align-middle"
+                        icon={
+                          expense.type == REPAIR
+                            ? WrenchIcon
+                            : expense.type == PAYROLL
+                            ? CurrencyDollarIcon
+                            : FunnelIcon
+                        }
+                        color={
+                          expense.type == REPAIR
+                            ? "cyan"
+                            : expense.type == PAYROLL
+                            ? "indigo"
+                            : "fuchsia"
+                        }
+                      >
+                        {expense.type}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {valueFormatter(expense.cost)}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(expense.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      {expense.truck ? (
+                        <FontAwesomeIcon icon={faTruck} />
+                      ) : null}
+                      {` ${expense.truck}`}
+                    </TableCell>
+                    <TableCell>
+                      {expense.driver ? (
+                        <FontAwesomeIcon icon={faUser} />
+                      ) : null}
+                      {` ${expense.driver}`}
+                    </TableCell>
+                    <TableCell>{expense.additionalName}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Card>
