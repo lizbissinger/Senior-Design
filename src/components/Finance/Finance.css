@@ -1,3 +1,8 @@
 .type-badge p {
     margin-bottom: 0px;
 }
+
+.finance-table{
+    max-height: 600px;
+    overflow: auto;
+}
