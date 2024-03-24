@@ -379,7 +379,7 @@ const FleetManagement: React.FC = () => {
   return (
     <div className="fleet-management-container">
       <div>
-        <Dropdown className="main-button mb-3">
+        <Dropdown className="main-button">
           <Dropdown.Toggle className="!bg-[#779BFB] focus:!outline-none focus:!ring-0 !border-none hover:!bg-[#6686DC] dark:!bg-[#6686DC] dark:hover:!bg-[#779BFB] dark:!text-neutral-950">
             Add
           </Dropdown.Toggle>
