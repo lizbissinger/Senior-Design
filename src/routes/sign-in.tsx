@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SignIn, SignInButton, SignUp } from "@clerk/clerk-react";
+import { Button } from "@tremor/react";
 
 export default function SignInPage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -49,14 +50,6 @@ export default function SignInPage() {
   };
   return (
     <>
-      <div>
-        <button
-          className="text-sm ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
-          onClick={handleDemoLogin}
-        >
-          Click Here For Demo Login
-        </button>
-      </div>
       <section
         id="home"
         className={`${
@@ -68,12 +61,12 @@ export default function SignInPage() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "56vh",
+            height: "54vh",
           }}
         >
           <SignIn
             path="/login"
-            signUpUrl="/sign-up"
+            signUpUrl="/"
             afterSignInUrl={"dashboard/overview"}
             appearance={{
               elements: {
@@ -96,6 +89,15 @@ export default function SignInPage() {
             }}
           />
         </div>
+        <div>
+        <Button
+          variant="light"
+          className="mx-0"
+          onClick={handleDemoLogin}
+        >
+          Click Here For Demo Login
+        </Button>
+      </div>
         <div className="absolute right-0 top-0 z-[-1] opacity-30 lg:opacity-100">
           <svg
             width="450"
