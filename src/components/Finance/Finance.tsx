@@ -481,8 +481,8 @@ const Finance: React.FC = () => {
               </Select>
             </div>
           </div>
-          <Table className="mt-8">
-            <TableHead className="dark:bg-slate-900">
+          <Table className="mt-8 finance-table">
+            <TableHead className="sticky-header dark:bg-slate-900">
               <TableRow className="border-b border-tremor-border dark:border-dark-tremor-border">
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
                   Date
@@ -556,7 +556,7 @@ const Finance: React.FC = () => {
             </TableBody>
           </Table>
         </Card>
-        <Card className="max-h-svh overflow-auto">
+        <Card>
           <div className="sm:flex sm:items-center sm:justify-between sm:space-x-10">
             <div>
               <h3 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
@@ -571,8 +571,8 @@ const Finance: React.FC = () => {
               Add expense
             </button>
           </div>
-          <Table className="mt-8">
-            <TableHead>
+          <Table className="mt-8 finance-table">
+            <TableHead className="sticky-header">
               <TableRow className="border-b border-tremor-border dark:border-dark-tremor-border">
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800"></TableHeaderCell>
                 <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong dark:bg-gray-800">
