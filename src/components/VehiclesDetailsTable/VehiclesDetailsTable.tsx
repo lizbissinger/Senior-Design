@@ -22,6 +22,7 @@ import {
 } from "@tremor/react";
 import { Tab, TabGroup, TabList } from "@tremor/react";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
+import CustomPagination from "../Overview/CustomPagination";
 
 type VehiclesDetailsTableProps = {
   drivers: DriverDetail[];
@@ -144,6 +145,27 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
     );
   });
 
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const totalDriverPages = Math.ceil(filteredDrivers.length / itemsPerPage);
+  const totalTruckPages = Math.ceil(filteredTrucks.length / itemsPerPage);
+  const totalTrailerPages = Math.ceil(filteredTrailers.length / itemsPerPage);
+
+  const handlePageChange = (newPage: React.SetStateAction<number>) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleItemsPerPageChange = (
+    newItemsPerPage: React.SetStateAction<number>
+  ) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -191,7 +213,6 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
           <TabPanel>
             <div className="fleet-tables">
               <Card>
-                <Title>Drivers</Title>
                 <MultiSelect
                   onValueChange={handleDriverSelectionChange}
                   placeholder="Select Driver..."
@@ -225,66 +246,68 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredDrivers.map((driver, index) => (
-                      <TableRow key={index}>
-                        {isLoading ? (
-                          <>{/* <SkeletonLoading /> */}</>
-                        ) : (
-                          <>
-                            <TableCell>{driver.name}</TableCell>
-                            <TableCell>{driver.licenseNumber}</TableCell>
-                            <TableCell>{driver.phoneNumber}</TableCell>
-                            <TableCell>{driver.email}</TableCell>
-                            <TableCell className="relative">
-                              <button
-                                className="inline-flex items-center justify-center p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 focus:outline-none cursor-pointer"
-                                onClick={() => toggleDropdown(index)}
-                                aria-expanded={activeDropdownIndex === index}
-                                aria-controls={`driver-dropdown-${index}`}
-                              >
-                                <EllipsisHorizontalIcon className="w-6 h-6" />
-                              </button>
-                              {activeDropdownIndex === index && (
-                                <div
-                                  ref={dropdownRef}
-                                  id={`driver-dropdown-${index}`}
-                                  className="absolute z-10 w-40 bg-slate-50 dark:bg-slate-850 rounded-md shadow-lg dark:bg-gray-800 cursor-pointer"
+                    {filteredDrivers
+                      .slice(startIndex, endIndex)
+                      .map((driver, index) => (
+                        <TableRow key={index}>
+                          {isLoading ? (
+                            <>{/* <SkeletonLoading /> */}</>
+                          ) : (
+                            <>
+                              <TableCell>{driver.name}</TableCell>
+                              <TableCell>{driver.licenseNumber}</TableCell>
+                              <TableCell>{driver.phoneNumber}</TableCell>
+                              <TableCell>{driver.email}</TableCell>
+                              <TableCell className="relative">
+                                <button
+                                  className="inline-flex items-center justify-center p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 focus:outline-none cursor-pointer"
+                                  onClick={() => toggleDropdown(index)}
+                                  aria-expanded={activeDropdownIndex === index}
+                                  aria-controls={`driver-dropdown-${index}`}
                                 >
-                                  <ul className="mb-0">
-                                    <li
-                                      className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                      onClick={() => {
-                                        onEdit("driver", driver);
-                                        toggleDropdown(index);
-                                      }}
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faPenAlt}
-                                        className="mr-2"
-                                      />{" "}
-                                      Edit
-                                    </li>
-                                    <li
-                                      className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                      onClick={() => {
-                                        onDeleteDriver(driver, index);
-                                        toggleDropdown(index);
-                                      }}
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faTrash}
-                                        className="mr-2"
-                                      />{" "}
-                                      Delete
-                                    </li>
-                                  </ul>
-                                </div>
-                              )}
-                            </TableCell>
-                          </>
-                        )}
-                      </TableRow>
-                    ))}
+                                  <EllipsisHorizontalIcon className="w-6 h-6" />
+                                </button>
+                                {activeDropdownIndex === index && (
+                                  <div
+                                    ref={dropdownRef}
+                                    id={`driver-dropdown-${index}`}
+                                    className="absolute z-10 w-40 bg-slate-50 dark:bg-slate-850 rounded-md shadow-lg dark:bg-gray-800 cursor-pointer"
+                                  >
+                                    <ul className="mb-0">
+                                      <li
+                                        className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={() => {
+                                          onEdit("driver", driver);
+                                          toggleDropdown(index);
+                                        }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faPenAlt}
+                                          className="mr-2"
+                                        />{" "}
+                                        Edit
+                                      </li>
+                                      <li
+                                        className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={() => {
+                                          onDeleteDriver(driver, index);
+                                          toggleDropdown(index);
+                                        }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faTrash}
+                                          className="mr-2"
+                                        />{" "}
+                                        Delete
+                                      </li>
+                                    </ul>
+                                  </div>
+                                )}
+                              </TableCell>
+                            </>
+                          )}
+                        </TableRow>
+                      ))}
                     {isLoading &&
                       [...Array(8)].map((_, index) => (
                         <TableRow key={index}>
@@ -295,13 +318,62 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                       ))}
                   </TableBody>
                 </Table>
+                <Divider className="mb-0 mt-0" />
+                <nav
+                  className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0 pt-4 pl-1"
+                  aria-label="Table navigation"
+                >
+                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    <label className="text-sm font-normal text-gray-500 dark:text-gray-400 bg-transparent mr-2">
+                      Drivers per page
+                    </label>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) =>
+                        handleItemsPerPageChange(Number(e.target.value))
+                      }
+                      className="text-sm dark:text-white dark:bg-gray-800 dark:border-gray-400 bg-transparent border-b border-gray-500"
+                    >
+                      <option
+                        value={10}
+                        className=" dark:text-white bg-transparent text-gray-900"
+                      >
+                        10
+                      </option>
+                      <option
+                        value={20}
+                        className="dark:bg-gray-800 dark:text-white bg-transparent text-gray-900"
+                      >
+                        20
+                      </option>
+                      <option
+                        value={50}
+                        className="dark:bg-gray-800 dark:text-white bg-transparent text-gray-900"
+                      >
+                        50
+                      </option>
+                    </select>
+                    <span className="mx-1 font-semibold text-gray-900 dark:text-white">
+                      {startIndex + 1}-
+                      {Math.min(endIndex, filteredDrivers.length)}
+                    </span>
+                    of
+                    <span className="mx-1 font-semibold text-gray-900 dark:text-white">
+                      {filteredDrivers.length}
+                    </span>
+                  </span>
+                  <CustomPagination
+                    currentPage={currentPage}
+                    totalPages={totalDriverPages}
+                    handlePageChange={handlePageChange}
+                  />
+                </nav>
               </Card>
             </div>
           </TabPanel>
           <TabPanel>
             <div className="fleet-tables">
               <Card>
-                <Title>Trucks</Title>
                 <MultiSelect
                   onValueChange={handleTruckSelectionChange}
                   placeholder="Select Truck..."
@@ -337,72 +409,123 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredTrucks.map((truck, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{truck.truckNumber}</TableCell>
-                        <TableCell>{truck.make}</TableCell>
-                        <TableCell>{truck.model}</TableCell>
-                        <TableCell>{truck.year}</TableCell>
-                        <TableCell>{truck.vin}</TableCell>
-                        <TableCell>
-                          <div className="relative">
-                            <button
-                              className="inline-flex items-center justify-center p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 focus:outline-none cursor-pointer"
-                              onClick={() => toggleDropdown(index)}
-                              aria-expanded={activeDropdownIndex === index}
-                              aria-controls={`truck-dropdown-${index}`}
-                            >
-                              <EllipsisHorizontalIcon className="w-6 h-6" />
-                            </button>
-                            {activeDropdownIndex === index && (
-                              <div
-                                ref={dropdownRef}
-                                id={`truck-dropdown-${index}`}
-                                className="absolute z-10 w-40 bg-slate-50 dark:bg-slate-850 rounded-md shadow-lg dark:bg-gray-800 cursor-pointer"
+                    {filteredTrucks
+                      .slice(startIndex, endIndex)
+                      .map((truck, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{truck.truckNumber}</TableCell>
+                          <TableCell>{truck.make}</TableCell>
+                          <TableCell>{truck.model}</TableCell>
+                          <TableCell>{truck.year}</TableCell>
+                          <TableCell>{truck.vin}</TableCell>
+                          <TableCell>
+                            <div className="relative">
+                              <button
+                                className="inline-flex items-center justify-center p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 focus:outline-none cursor-pointer"
+                                onClick={() => toggleDropdown(index)}
+                                aria-expanded={activeDropdownIndex === index}
+                                aria-controls={`truck-dropdown-${index}`}
                               >
-                                <ul className="mb-0">
-                                  <li
-                                    className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    onClick={() => {
-                                      onEdit("truck", truck);
-                                      toggleDropdown(index);
-                                    }}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faPenAlt}
-                                      className="mr-2"
-                                    />{" "}
-                                    Edit
-                                  </li>
-                                  <li
-                                    className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    onClick={() => {
-                                      onDeleteTruck(truck, index);
-                                      toggleDropdown(index);
-                                    }}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faTrash}
-                                      className="mr-2"
-                                    />{" "}
-                                    Delete
-                                  </li>
-                                </ul>
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                                <EllipsisHorizontalIcon className="w-6 h-6" />
+                              </button>
+                              {activeDropdownIndex === index && (
+                                <div
+                                  ref={dropdownRef}
+                                  id={`truck-dropdown-${index}`}
+                                  className="absolute z-10 w-40 bg-slate-50 dark:bg-slate-850 rounded-md shadow-lg dark:bg-gray-800 cursor-pointer"
+                                >
+                                  <ul className="mb-0">
+                                    <li
+                                      className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                      onClick={() => {
+                                        onEdit("truck", truck);
+                                        toggleDropdown(index);
+                                      }}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faPenAlt}
+                                        className="mr-2"
+                                      />{" "}
+                                      Edit
+                                    </li>
+                                    <li
+                                      className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                      onClick={() => {
+                                        onDeleteTruck(truck, index);
+                                        toggleDropdown(index);
+                                      }}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faTrash}
+                                        className="mr-2"
+                                      />{" "}
+                                      Delete
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
+                <Divider className="mb-0 mt-0" />
+                <nav
+                  className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0 pt-4 pl-1"
+                  aria-label="Table navigation"
+                >
+                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    <label className="text-sm font-normal text-gray-500 dark:text-gray-400 bg-transparent mr-2">
+                      Trucks per page
+                    </label>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) =>
+                        handleItemsPerPageChange(Number(e.target.value))
+                      }
+                      className="text-sm dark:text-white dark:bg-gray-800 dark:border-gray-400 bg-transparent border-b border-gray-500"
+                    >
+                      <option
+                        value={10}
+                        className=" dark:text-white bg-transparent text-gray-900"
+                      >
+                        10
+                      </option>
+                      <option
+                        value={20}
+                        className="dark:bg-gray-800 dark:text-white bg-transparent text-gray-900"
+                      >
+                        20
+                      </option>
+                      <option
+                        value={50}
+                        className="dark:bg-gray-800 dark:text-white bg-transparent text-gray-900"
+                      >
+                        50
+                      </option>
+                    </select>
+                    <span className="mx-1 font-semibold text-gray-900 dark:text-white">
+                      {startIndex + 1}-
+                      {Math.min(endIndex, filteredTrucks.length)}
+                    </span>
+                    of
+                    <span className="mx-1 font-semibold text-gray-900 dark:text-white">
+                      {filteredTrucks.length}
+                    </span>
+                  </span>
+                  <CustomPagination
+                    currentPage={currentPage}
+                    totalPages={totalTruckPages}
+                    handlePageChange={handlePageChange}
+                  />
+                </nav>
               </Card>
             </div>
           </TabPanel>
           <TabPanel>
             <div className="fleet-tables">
               <Card>
-                <Title>Trailers</Title>
                 <MultiSelect
                   onValueChange={handleTrailerSelectionChange}
                   placeholder="Select Trailer..."
@@ -438,65 +561,117 @@ const VehiclesDetailsTable: React.FC<VehiclesDetailsTableProps> = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredTrailers.map((trailer, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{trailer.trailerNumber}</TableCell>
-                        <TableCell>{trailer.make}</TableCell>
-                        <TableCell>{trailer.model}</TableCell>
-                        <TableCell>{trailer.year}</TableCell>
-                        <TableCell>{trailer.vin}</TableCell>
-                        <TableCell>
-                          <div className="relative">
-                            <button
-                              className="relative inline-flex items-center justify-center p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 focus:outline-none cursor-pointer"
-                              onClick={() => toggleDropdown(index)}
-                              aria-expanded={activeDropdownIndex === index}
-                              aria-controls={`trailer-dropdown-${index}`}
-                            >
-                              <EllipsisHorizontalIcon className="w-6 h-6" />
-                            </button>
-                            {activeDropdownIndex === index && (
-                              <div
-                                ref={dropdownRef}
-                                id={`trailer-dropdown-${index}`}
-                                className="absolute z-10 w-40 bg-slate-50 dark:bg-slate-850 rounded-md shadow-lg dark:bg-gray-800 cursor-pointer"
+                    {filteredTrailers
+                      .slice(startIndex, endIndex)
+                      .map((trailer, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{trailer.trailerNumber}</TableCell>
+                          <TableCell>{trailer.make}</TableCell>
+                          <TableCell>{trailer.model}</TableCell>
+                          <TableCell>{trailer.year}</TableCell>
+                          <TableCell>{trailer.vin}</TableCell>
+                          <TableCell>
+                            <div className="relative">
+                              <button
+                                className="relative inline-flex items-center justify-center p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 focus:outline-none cursor-pointer"
+                                onClick={() => toggleDropdown(index)}
+                                aria-expanded={activeDropdownIndex === index}
+                                aria-controls={`trailer-dropdown-${index}`}
                               >
-                                <ul className="mb-0">
-                                  <li
-                                    className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    onClick={() => {
-                                      onEdit("trailer", trailer);
-                                      toggleDropdown(index);
-                                    }}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faPenAlt}
-                                      className="mr-2"
-                                    />{" "}
-                                    Edit
-                                  </li>
-                                  <li
-                                    className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    onClick={() => {
-                                      onDeleteTrailer(trailer, index);
-                                      toggleDropdown(index);
-                                    }}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faTrash}
-                                      className="mr-2"
-                                    />{" "}
-                                    Delete
-                                  </li>
-                                </ul>
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                                <EllipsisHorizontalIcon className="w-6 h-6" />
+                              </button>
+                              {activeDropdownIndex === index && (
+                                <div
+                                  ref={dropdownRef}
+                                  id={`trailer-dropdown-${index}`}
+                                  className="absolute z-10 w-40 bg-slate-50 dark:bg-slate-850 rounded-md shadow-lg dark:bg-gray-800 cursor-pointer"
+                                >
+                                  <ul className="mb-0">
+                                    <li
+                                      className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                      onClick={() => {
+                                        onEdit("trailer", trailer);
+                                        toggleDropdown(index);
+                                      }}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faPenAlt}
+                                        className="mr-2"
+                                      />{" "}
+                                      Edit
+                                    </li>
+                                    <li
+                                      className="block px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                      onClick={() => {
+                                        onDeleteTrailer(trailer, index);
+                                        toggleDropdown(index);
+                                      }}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faTrash}
+                                        className="mr-2"
+                                      />{" "}
+                                      Delete
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
+                <Divider className="mb-0 mt-0" />
+                <nav
+                  className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0 pt-4 pl-1"
+                  aria-label="Table navigation"
+                >
+                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    <label className="text-sm font-normal text-gray-500 dark:text-gray-400 bg-transparent mr-2">
+                      Trailers per page
+                    </label>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) =>
+                        handleItemsPerPageChange(Number(e.target.value))
+                      }
+                      className="text-sm dark:text-white dark:bg-gray-800 dark:border-gray-400 bg-transparent border-b border-gray-500"
+                    >
+                      <option
+                        value={10}
+                        className=" dark:text-white bg-transparent text-gray-900"
+                      >
+                        10
+                      </option>
+                      <option
+                        value={20}
+                        className="dark:bg-gray-800 dark:text-white bg-transparent text-gray-900"
+                      >
+                        20
+                      </option>
+                      <option
+                        value={50}
+                        className="dark:bg-gray-800 dark:text-white bg-transparent text-gray-900"
+                      >
+                        50
+                      </option>
+                    </select>
+                    <span className="mx-1 font-semibold text-gray-900 dark:text-white">
+                      {startIndex + 1}-
+                      {Math.min(endIndex, filteredTrailers.length)}
+                    </span>
+                    of
+                    <span className="mx-1 font-semibold text-gray-900 dark:text-white">
+                      {filteredTrailers.length}
+                    </span>
+                  </span>
+                  <CustomPagination
+                    currentPage={currentPage}
+                    totalPages={totalTrailerPages}
+                    handlePageChange={handlePageChange}
+                  />
+                </nav>
               </Card>
             </div>
           </TabPanel>
