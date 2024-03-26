@@ -26,6 +26,12 @@ const menuData: Menu[] = [
     path: "/about",
     newTab: false,
   },
+  {
+    id: 3,
+    title: "Poster",
+    path: "/poster",
+    newTab: false,
+  },
 ];
 
 const Header = () => {
