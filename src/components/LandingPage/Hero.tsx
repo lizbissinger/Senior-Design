@@ -14,10 +14,10 @@ const Hero = () => {
                 className="wow fadeInUp mx-auto max-w-[900px] text-center"
                 data-wow-delay=".2s"
               >
-                <h2 className="text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
+                <h2 className="text-3xl font-bold leading-tight text-neutral-950 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:text-gray-300 sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
                   Revolutionizing Logistics Management
                 </h2>
-                <p className="dark:text-body-color-dark mb-12 text-base !leading-relaxed text-body-color sm:text-lg md:text-xl">
+                <p className="dark:text-body-color-dark mb-12 text-base !leading-relaxed text-neutral-950 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:text-gray-400 sm:text-lg md:text-xl">
                   FleetWave is a cutting-edge web-based application designed to transform the logistics industry. This platform serves as a comprehensive solution for carriers, addressing the challenges of load management, truck tracking, and driver coordination.
                 </p>
                 <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
