@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Disclosure, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Tab, TabGroup } from "@tremor/react";
+import DarkModeSwitcher from "../DarkModeSwitcher";
 
 export type Menu = {
   id: number;
@@ -25,6 +26,12 @@ const menuData: Menu[] = [
     path: "/about",
     newTab: false,
   },
+  {
+    id: 3,
+    title: "Poster",
+    path: "/poster",
+    newTab: false,
+  },
 ];
 
 const Header = () => {
@@ -39,21 +46,6 @@ const Header = () => {
   const navbarToggleHandler = () => {
     setNavbarOpen(!navbarOpen);
   };
-
-  const [sticky, setSticky] = useState(false);
-  const handleStickyNavbar = () => {
-    if (window.scrollY >= 80) {
-      setSticky(true);
-    } else {
-      setSticky(false);
-    }
-  };
-  useEffect(() => {
-    window.addEventListener("scroll", handleStickyNavbar);
-    return () => {
-      window.removeEventListener("scroll", handleStickyNavbar);
-    };
-  }, []);
 
   const [openIndex, setOpenIndex] = useState(-1);
   const handleSubmenu = (index: SetStateAction<number>) => {
@@ -70,9 +62,9 @@ const Header = () => {
     <>
       <Disclosure
         as="nav"
-        className={`header fixed top-0 left-1/2 transform -translate-x-1/2 z-40 flex-end w-full items-center ${
-          sticky
-            ? "dark:bg-gray-dark dark:shadow-sticky-dark bg-white bg-opacity-80 shadow-sticky backdrop-blur-sm"
+        className={`header fixed top-0 left-1/2 transform -translate-x-1/2 z-40 w-9/12 items-center ${
+          "sticky-header"
+            ? "dark:bg-gray-dark dark:shadow-sticky-dark bg-transparent bg-opacity-80 shadow-sticky-header"
             : "absolute bg-transparent"
         } sm:justify-center`}
       >
@@ -95,7 +87,7 @@ const Header = () => {
                   <div className="flex flex-shrink-0 items-center">
                     <h1 className="h-8 w-auto select-none lg:ml-1 lg:mb-3">
                       <Link to="/" className={`header-logo block w-full`}>
-                        <h1 className="items-center font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text md:leading-tight">
+                        <h1 className="relative inline-flex items-center justify-center rounded-md text-neutral-950 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:text-white">
                           FLEETWAVE
                         </h1>
                       </Link>
@@ -109,9 +101,9 @@ const Header = () => {
                           onClick={() => navigate(menuItem.path || "")}
                           className={`${
                             menuItem.path === window.location.pathname
-                              ? "text-blue-500"
+                              ? "text-blue-500 dark:text-blue-500"
                               : "hover:text-blue-500"
-                          } rounded-md px-3 py-2 text-50 font-medium focus:outline-none`}
+                          } rounded-md px-3 py-2 dark:hover:text-blue-500 dark:text-white font-medium focus:outline-none`}
                         >
                           {menuItem.title}
                         </button>
@@ -119,6 +111,7 @@ const Header = () => {
                     </div>
                   </div>
                 </div>
+                <DarkModeSwitcher />
                 <Disclosure.Button className="text-sm ">
                   <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <Link

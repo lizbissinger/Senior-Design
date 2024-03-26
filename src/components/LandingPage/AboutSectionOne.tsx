@@ -1,5 +1,5 @@
 import React from "react";
-import SectionTitle from "../Common/SectionTitle";
+import SectionTitle from "./SectionTitle";
 
 const checkIcon = (
   <svg width="16" height="13" viewBox="0 0 16 13" className="fill-current">
@@ -26,7 +26,7 @@ const AboutSectionOne = () => {
       <div className="container">
         <div className="border-b border-body-color/[.15] pb-16 dark:border-white/[.15] md:pb-20 lg:pb-28">
           <div className="-mx-4 flex flex-wrap items-center">
-            <div className="w-full px-4 lg:w-1/2">
+            <div className="w-full px-4 lg:w-1/2 text-neutral-950 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:text-gray-500">
               <SectionTitle
                 title="Empowering Carriers with a Comprehensive Web-Based Solution."
                 paragraph="Our web-based application is designed to empower carriers with a wide range of features, including real-time tracking of loads, driver information, load status updates, year-end reports for tax compliance, revenue and expense reports, seamless invoice generation for efficient broker payments, and a load aging history. Small business carriers will have the tools they need to streamline their operations and stay on top of critical information."
@@ -38,7 +38,7 @@ const AboutSectionOne = () => {
                 data-wow-delay=".15s"
               ></div>
             </div>
-            <div className="w-full px-4 lg:w-1/2">
+            <div className="w-full px-4 lg:w-1/2 text-neutral-950 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:text-gray-300">
               <div className="mx-[-12px] flex flex-wrap">
                 <div className="w-full px-3 sm:w-1/2 lg:w-full xl:w-1/2">
                   <List text="Robust application development" />
