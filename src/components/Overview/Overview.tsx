@@ -376,13 +376,10 @@ const Overview: React.FC = () => {
   };
 
   const handleEditClick = (index: number) => {
-    // Calculate the index of the load in the original loadDetails array
     const originalIndex = (currentPage - 1) * itemsPerPage + index;
     
-    // Access the selected load using the original index
-    const selectedLoad = loadDetails[originalIndex];
+    const selectedLoad = filteredLoads[originalIndex];
     
-    // Set the newLoad state with the selected load
     setEditableIndex(originalIndex);
     setFormMode("edit");
     setNewLoad({ ...selectedLoad });
