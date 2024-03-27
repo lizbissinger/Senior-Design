@@ -762,11 +762,19 @@ const Overview: React.FC = () => {
                             Driver
                             <span className="text-red-500">*</span>
                           </label>
-                          <DriverDropdown
-                            driverList={drivers}
-                            selectedDriver={newLoad.driverObject}
-                            onSelectDriver={handleDriverSelect}
-                          />
+                          {formMode === "edit" && editableIndex !== null ? (
+                            <TextInput
+                              type="text"
+                              value={newLoad.driverObject}
+                              disabled
+                            />
+                          ) : (
+                            <DriverDropdown
+                              driverList={drivers}
+                              selectedDriver={newLoad.driverObject}
+                              onSelectDriver={handleDriverSelect}
+                            />
+                          )}
                         </div>
                         <div className="col-span-full sm:col-span-3">
                           <label
@@ -776,11 +784,19 @@ const Overview: React.FC = () => {
                             Truck
                             <span className="text-red-500">*</span>
                           </label>
-                          <TruckDropdown
-                            truckList={trucks}
-                            selectedTruck={newLoad.truckObject}
-                            onSelectTruck={handleTruckSelect}
-                          />
+                          {formMode === "edit" && editableIndex !== null ? (
+                            <TextInput
+                              type="text"
+                              value={newLoad.truckObject}
+                              disabled
+                            />
+                          ) : (
+                            <TruckDropdown
+                              truckList={trucks}
+                              selectedTruck={newLoad.truckObject}
+                              onSelectTruck={handleTruckSelect}
+                            />
+                          )}
                         </div>
                         <div className="col-span-full sm:col-span-3">
                           <label
@@ -790,11 +806,19 @@ const Overview: React.FC = () => {
                             Trailer
                             <span className="text-red-500">*</span>
                           </label>
-                          <TrailerDropdown
-                            trailerList={trailers}
-                            selectedTrailer={newLoad.trailerObject}
-                            onSelectTrailer={handleTrailerSelect}
-                          />
+                          {formMode === "edit" && editableIndex !== null ? (
+                            <TextInput
+                              type="text"
+                              value={newLoad.trailerObject}
+                              disabled
+                            />
+                          ) : (
+                            <TrailerDropdown
+                              trailerList={trailers}
+                              selectedTrailer={newLoad.trailerObject}
+                              onSelectTrailer={handleTrailerSelect}
+                            />
+                          )}
                         </div>
                         <div className="col-span-full sm:col-span-3">
                           <label
