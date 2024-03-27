@@ -3,6 +3,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { LoadDetail } from "../Types/types";
 import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
+import FleetWaveLogo from "./FleetWaveLogo.png";
 
 interface InvoiceGeneratorProps {
   loadDetails: LoadDetail[];
@@ -16,7 +17,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
 
     doc.setTextColor(0, 0, 0);
 
-    doc.text("LOGO?", 14, 15);
+    doc.addImage(FleetWaveLogo, "PNG", 14, 12, 40, 5);
 
     doc.setTextColor(75, 75, 75);
     doc.setFontSize(30);
@@ -26,15 +27,14 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({ loadDetails }) => {
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(11);
 
-    doc.text("FLEETWAVE", 14, 30);
-    doc.text("2600 Clifton Ave.", 14, 35);
-    doc.text("Cincinnati, OH 45221", 14, 40);
-    doc.text("513-556-0000", 14, 45);
+    doc.text("2600 Clifton Ave.", 14, 23);
+    doc.text("Cincinnati, OH 45221", 14, 28);
+    doc.text("513-556-0000", 14, 33);
 
-    doc.text(`Bill To: ${load.brokerInfo}`, 14, 55);
-    doc.text("BROKER", 14, 60);
-    doc.text("Cincinnati, OH XXXXX", 14, 65);
-    doc.text("513-XXX-XXXX", 14, 70);
+    doc.text(`Bill To: ${load.brokerInfo}`, 14, 46);
+    doc.text("BROKER", 14, 51);
+    doc.text("Cincinnati, OH XXXXX", 14, 56);
+    doc.text("513-XXX-XXXX", 14, 61);
 
     const today = new Date();
     const formattedDate = `${
