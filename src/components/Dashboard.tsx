@@ -46,14 +46,14 @@ const Dashboard: React.FC = () => {
       current: activeTab === "fleet",
     },
     {
-      name: "Reports",
-      href: "/dashboard/reports",
-      current: activeTab === "reports",
-    },
-    {
       name: "Finance",
       href: "/dashboard/finance",
       current: activeTab === "finance",
+    },
+    {
+      name: "Reports",
+      href: "/dashboard/reports",
+      current: activeTab === "reports",
     },
   ];
 
