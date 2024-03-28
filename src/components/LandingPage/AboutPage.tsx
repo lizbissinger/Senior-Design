@@ -7,7 +7,7 @@ const AboutPage = () => {
   return (
     <>
       <div className="min-h-screen">
-        <Header />
+        <Header currentPath={"/about"} />
         <Breadcrumb />
         <AboutSectionOne />
       </div>
