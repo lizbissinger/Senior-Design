@@ -8,7 +8,7 @@ const PosterPage = () => {
   return (
     <>
       <div className="min-h-screen">
-        <Header />
+        <Header currentPath={"/poster"} />
         <Breadcrumb />
         <PosterImg />
       </div>

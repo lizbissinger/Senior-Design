@@ -13,6 +13,10 @@ export type Menu = {
   submenu?: Menu[];
 };
 
+interface HeaderProps {
+  currentPath: string;
+}
+
 const menuData: Menu[] = [
   {
     id: 1,
@@ -34,7 +38,7 @@ const menuData: Menu[] = [
   },
 ];
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = ({ currentPath }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -55,8 +59,6 @@ const Header = () => {
       setOpenIndex(index);
     }
   };
-
-  const usePathName = "/";
 
   return (
     <>
@@ -100,7 +102,7 @@ const Header = () => {
                           key={menuItem.id}
                           onClick={() => navigate(menuItem.path || "")}
                           className={`${
-                            menuItem.path === window.location.pathname
+                            menuItem.path === currentPath
                               ? "text-blue-500 dark:text-blue-500"
                               : "hover:text-blue-500"
                           } rounded-md px-3 py-2 dark:hover:text-blue-500 dark:text-white font-medium focus:outline-none`}
@@ -140,7 +142,7 @@ const Header = () => {
                       key={menuItem.id}
                       onClick={() => navigate(menuItem.path || "")}
                       className={`${
-                        menuItem.path === window.location.pathname
+                        menuItem.path === currentPath
                           ? "bg text-neutral-950 no-underline"
                           : "no-underline text-neutral-950 hover:bg-[#6686DC] hover:no-underline hover:text-neutral-950"
                       } rounded-md px-3 py-2 text-base font-medium focus:outline-none`}

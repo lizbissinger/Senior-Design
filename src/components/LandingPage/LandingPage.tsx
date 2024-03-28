@@ -24,7 +24,7 @@ const LandingPage: React.FC = () => {
   return (
     <>
       <div className="min-h-screen">
-        <Header />
+        <Header currentPath={"/"} />
         <Hero />
         <Features />
         <AboutSectionOne />
