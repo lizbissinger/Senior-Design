@@ -23,10 +23,12 @@ const LandingPage: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <Hero />
-      <Features />
-      <AboutSectionOne />
+      <div className="min-h-screen">
+        <Header />
+        <Hero />
+        <Features />
+        <AboutSectionOne />
+      </div>
     </>
   );
 };

@@ -7,9 +7,11 @@ import PosterImg from "./PosterImg";
 const PosterPage = () => {
   return (
     <>
-      <Header />
-      <Breadcrumb />
-      <PosterImg />
+      <div className="min-h-screen">
+        <Header />
+        <Breadcrumb />
+        <PosterImg />
+      </div>
     </>
   );
 };

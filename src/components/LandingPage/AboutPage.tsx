@@ -6,9 +6,11 @@ import Header from "./LandingHeader";
 const AboutPage = () => {
   return (
     <>
-      <Header />
-      <Breadcrumb />
-      <AboutSectionOne />
+      <div className="min-h-screen">
+        <Header />
+        <Breadcrumb />
+        <AboutSectionOne />
+      </div>
     </>
   );
 };
