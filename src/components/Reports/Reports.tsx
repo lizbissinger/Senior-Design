@@ -348,14 +348,11 @@ const Reports: React.FC = () => {
         </Col>
         <Card className="p-1.5 bg-gray-50 rounded-xl shadow-xl dark:shadow-slate-950 dark:shadow-xl">
           <Card className="rounded-md min-h-full">
-            <h3 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              Total expenses by category
-            </h3>
-            <div className="h-2"></div>
+            <Title>Total expenses by category</Title>
             {isLoading ? (
               <div
                 role="status"
-                className="flex items-center justify-center mt-4 mx-auto h-40 w-40 bg-gray-300 rounded-full animate-pulse dark:bg-gray-700"
+                className="flex items-center justify-center mt-16 mx-auto h-52 w-52 bg-gray-300 rounded-full animate-pulse dark:bg-gray-700"
               >
                 <ChartPieIcon
                   className="w-10 h-10 text-gray-200 dark:text-gray-600"
@@ -365,7 +362,7 @@ const Reports: React.FC = () => {
               </div>
             ) : (
               <DonutChart
-                className="mt-8"
+                className="mt-16 h-52"
                 data={expenses}
                 category="amount"
                 index="name"
@@ -374,7 +371,6 @@ const Reports: React.FC = () => {
                 colors={["cyan", "#6686DC", "fuchsia"]}
               />
             )}
-            <div className="h-10"></div>
             <p className="mt-8 flex items-center justify-between text-tremor-label text-tremor-content dark:text-dark-tremor-content">
               <span>Category</span>
               <span>Amount / Share</span>
@@ -406,7 +402,7 @@ const Reports: React.FC = () => {
                       <span
                         className={classNames(
                           item.color,
-                          "w-1 h-4 shrink-0 rounded"
+                          "w-1 h-5 shrink-0 rounded"
                         )}
                         aria-hidden={true}
                       />
