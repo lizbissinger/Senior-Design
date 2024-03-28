@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./Finance.css";
 import {
   Card,
@@ -63,6 +63,7 @@ import {
   TruckIcon,
   RectangleGroupIcon,
 } from "@heroicons/react/24/solid";
+import { useSpring, animated } from "react-spring";
 
 const SkeletonLoading = () => (
   <div role="status">
@@ -82,6 +83,7 @@ const Finance: React.FC = () => {
   const [allExpenses, setAllExpenses] = useState<Object[]>([]);
   const [expenseTableData, setExpenseTableData] = useState<Object[]>([]);
   const [revenueTableData, setRevenueTableData] = useState<Object[]>([]);
+  const [revenueTotal, setRevenueTotal] = useState<number>(0);
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
   const [editingExpense, setEditingExpense] = useState<any | null>(null);
   const [driver, setDriver] = useState("");
@@ -91,6 +93,7 @@ const Finance: React.FC = () => {
   const [date, setDate] = useState<DateRangePickerValue>();
   const [groupBy, setGroupBy] = useState("Driver");
   const [isLoading, setIsLoading] = useState(true);
+  const previousRevenueTotalRef = useRef(revenueTotal);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -145,6 +148,12 @@ const Finance: React.FC = () => {
           );
         }
         setRevenueTableData(revenueData);
+        let total = 0;
+        revenueData.map((revenue: any) => {
+          total += Number.parseInt(revenue.revenue);
+        });
+        previousRevenueTotalRef.current = revenueTotal;
+        setRevenueTotal(total);
       }
     } catch (error) {}
   };
@@ -350,6 +359,24 @@ const Finance: React.FC = () => {
     setEditingExpense(null);
   };
 
+  function AnimatedNumber({ n = 0 }) {
+    const { number } = useSpring({
+      from: { number: previousRevenueTotalRef.current },
+      number: n,
+    });
+    return (
+      <animated.div>
+        {number.to(
+          (n) =>
+            "$ " +
+            new Intl.NumberFormat("us")
+              .format(parseInt(n.toFixed(0)))
+              .toString()
+        )}
+      </animated.div>
+    );
+  }
+
   useEffect(() => {
     fetchExpenseData();
     fetchAllDrivers();
@@ -479,9 +506,18 @@ const Finance: React.FC = () => {
         <Card>
           <div className="sm:flex sm:items-center sm:justify-between sm:space-x-10">
             <div>
-              <h3 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              <h3 className="text-xl text-tremor-content-strong dark:text-dark-tremor-content-strong">
                 Revenue
               </h3>
+              <p className="mb-0 text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
+                {isLoading ? (
+                  <div className="h-8">
+                    <SkeletonLoading />
+                  </div>
+                ) : (
+                  <AnimatedNumber n={revenueTotal} />
+                )}
+              </p>
             </div>
             <div className="mt-4 mb-0.5 max-w-sm space-y-6">
               <Select
