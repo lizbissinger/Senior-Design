@@ -5,7 +5,7 @@ const Breadcrumb = ({
 }) => {
   return (
     <>
-      <section className="relative z-10 overflow pt-6 lg:pt-[150px]">
+      <section className="relative z-10 overflow pt-6 lg:pt-[100px]">
       
         <div>
           <span className="absolute left-0 top-0 z-[-1]">

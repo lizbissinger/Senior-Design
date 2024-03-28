@@ -7,9 +7,10 @@ import FleetManagement from "./components/FleetManagement/FleetManagement";
 import Reports from "./components/Reports/Reports";
 import SignInPage from "./routes/sign-in";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
-import LandingPage from "./components/Common/LandingPage";
-import AboutPage from "./components/Common/AboutPage";
+import LandingPage from "./components/LandingPage/LandingPage";
+import AboutPage from "./components/LandingPage/AboutPage";
 import { Navigate } from "react-router-dom";
+import PosterPage from "./components/LandingPage/PosterPage";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/poster" element={<PosterPage />} />
             <Route path="/login" element={<SignInPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
