@@ -82,6 +82,7 @@ const Finance: React.FC = () => {
   const FUEL = "Fuel";
   const [allExpenses, setAllExpenses] = useState<Object[]>([]);
   const [expenseTableData, setExpenseTableData] = useState<Object[]>([]);
+  const [expenseTotal, setExpenseTotal] = useState<number>(0);
   const [revenueTableData, setRevenueTableData] = useState<Object[]>([]);
   const [revenueTotal, setRevenueTotal] = useState<number>(0);
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
@@ -93,7 +94,6 @@ const Finance: React.FC = () => {
   const [date, setDate] = useState<DateRangePickerValue>();
   const [groupBy, setGroupBy] = useState("Driver");
   const [isLoading, setIsLoading] = useState(true);
-  const previousRevenueTotalRef = useRef(revenueTotal);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -152,7 +152,6 @@ const Finance: React.FC = () => {
         revenueData.map((revenue: any) => {
           total += Number.parseInt(revenue.revenue);
         });
-        previousRevenueTotalRef.current = revenueTotal;
         setRevenueTotal(total);
       }
     } catch (error) {}
@@ -359,24 +358,6 @@ const Finance: React.FC = () => {
     setEditingExpense(null);
   };
 
-  function AnimatedNumber({ n = 0 }) {
-    const { number } = useSpring({
-      from: { number: previousRevenueTotalRef.current },
-      number: n,
-    });
-    return (
-      <animated.div>
-        {number.to(
-          (n) =>
-            "$ " +
-            new Intl.NumberFormat("us")
-              .format(parseInt(n.toFixed(0)))
-              .toString()
-        )}
-      </animated.div>
-    );
-  }
-
   useEffect(() => {
     fetchExpenseData();
     fetchAllDrivers();
@@ -459,6 +440,14 @@ const Finance: React.FC = () => {
     fetchRevenueData();
   }, [driver, truck, date, groupBy]);
 
+  useEffect(() => {
+    let total = 0;
+    expenseTableData.map((expense: any) => {
+      total += Number.parseInt(expense.cost);
+    });
+    setExpenseTotal(total);
+  }, [expenseTableData]);
+
   return (
     <div>
       <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
@@ -515,7 +504,7 @@ const Finance: React.FC = () => {
                     <SkeletonLoading />
                   </div>
                 ) : (
-                  <AnimatedNumber n={revenueTotal} />
+                  valueFormatter(revenueTotal)
                 )}
               </p>
             </div>
@@ -625,9 +614,18 @@ const Finance: React.FC = () => {
         <Card>
           <div className="sm:flex sm:items-center sm:justify-between sm:space-x-10">
             <div>
-              <h3 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              <h3 className="text-xl text-tremor-content-strong dark:text-dark-tremor-content-strong">
                 Expenses
               </h3>
+              <p className="mb-0 text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
+                {isLoading ? (
+                  <div className="h-8">
+                    <SkeletonLoading />
+                  </div>
+                ) : (
+                  valueFormatter(expenseTotal)
+                )}
+              </p>
             </div>
             <button
               type="button"
