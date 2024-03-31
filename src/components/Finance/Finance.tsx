@@ -206,6 +206,10 @@ const Finance: React.FC = () => {
         });
       }
 
+      data.sort((a: any, b: any) =>
+        a.date > b.date ? -1 : b.date > a.date ? 1 : 0
+      );
+
       setAllExpenses(data);
       setExpenseTableData(data);
     } catch (error) {
