@@ -51,6 +51,21 @@ const Header: React.FC<HeaderProps> = ({ currentPath }) => {
     setNavbarOpen(!navbarOpen);
   };
 
+  const [sticky, setSticky] = useState(false);
+  const handleStickyNavbar = () => {
+    if (window.scrollY >= 80) {
+      setSticky(true);
+    } else {
+      setSticky(false);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener("scroll", handleStickyNavbar);
+    return () => {
+      window.removeEventListener("scroll", handleStickyNavbar);
+    };
+  }, []);
+
   const [openIndex, setOpenIndex] = useState(-1);
   const handleSubmenu = (index: SetStateAction<number>) => {
     if (openIndex === index) {
@@ -65,8 +80,7 @@ const Header: React.FC<HeaderProps> = ({ currentPath }) => {
       <Disclosure
         as="nav"
         className={`header fixed top-0 left-1/2 transform -translate-x-1/2 z-40 w-9/12 items-center ${
-          "sticky-header"
-            ? "dark:bg-gray-dark dark:shadow-sticky-dark bg-transparent bg-opacity-80 shadow-sticky-header"
+sticky            ? "dark:bg-gray-dark dark:shadow-sticky-dark bg-transparent bg-opacity-80 shadow-sticky-header backdrop-blur-xl"
             : "absolute bg-transparent"
         } sm:justify-center`}
       >
